@@ -11,7 +11,11 @@ define KernelPackage/lib-crc-ccitt
   SUBMENU:=$(LIB_MENU)
   TITLE:=CRC-CCITT support
   KCONFIG:=CONFIG_CRC_CCITT
+ifeq ($(KERNEL_PATCHVER),6.6)
   FILES:=$(LINUX_DIR)/lib/crc-ccitt.ko
+else
+  FILES:=$(LINUX_DIR)/lib/crc/crc-ccitt.ko
+endif
   AUTOLOAD:=$(call AutoProbe,crc-ccitt)
 endef
 
@@ -26,7 +30,11 @@ define KernelPackage/lib-crc-itu-t
   SUBMENU:=$(LIB_MENU)
   TITLE:=CRC ITU-T V.41 support
   KCONFIG:=CONFIG_CRC_ITU_T
+ifeq ($(KERNEL_PATCHVER),6.6)
   FILES:=$(LINUX_DIR)/lib/crc-itu-t.ko
+else
+  FILES:=$(LINUX_DIR)/lib/crc/crc-itu-t.ko
+endif
   AUTOLOAD:=$(call AutoProbe,crc-itu-t)
 endef
 
@@ -41,7 +49,11 @@ define KernelPackage/lib-crc7
   SUBMENU:=$(LIB_MENU)
   TITLE:=CRC7 support
   KCONFIG:=CONFIG_CRC7
+ifeq ($(KERNEL_PATCHVER),6.6)
   FILES:=$(LINUX_DIR)/lib/crc7.ko
+else
+  FILES:=$(LINUX_DIR)/lib/crc/crc7.ko
+endif
   AUTOLOAD:=$(call AutoProbe,crc7)
 endef
 
@@ -56,7 +68,11 @@ define KernelPackage/lib-crc8
   SUBMENU:=$(LIB_MENU)
   TITLE:=CRC8 support
   KCONFIG:=CONFIG_CRC8
+ifeq ($(KERNEL_PATCHVER),6.6)
   FILES:=$(LINUX_DIR)/lib/crc8.ko
+else
+  FILES:=$(LINUX_DIR)/lib/crc/crc8.ko
+endif
   AUTOLOAD:=$(call AutoProbe,crc8)
 endef
 
