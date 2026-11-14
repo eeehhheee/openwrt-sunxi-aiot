@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 BOARD:=allwinner
 BOARDNAME:=Allwinner Aiot
-FEATURES:=audio gpio usb usbgadget squashfs targz nand boot-part rootfs-part
+FEATURES:=audio gpio pci usb usbgadget squashfs targz nand boot-part rootfs-part
 SUBTARGETS:=aiot
 
 KERNEL_PATCHVER:=6.6
