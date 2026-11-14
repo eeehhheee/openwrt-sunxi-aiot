@@ -966,8 +966,15 @@ define KernelPackage/crypto-sha1
 	CONFIG_CRYPTO_SHA1_OCTEON \
 	CONFIG_CRYPTO_SHA1_PPC_SPE \
 	CONFIG_CRYPTO_SHA1_SSSE3
+ifeq ($(KERNEL_PATCHVER),6.6)
   FILES:=$(LINUX_DIR)/crypto/sha1_generic.ko
   AUTOLOAD:=$(call AutoLoad,09,sha1_generic)
+else
+  FILES:= \
+	$(LINUX_DIR)/crypto/sha1.ko \
+	$(LINUX_DIR)/lib/crypto/libsha1.ko
+  AUTOLOAD:=$(call AutoLoad,09,sha1)
+endif
   $(call AddDepends/crypto)
 endef
 
@@ -1047,10 +1054,17 @@ define KernelPackage/crypto-sha256
 	CONFIG_CRYPTO_SHA256_ARM64 \
 	CONFIG_CRYPTO_SHA2_ARM64_CE \
 	CONFIG_CRYPTO_SHA256_SSSE3
+ifeq ($(KERNEL_PATCHVER),6.6)
   FILES:= \
 	$(LINUX_DIR)/crypto/sha256_generic.ko \
 	$(LINUX_DIR)/lib/crypto/libsha256.ko
   AUTOLOAD:=$(call AutoLoad,09,sha256_generic)
+else
+  FILES:= \
+	$(LINUX_DIR)/crypto/sha256.ko \
+	$(LINUX_DIR)/lib/crypto/libsha256.ko
+  AUTOLOAD:=$(call AutoLoad,09,sha256)
+endif
   $(call AddDepends/crypto)
 endef
 
@@ -1106,8 +1120,15 @@ define KernelPackage/crypto-sha512
 	CONFIG_CRYPTO_SHA512_ARM64 \
 	CONFIG_CRYPTO_SHA512_OCTEON \
 	CONFIG_CRYPTO_SHA512_SSSE3
+ifeq ($(KERNEL_PATCHVER),6.6)
   FILES:=$(LINUX_DIR)/crypto/sha512_generic.ko
   AUTOLOAD:=$(call AutoLoad,09,sha512_generic)
+else
+  FILES:= \
+	$(LINUX_DIR)/crypto/sha512.ko \
+	$(LINUX_DIR)/lib/crypto/libsha512.ko
+  AUTOLOAD:=$(call AutoLoad,09,sha512)
+endif
   $(call AddDepends/crypto)
 endef
 
