@@ -143,8 +143,13 @@ define KernelPackage/crypto-crc32
   DEPENDS:=+kmod-crypto-hash
   KCONFIG:=CONFIG_CRYPTO_CRC32
   HIDDEN:=1
+ifeq ($(KERNEL_PATCHVER),6.6)
   FILES:=$(LINUX_DIR)/crypto/crc32_generic.ko
   AUTOLOAD:=$(call AutoLoad,04,crc32_generic,1)
+else
+  FILES:=$(LINUX_DIR)/crypto/crc32-cryptoapi.ko
+  AUTOLOAD:=$(call AutoLoad,04,crc32-cryptoapi,1)
+endif
   $(call AddDepends/crypto)
 endef
 
@@ -155,8 +160,13 @@ define KernelPackage/crypto-crc32c
   TITLE:=CRC32c CRC module
   DEPENDS:=+kmod-crypto-hash
   KCONFIG:=CONFIG_CRYPTO_CRC32C
+ifeq ($(KERNEL_PATCHVER),6.6)
   FILES:=$(LINUX_DIR)/crypto/crc32c_generic.ko
   AUTOLOAD:=$(call AutoLoad,04,crc32c_generic,1)
+else
+  FILES:=$(LINUX_DIR)/crypto/crc32c-cryptoapi.ko
+  AUTOLOAD:=$(call AutoLoad,04,crc32c-cryptoapi,1)
+endif
   $(call AddDepends/crypto)
 endef
 
