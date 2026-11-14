@@ -730,8 +730,15 @@ define KernelPackage/crypto-md5
 	CONFIG_CRYPTO_MD5 \
 	CONFIG_CRYPTO_MD5_OCTEON \
 	CONFIG_CRYPTO_MD5_PPC
+ifeq ($(KERNEL_PATCHVER),6.6)
   FILES:=$(LINUX_DIR)/crypto/md5.ko
   AUTOLOAD:=$(call AutoLoad,09,md5)
+else
+  FILES:= \
+	$(LINUX_DIR)/crypto/md5.ko \
+	$(LINUX_DIR)/lib/crypto/libmd5.ko
+  AUTOLOAD:=$(call AutoLoad,09,md5 libmd5)
+endif
   $(call AddDepends/crypto)
 endef
 
