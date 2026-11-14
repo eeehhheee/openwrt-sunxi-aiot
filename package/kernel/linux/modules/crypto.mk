@@ -1031,9 +1031,11 @@ define KernelPackage/crypto-sha1/x86_64
 endef
 endif
 
+ifeq ($(KERNEL_PATCHVER),6.6)
 ifdef KernelPackage/crypto-sha1/$(ARCH)
   KernelPackage/crypto-sha1/$(CRYPTO_TARGET)=\
 	  $(KernelPackage/crypto-sha1/$(ARCH))
+endif
 endif
 
 $(eval $(call KernelPackage,crypto-sha1))
@@ -1110,9 +1112,11 @@ KernelPackage/crypto-sha256/mvebu/cortexa72=$(KernelPackage/crypto-sha256/aarch6
 KernelPackage/crypto-sha256/qualcommax=$(KernelPackage/crypto-sha256/aarch64-ce)
 KernelPackage/crypto-sha256/rockchip/armv8=$(KernelPackage/crypto-sha256/aarch64-ce)
 
+ifeq ($(KERNEL_PATCHVER),6.6)
 ifdef KernelPackage/crypto-sha256/$(ARCH)
   KernelPackage/crypto-sha256/$(CRYPTO_TARGET)=\
 	  $(KernelPackage/crypto-sha256/$(ARCH))
+endif
 endif
 
 $(eval $(call KernelPackage,crypto-sha256))
@@ -1168,9 +1172,11 @@ define KernelPackage/crypto-sha512/x86_64
 endef
 endif
 
+ifeq ($(KERNEL_PATCHVER),6.6)
 ifdef KernelPackage/crypto-sha512/$(ARCH)
   KernelPackage/crypto-sha512/$(CRYPTO_TARGET)=\
 	  $(KernelPackage/crypto-sha512/$(ARCH))
+endif
 endif
 
 $(eval $(call KernelPackage,crypto-sha512))
