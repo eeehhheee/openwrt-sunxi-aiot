@@ -1,0 +1,101 @@
+name: Build Radxa A7Z OpenWrt Image
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        target: [a7z, a7a]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            clang \
+            flex \
+            bison \
+            g++ \
+            gawk \
+            gcc-multilib \
+            git \
+            gettext \
+            libncurses5-dev \
+            libssl-dev \
+            python3-distutils \
+            rsync \
+            unzip \
+            zlib1g-dev \
+            file \
+            wget \
+            curl
+      
+      - name: Update and install feeds
+        run: |
+          cd $GITHUB_WORKSPACE
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+      
+      - name: Configure kernel
+        run: |
+          cd $GITHUB_WORKSPACE
+          # Create a default config for A7Z
+          cat > .config << 'CONFIG'
+CONFIG_TARGET_allwinner=y
+CONFIG_TARGET_allwinner_a733=y
+CONFIG_TARGET_allwinner_a733_DEVICE_radxa_cubie_a7z=y
+CONFIG_PACKAGE_kmod_aic8800=y
+CONFIG_PACKAGE_kmod_mac80211=y
+CONFIG_PACKAGE_hostapd=y
+CONFIG_PACKAGE_wpa_supplicant=y
+CONFIG_PACKAGE_iw=y
+CONFIG_PACKAGE_iwconfig=y
+CONFIG_PACKAGE_dnsmasq=y
+CONFIG_PACKAGE_odhcpd_ipv6only=y
+CONFIG_PACKAGE_firewall4=y
+CONFIG_PACKAGE_kmod_nf_nathelper=y
+CONFIG_KERNEL_KALLSYMS=y
+CONFIG_SDK=y
+CONFIG_CCACHE=y
+CONFIG_BIN_DIR="bin"
+CONFIG
+          make defconfig
+      
+      - name: Build OpenWrt image
+        run: |
+          cd $GITHUB_WORKSPACE
+          make -j$(nproc) BUILD_LOG=1 LOG_DIR=logs/
+      
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: openwrt-a7z-images
+          path: |
+            bin/targets/allwinner/a733/
+          retention-days: 30
+      
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: bin/targets/allwinner/a733/*
+          draft: false
+          prerelease: false
+
