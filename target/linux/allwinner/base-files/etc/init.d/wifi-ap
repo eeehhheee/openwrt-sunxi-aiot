@@ -1,0 +1,27 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+STOP=10
+
+start() {
+echo "Starting WiFi AP..."
+uci set wireless.default_radio0.disabled='0'
+uci commit wireless
+wifi reload
+sleep 2
+echo "WiFi AP started"
+}
+
+stop() {
+echo "Stopping WiFi AP..."
+uci set wireless.default_radio0.disabled='1'
+uci commit wireless
+wifi reload
+echo "WiFi AP stopped"
+}
+
+restart() {
+stop
+start
+}
+

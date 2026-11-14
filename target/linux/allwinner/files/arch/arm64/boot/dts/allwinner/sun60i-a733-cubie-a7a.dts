@@ -860,6 +860,22 @@
 	status = "okay";
 };
 
+&sdc1 {
+	bus-width = <4>;
+	non-removable;
+	cap-sd-highspeed;
+	cap-sdio-irq;
+	keep-power-in-suspend;
+	wakeup-source;
+	max-frequency = <150000000>;
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&sdc1_pins_a>;
+	pinctrl-1 = <&sdc1_pins_b>;
+	vmmc-supply = <&wifi_power_en>;
+	vqmmc-supply = <&wifi_chip_en>;
+	status = "okay";
+};
+
 &ufs {
 	vcc-supply = <&reg_dldo6>;
 	vccq-supply = <&reg_dcdc8>;

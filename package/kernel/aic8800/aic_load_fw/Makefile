@@ -1,0 +1,45 @@
+CONFIG_USB_SUPPORT = n
+CONFIG_RFTEST = n
+CONFIG_USB_BT = n
+CONFIG_USB_MSG_EP = n
+CONFIG_USB_NO_TRANS_DMA_MAP = n
+CONFIG_M2D_OTA_AUTO_SUPPORT = n
+CONFIG_LINK_DET_5G = n
+CONFIG_FOR_IPCAM = n
+CONFIG_USB_SUSPEND_REBOOT_TIME = n
+
+# Firmware loading configuration
+CONFIG_USE_FW_REQUEST = y
+CONFIG_PREALLOC_RX_SKB = y
+CONFIG_PREALLOC_TXQ = y
+
+# Platform support for Allwinner
+CONFIG_PLATFORM_ROCKCHIP = n
+CONFIG_PLATFORM_ALLWINNER = y
+CONFIG_PLATFORM_AMLOGIC = n
+CONFIG_PLATFORM_HI = n
+CONFIG_PLATFORM_UBUNTU = n
+
+CONFIG_AIC_LOADFW_SUPPORT = m
+MODULE_NAME = aic_load_fw
+
+# Export firmware path for OpenWrt
+export CONFIG_AIC_FW_PATH = "/lib/firmware/aic8800"
+
+# Build configuration
+EXTRA_CFLAGS += -I$(src)
+
+# Module source files
+$(MODULE_NAME)-$(CONFIG_AIC_LOADFW_SUPPORT) := aic_load_fw.o
+$(MODULE_NAME)-$(CONFIG_AIC_LOADFW_SUPPORT) += md5.o
+$(MODULE_NAME)-$(CONFIG_AIC_LOADFW_SUPPORT) += aic_txrxif.o
+$(MODULE_NAME)-$(CONFIG_AIC_LOADFW_SUPPORT) += aic_compat_8800d80.o
+
+# USB support (disabled for embedded)
+ifeq ($(CONFIG_USB_SUPPORT), y)
+$(MODULE_NAME)-$(CONFIG_AIC_LOADFW_SUPPORT) += aicwf_usb.o
+endif
+
+# Module definition
+obj-$(CONFIG_AIC_LOADFW_SUPPORT) += $(MODULE_NAME).o
+

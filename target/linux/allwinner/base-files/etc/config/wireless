@@ -1,0 +1,17 @@
+config wifi-device 'radio0'
+option type 'mac80211'
+option channel '11'
+option hwmode '11g'
+option path 'platform/soc/4021000.sdmmc/phy0'
+option txpower '20'
+option country 'CN'
+
+config wifi-iface 'default_radio0'
+option device 'radio0'
+option network 'lan'
+option mode 'ap'
+option ssid 'OpenWrt-A7Z'
+option encryption 'psk2'
+option key 'openwrt123456'
+option isolate '0'
+

@@ -922,6 +922,22 @@
 	status = "okay";
 };
 
+&sdc1 {
+	bus-width = <4>;
+	non-removable;
+	cap-sd-highspeed;
+	cap-sdio-irq;
+	keep-power-in-suspend;
+	wakeup-source;
+	max-frequency = <150000000>;
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&sdc1_pins_a>;
+	pinctrl-1 = <&sdc1_pins_b>;
+	vmmc-supply = <&wifi_power_en>;
+	vqmmc-supply = <&wifi_chip_en>;
+	status = "okay";
+};
+
 &ufs {
 	vcc-supply = <&reg_dldo6>;
 	vccq-supply = <&reg_dcdc8>;
@@ -1044,6 +1060,8 @@
 	wake-gpios = <&pio PD 21 GPIO_ACTIVE_HIGH>;
 	pcie1v8-supply = <&reg_bldo1>;
 	pcie3v3-supply = <&reg_dcdc1>;
+	/* Disable PCIe training in U-Boot to prevent hang when PCIe2 is misidentified as PCIe3 */
+	skip-uboot-pcie-training = <1>;
 	status = "okay";
 };
 
