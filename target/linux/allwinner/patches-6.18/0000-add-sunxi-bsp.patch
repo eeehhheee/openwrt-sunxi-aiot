@@ -1,0 +1,44 @@
+--- a/Kconfig
++++ b/Kconfig
+@@ -9,6 +9,8 @@ source "scripts/Kconfig.include"
+ 
+ source "init/Kconfig"
+ 
++source "bsp/Kconfig"
++
+ source "kernel/Kconfig.freezer"
+ 
+ source "fs/Kconfig.binfmt"
+--- a/Makefile
++++ b/Makefile
+@@ -588,6 +588,7 @@ LINUXINCLUDE    := \
+ 		-I$(objtree)/arch/$(SRCARCH)/include/generated \
+ 		-I$(srctree)/include \
+ 		-I$(objtree)/include \
++		-I$(srctree)/bsp/include \
+ 		$(USERINCLUDE)
+ 
+ KBUILD_AFLAGS   := -D__ASSEMBLY__ -fno-PIE
+@@ -802,6 +803,7 @@ ifeq ($(KBUILD_EXTMOD),)
+ # Objects we will link into vmlinux / subdirs we need to visit
+ core-y		:=
+ drivers-y	:=
++drivers-y	+= bsp/
+ libs-y		:= lib/
+ endif # KBUILD_EXTMOD
+ 
+--- a/scripts/Makefile.dtbs
++++ b/scripts/Makefile.dtbs
+@@ -114,9 +114,10 @@ DTC_FLAGS += $(DTC_FLAGS_$(target-stem))
+ # Set -@ if the target is a base DTB that overlay is applied onto
+ DTC_FLAGS += $(if $(filter $(patsubst $(obj)/%,%,$@), $(base-dtb-y)), -@)
+ 
+-DTC_INCLUDE := $(srctree)/scripts/dtc/include-prefixes
++DTC_INCLUDE := $(srctree)/scripts/dtc/include-prefixes $(srctree)/bsp/include
+ 
+-dtc_cpp_flags = -Wp,-MMD,$(depfile).pre.tmp -nostdinc -I $(DTC_INCLUDE) -undef -D__DTS__
++dtc_cpp_flags = -Wp,-MMD,$(depfile).pre.tmp -nostdinc \
++		 $(addprefix -I,$(DTC_INCLUDE)) -undef -D__DTS__
+ 
+ dtc-tmp = $(subst $(comma),_,$(dot-target).dts.tmp)
+ 
