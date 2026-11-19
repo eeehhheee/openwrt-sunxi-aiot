@@ -25,6 +25,7 @@
 #include <linux/irqchip.h>
 #include <linux/irqchip/chained_irq.h>
 #include <linux/syscore_ops.h>
+#include <sunxi-syscore.h>
 #include <linux/pinctrl/consumer.h>
 #include <linux/init.h>
 #include <linux/module.h>
@@ -164,7 +165,7 @@ static void sunxi_nmi_resume(void)
 	sunxi_sc_nmi_write(sys_gc, sys_reg_offs->enable, sys_vaule);
 }
 
-static struct syscore_ops sunxi_nmi_syscore_ops = {
+static struct sunxi_syscore sunxi_nmi_syscore_ops = {
 	.suspend = sunxi_nmi_suspend,
 	.resume = sunxi_nmi_resume,
 };
@@ -240,7 +241,7 @@ static int sunxi_sc_nmi_irq_init(struct device_node *node,
 	sunxi_nmi_pad_control(node);
 	sys_gc = gc;
 	sys_reg_offs = reg_offs;
-	register_syscore_ops(&sunxi_nmi_syscore_ops);
+	sunxi_register_syscore(&sunxi_nmi_syscore_ops);
 
 	irq_set_chained_handler_and_data(irq, sunxi_sc_nmi_handle_irq, domain);
 
@@ -278,7 +279,7 @@ static int sunxi_irq_nmi_remove(struct platform_device *pdev)
 	struct device_node *node = pdev->dev.of_node;
 	struct resource res;
 
-	unregister_syscore_ops(&sunxi_nmi_syscore_ops);
+	sunxi_unregister_syscore(&sunxi_nmi_syscore_ops);
 	iounmap(sys_gc->reg_base);
 	of_address_to_resource(node, 0, &res);
 	release_mem_region(res.start, resource_size(&res));

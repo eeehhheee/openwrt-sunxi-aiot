@@ -12,6 +12,7 @@
 #include <linux/clk.h>
 #include <linux/iopoll.h>
 #include <linux/syscore_ops.h>
+#include <sunxi-syscore.h>
 #include <linux/slab.h>
 
 #include "ccu_common.h"
@@ -240,7 +241,7 @@ static void displl_resume(void)
 	writel(val, ccu_cpu_base + 0x500);
 }
 
-static struct syscore_ops sunxi_displl_syscore_ops = {
+static struct sunxi_syscore sunxi_displl_syscore_ops = {
 	.suspend = displl_suspend,
 	.resume = displl_resume,
 };
@@ -267,7 +268,7 @@ void static displl_sleep_init(void __iomem *reg_base,
 	}
 
 	if (list_empty(&displl_reg_cache_list))
-		register_syscore_ops(&sunxi_displl_syscore_ops);
+		sunxi_register_syscore(&sunxi_displl_syscore_ops);
 
 	reg_cache->reg_base = reg_base;
 	reg_cache->rd_num = nr_rdump;

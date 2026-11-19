@@ -20,6 +20,7 @@
 #include <linux/pinctrl/pinmux.h>
 #include <linux/platform_device.h>
 #include <linux/regmap.h>
+#include <linux/version.h>
 #include <linux/slab.h>
 
 #include <linux/power_supply.h>
@@ -109,10 +110,17 @@ static int axp22x_gpio_get_reg(unsigned int offset)
 	return -EINVAL;
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0)
+static int axp22x_gpio_input(struct gpio_chip *chip, unsigned int offset)
+{
+	return pinctrl_gpio_direction_input(chip, offset);
+}
+#else
 static int axp22x_gpio_input(struct gpio_chip *chip, unsigned int offset)
 {
 	return pinctrl_gpio_direction_input(chip->base + offset);
 }
+#endif
 
 static int axp22x_gpio_get(struct gpio_chip *chip, unsigned int offset)
 {
@@ -160,25 +168,37 @@ static int axp22x_gpio_get_direction(struct gpio_chip *chip,
 static int axp22x_gpio_output(struct gpio_chip *chip, unsigned int offset,
 			      int value)
 {
-	chip->set(chip, offset, value);
+	(void)chip->set(chip, offset, value);
 
 	return 0;
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0)
+static int axp22x_gpio_set(struct gpio_chip *chip, unsigned int offset,
+			    int value)
+#else
 static void axp22x_gpio_set(struct gpio_chip *chip, unsigned int offset,
 			    int value)
+#endif
 {
 	struct axp22x_pctl *pctl = gpiochip_get_data(chip);
 	int reg;
 
 	reg = axp22x_gpio_get_reg(offset);
 	if (reg < 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0)
+		return reg;
+#else
 		return;
+#endif
 
 	regmap_update_bits(pctl->regmap, reg,
 			   AXP22X_GPIO_FUNCTIONS,
 			   value ? AXP22X_GPIO_FUNCTION_OUT_HIGH :
 			   AXP22X_GPIO_FUNCTION_OUT_LOW);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0)
+	return 0;
+#endif
 }
 
 static int axp22x_pmx_set(struct pinctrl_dev *pctldev, unsigned int offset,

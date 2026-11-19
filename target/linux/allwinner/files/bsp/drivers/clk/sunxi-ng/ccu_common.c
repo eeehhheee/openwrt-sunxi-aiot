@@ -11,6 +11,7 @@
 #include <linux/iopoll.h>
 #include <linux/slab.h>
 #include <linux/syscore_ops.h>
+#include <sunxi-syscore.h>
 #include <linux/module.h>
 #include <linux/clkdev.h>
 #include <linux/delay.h>
@@ -225,7 +226,7 @@ static void ccu_resume(void)
 	}
 }
 
-static struct syscore_ops sunxi_clk_syscore_ops = {
+static struct sunxi_syscore sunxi_clk_syscore_ops = {
 	.suspend = ccu_suspend,
 	.resume = ccu_resume,
 };
@@ -251,7 +252,7 @@ void sunxi_ccu_sleep_init(void __iomem *reg_base,
 
 	mutex_lock(&ccu_reg_cache_lock);
 	if (list_empty(&ccu_reg_cache_list))
-		register_syscore_ops(&sunxi_clk_syscore_ops);
+		sunxi_register_syscore(&sunxi_clk_syscore_ops);
 
 	reg_cache->reg_base = reg_base;
 	reg_cache->rd_num = nr_rdump;

@@ -29,6 +29,8 @@
 #include <linux/delay.h>
 #include <linux/clk.h>
 #include <linux/clk-provider.h>
+#include <linux/platform_device.h>
+#include <linux/version.h>
 
 /* set the parent of osc32k-out fixed to osc32k-sys, to simplify the clock tree */
 #define OSC32KOUT_PARENT_FIX_TO_OSC32KSYS	1
@@ -510,6 +512,14 @@ static int sunxi_rtc_ccu_probe(struct platform_device *pdev)
 	return 0;
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 13, 0)
+static void sunxi_rtc_ccu_remove(struct platform_device *pdev)
+{
+	struct sunxi_rtc_ccu *priv = platform_get_drvdata(pdev);
+
+	sunxi_rtc_clk_provider_unregister(priv);
+}
+#else
 static int sunxi_rtc_ccu_remove(struct platform_device *pdev)
 {
 	struct sunxi_rtc_ccu *priv = platform_get_drvdata(pdev);
@@ -518,6 +528,7 @@ static int sunxi_rtc_ccu_remove(struct platform_device *pdev)
 
 	return 0;
 }
+#endif
 
 static struct platform_driver sunxi_rtc_ccu = {
 	.probe    = sunxi_rtc_ccu_probe,

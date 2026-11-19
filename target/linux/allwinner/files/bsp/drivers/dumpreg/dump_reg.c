@@ -32,6 +32,7 @@
 
 #include <linux/suspend.h>
 #include <linux/syscore_ops.h>
+#include <sunxi-syscore.h>
 #include <linux/version.h>
 
 #include "dump_reg.h"
@@ -857,7 +858,7 @@ static struct dev_pm_ops standby_dump_ops = {
 	.resume_noirq = standby_dump_dev_resume_noirq,
 };
 
-static struct syscore_ops standby_dump_syscore = {
+static struct sunxi_syscore standby_dump_syscore = {
 	.suspend = standby_dump_syscore_suspend,
 	.resume  = standby_dump_syscore_resume,
 };
@@ -1124,7 +1125,7 @@ static int sunxi_dump_reg_probe(struct platform_device *pdev)
 	if (!standby_dump_buff)
 		dev_err(dev, "malloc memory failed.\n");
 
-	register_syscore_ops(&standby_dump_syscore);
+	sunxi_register_syscore(&standby_dump_syscore);
 
 	return 0;
 error:

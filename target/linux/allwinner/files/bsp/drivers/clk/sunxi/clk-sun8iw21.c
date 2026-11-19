@@ -18,6 +18,7 @@
 #include <linux/of.h>
 #include <linux/of_address.h>
 #include <linux/syscore_ops.h>
+#include <sunxi-syscore.h>
 #include <linux/module.h>
 #include <sunxi-sid.h>
 #include "clk-sunxi.h"
@@ -1017,7 +1018,7 @@ static void sunxi_clk_resume(void)
 		sunxi_periph_clk_restore(periph_clk_reg);
 }
 
-static struct syscore_ops sunxi_clk_syscore_ops = {
+static struct sunxi_syscore sunxi_clk_syscore_ops = {
 	.suspend = sunxi_clk_suspend,
 	.resume = sunxi_clk_resume,
 };
@@ -1063,7 +1064,7 @@ void __init sunxi_clocks_init(struct device_node *node)
 	/*do some initialize arguments here*/
 	sunxi_clk_factor_initlimits();
 #ifdef CONFIG_PM_SLEEP
-	register_syscore_ops(&sunxi_clk_syscore_ops);
+	sunxi_register_syscore(&sunxi_clk_syscore_ops);
 #endif
 	sunxi_set_periphs_clk_priv_ops("pll_audio", &pll_audio_priv_ops,
 			set_pll_audio_priv_ops);

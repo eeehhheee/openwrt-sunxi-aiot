@@ -12,6 +12,7 @@
  * warranty of any kind, whether express or implied.
  */
 #include <linux/io.h>
+#include <linux/version.h>
 #include <linux/clk.h>
 #include <linux/gpio/driver.h>
 #include <linux/interrupt.h>
@@ -1848,7 +1849,11 @@ static const struct pinmux_ops sunxi_pmx_ops = {
 static int sunxi_pinctrl_gpio_direction_input(struct gpio_chip *chip,
 					unsigned offset)
 {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0)
+	return pinctrl_gpio_direction_input(chip, offset);
+#else
 	return pinctrl_gpio_direction_input(chip->base + offset);
+#endif
 }
 
 static int sunxi_pinctrl_gpio_get(struct gpio_chip *chip, unsigned offset)
@@ -1872,8 +1877,13 @@ static int sunxi_pinctrl_gpio_get(struct gpio_chip *chip, unsigned offset)
 	return !!val;
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0)
+static int sunxi_pinctrl_gpio_set(struct gpio_chip *chip,
+				unsigned offset, int value)
+#else
 static void sunxi_pinctrl_gpio_set(struct gpio_chip *chip,
 				unsigned offset, int value)
+#endif
 {
 	struct sunxi_pinctrl *pctl = gpiochip_get_data(chip);
 	enum sunxi_pinctrl_hw_type hw_type = pctl->desc->hw_type;
@@ -1912,6 +1922,9 @@ static void sunxi_pinctrl_gpio_set(struct gpio_chip *chip,
 		writel(regval, pctl->membase + reg);
 	}
 	raw_spin_unlock_irqrestore(&pctl->lock, flags);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0)
+	return 0;
+#endif
 }
 
 static int sunxi_pinctrl_gpio_get_direction(struct gpio_chip *chip,
@@ -1936,7 +1949,11 @@ static int sunxi_pinctrl_gpio_direction_output(struct gpio_chip *chip,
 					unsigned offset, int value)
 {
 	sunxi_pinctrl_gpio_set(chip, offset, value);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0)
+	return pinctrl_gpio_direction_output(chip, offset);
+#else
 	return pinctrl_gpio_direction_output(chip->base + offset);
+#endif
 }
 
 static int sunxi_pinctrl_gpio_of_xlate(struct gpio_chip *gc,
