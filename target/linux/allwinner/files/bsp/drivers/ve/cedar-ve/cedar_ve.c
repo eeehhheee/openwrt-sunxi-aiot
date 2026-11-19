@@ -46,6 +46,7 @@
 #include <linux/delay.h>
 #include <linux/scatterlist.h>
 #include <linux/mm.h>
+#include <linux/vmalloc.h>
 #include <linux/debugfs.h>
 #include <linux/pm_runtime.h>
 #include <linux/devfreq.h>
@@ -2236,6 +2237,8 @@ MODULE_DESCRIPTION("User mode CEDAR device interface");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(DRV_VERSION);
 MODULE_ALIAS("platform:cedarc-sunxi");
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 25))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 13, 0))
+MODULE_IMPORT_NS("DMA_BUF");
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 25))
 MODULE_IMPORT_NS(DMA_BUF);
 #endif
