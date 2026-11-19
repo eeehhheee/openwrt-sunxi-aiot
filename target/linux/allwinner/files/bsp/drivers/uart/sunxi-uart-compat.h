@@ -28,23 +28,23 @@
 /* The tty core owns the transmit fifo, the driver cannot alias it. */
 #define SUNXI_UART_XMIT_DMA_ALIAS 0
 
-static inline unsigned int sunxi_uart_tx_pending(struct uart_port *port)
+static inline unsigned int sunxi_uart_fifo_pending(struct uart_port *port)
 {
 	return kfifo_len(&port->state->port.xmit_fifo);
 }
 
-static inline bool sunxi_uart_tx_empty(struct uart_port *port)
+static inline bool sunxi_uart_fifo_empty(struct uart_port *port)
 {
 	return kfifo_is_empty(&port->state->port.xmit_fifo);
 }
 
-static inline bool sunxi_uart_tx_peek(struct uart_port *port, unsigned char *ch)
+static inline bool sunxi_uart_fifo_peek(struct uart_port *port, unsigned char *ch)
 {
 	return kfifo_peek(&port->state->port.xmit_fifo, ch) == 1;
 }
 
 /* Consume @chars already pushed into the FIFO and account them. */
-static inline void sunxi_uart_tx_advance(struct uart_port *port, unsigned int chars)
+static inline void sunxi_uart_fifo_advance(struct uart_port *port, unsigned int chars)
 {
 	uart_xmit_advance(port, chars);
 }
@@ -53,17 +53,17 @@ static inline void sunxi_uart_tx_advance(struct uart_port *port, unsigned int ch
 
 #define SUNXI_UART_XMIT_DMA_ALIAS 1
 
-static inline unsigned int sunxi_uart_tx_pending(struct uart_port *port)
+static inline unsigned int sunxi_uart_fifo_pending(struct uart_port *port)
 {
 	return uart_circ_chars_pending(&port->state->xmit);
 }
 
-static inline bool sunxi_uart_tx_empty(struct uart_port *port)
+static inline bool sunxi_uart_fifo_empty(struct uart_port *port)
 {
 	return uart_circ_empty(&port->state->xmit);
 }
 
-static inline bool sunxi_uart_tx_peek(struct uart_port *port, unsigned char *ch)
+static inline bool sunxi_uart_fifo_peek(struct uart_port *port, unsigned char *ch)
 {
 	struct circ_buf *xmit = &port->state->xmit;
 
@@ -75,7 +75,7 @@ static inline bool sunxi_uart_tx_peek(struct uart_port *port, unsigned char *ch)
 	return true;
 }
 
-static inline void sunxi_uart_tx_advance(struct uart_port *port, unsigned int chars)
+static inline void sunxi_uart_fifo_advance(struct uart_port *port, unsigned int chars)
 {
 	struct circ_buf *xmit = &port->state->xmit;
 

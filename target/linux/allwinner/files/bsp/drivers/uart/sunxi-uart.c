@@ -333,7 +333,7 @@ static void sw_uart_start_tx(struct uart_port *port)
 
 	if (sw_uport->rs485_en) {
 		if ((sw_uport->port.x_char) &&
-				sunxi_uart_tx_empty(&sw_uport->port))
+				sunxi_uart_fifo_empty(&sw_uport->port))
 			return;
 		gpiod_set_value(sw_uport->rs485oe_gpio, !sw_uport->rs485_fl);
 	}
@@ -358,7 +358,7 @@ static void sw_uart_handle_tx(struct sw_uart_port *sw_uport)
 #endif
 		return;
 	}
-	if (sunxi_uart_tx_empty(&sw_uport->port) ||
+	if (sunxi_uart_fifo_empty(&sw_uport->port) ||
 			uart_tx_stopped(&sw_uport->port)) {
 		sw_uart_stop_tx(&sw_uport->port);
 		return;
@@ -376,20 +376,20 @@ static void sw_uart_handle_tx(struct sw_uart_port *sw_uport)
 
 	count = sw_uport->port.fifosize / 2;
 	do {
-		if (!sunxi_uart_tx_peek(&sw_uport->port, &ch))
+		if (!sunxi_uart_fifo_peek(&sw_uport->port, &ch))
 			break;
 #if IS_ENABLED(CONFIG_SW_UART_DUMP_DATA)
 		sw_uport->dump_buff[sw_uport->dump_len++] = ch;
 #endif
 		serial_out(&sw_uport->port, ch, SUNXI_UART_THR);
 		SERIAL_DBG(sw_uport->port.dev, "write tx fifo 0x%x\n", ch);
-		sunxi_uart_tx_advance(&sw_uport->port, 1);
-		if (sunxi_uart_tx_empty(&sw_uport->port))
+		sunxi_uart_fifo_advance(&sw_uport->port, 1);
+		if (sunxi_uart_fifo_empty(&sw_uport->port))
 			break;
 	} while (--count > 0);
 
 	SERIAL_DUMP(sw_uport, "Tx");
-	if (sunxi_uart_tx_pending(&sw_uport->port) < WAKEUP_CHARS) {
+	if (sunxi_uart_fifo_pending(&sw_uport->port) < WAKEUP_CHARS) {
 		spin_unlock(&sw_uport->port.lock);
 		uart_write_wakeup(&sw_uport->port);
 		spin_lock(&sw_uport->port.lock);
@@ -398,7 +398,7 @@ static void sw_uart_handle_tx(struct sw_uart_port *sw_uport)
 	if (sw_uport->rs485_en)
 		return;
 
-	if (sunxi_uart_tx_empty(&sw_uport->port))
+	if (sunxi_uart_fifo_empty(&sw_uport->port))
 		sw_uart_stop_tx(&sw_uport->port);
 }
 

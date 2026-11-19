@@ -270,7 +270,7 @@ static void sunxi_uart_start_tx(struct uart_port *port)
 	struct sunxi_uart_port *uart_port = UART_TO_SPORT(port);
 
 	if (!(uart_port->port.x_char) &&
-			sunxi_uart_tx_empty(&uart_port->port))
+			sunxi_uart_fifo_empty(&uart_port->port))
 		return;
 
 	if ((uart_port->rs485conf.flags & SER_RS485_ENABLED) && \
@@ -297,7 +297,7 @@ static void sunxi_uart_handle_tx(struct sunxi_uart_port *uart_port)
 		return;
 	}
 
-	if (sunxi_uart_tx_empty(&uart_port->port) ||
+	if (sunxi_uart_fifo_empty(&uart_port->port) ||
 			uart_tx_stopped(&uart_port->port)) {
 		sunxi_uart_stop_tx(&uart_port->port);
 		return;
@@ -315,7 +315,7 @@ static void sunxi_uart_handle_tx(struct sunxi_uart_port *uart_port)
 
 	count = uart_port->port.fifosize / 2;
 	do {
-		if (!sunxi_uart_tx_peek(&uart_port->port, &ch))
+		if (!sunxi_uart_fifo_peek(&uart_port->port, &ch))
 			break;
 #if IS_ENABLED(CONFIG_SW_UART_DUMP_DATA)
 		uart_port->dump_buff[uart_port->dump_len++] = ch;
@@ -324,13 +324,13 @@ static void sunxi_uart_handle_tx(struct sunxi_uart_port *uart_port)
 		SERIAL_DBG(uart_port->port.dev, "write tx fifo 0x%x\n", ch);
 		if (uart_port->id != 0)
 			trace_uart_data_tx(uart_port, ch, 0);
-		sunxi_uart_tx_advance(&uart_port->port, 1);
-		if (sunxi_uart_tx_empty(&uart_port->port))
+		sunxi_uart_fifo_advance(&uart_port->port, 1);
+		if (sunxi_uart_fifo_empty(&uart_port->port))
 			break;
 	} while (--count > 0);
 
 	SERIAL_DUMP(uart_port, "Tx");
-	if (sunxi_uart_tx_pending(&uart_port->port) < WAKEUP_CHARS) {
+	if (sunxi_uart_fifo_pending(&uart_port->port) < WAKEUP_CHARS) {
 		spin_unlock(&uart_port->port.lock);
 		uart_write_wakeup(&uart_port->port);
 		spin_lock(&uart_port->port.lock);
@@ -339,7 +339,7 @@ static void sunxi_uart_handle_tx(struct sunxi_uart_port *uart_port)
 	if (uart_port->rs485_pin_auto)
 		return;
 
-	if (sunxi_uart_tx_empty(&uart_port->port))
+	if (sunxi_uart_fifo_empty(&uart_port->port))
 		sunxi_uart_stop_tx(&uart_port->port);
 }
 
@@ -680,7 +680,7 @@ err:
 	return ret;
 }
 
-static unsigned int sunxi_uart_tx_empty(struct uart_port *port)
+static unsigned int sunxi_uart_fifo_empty(struct uart_port *port)
 {
 	struct sunxi_uart_port *uart_port = UART_TO_SPORT(port);
 	unsigned long flags = 0;
@@ -1261,7 +1261,7 @@ static void sunxi_uart_unthrottle(struct uart_port *port)
 }
 
 static struct uart_ops sunxi_uart_ops = {
-	.tx_empty = sunxi_uart_tx_empty,
+	.tx_empty = sunxi_uart_fifo_empty,
 	.set_mctrl = sunxi_uart_set_mctrl,
 	.get_mctrl = sunxi_uart_get_mctrl,
 	.stop_tx = sunxi_uart_stop_tx,
