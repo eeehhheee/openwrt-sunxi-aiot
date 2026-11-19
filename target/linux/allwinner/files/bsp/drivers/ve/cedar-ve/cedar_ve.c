@@ -1821,7 +1821,9 @@ static const struct file_operations cedardev_fops = {
 	.mmap	 = cedardev_mmap,
 	.open	 = cedardev_open,
 	.release = cedardev_release,
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 12, 0)
 	.llseek	 = no_llseek,
+#endif
 	.unlocked_ioctl	= compat_cedardev_ioctl,
 	.compat_ioctl   = compat_cedardev_ioctl,
 };

@@ -639,7 +639,9 @@ static const struct file_operations googlevp9dev_fops = {
 	.mmap    = googlevp9dev_mmap,
 	.open    = googlevp9dev_open,
 	.release = googlevp9dev_release,
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 12, 0)
 	.llseek  = no_llseek,
+#endif
 	.unlocked_ioctl   = compat_googlevp9dev_ioctl,
 	.compat_ioctl     = compat_googlevp9dev_ioctl,
 
