@@ -680,7 +680,7 @@ err:
 	return ret;
 }
 
-static unsigned int sunxi_uart_fifo_empty(struct uart_port *port)
+static unsigned int sunxi_uart_tx_empty(struct uart_port *port)
 {
 	struct sunxi_uart_port *uart_port = UART_TO_SPORT(port);
 	unsigned long flags = 0;
@@ -1261,7 +1261,7 @@ static void sunxi_uart_unthrottle(struct uart_port *port)
 }
 
 static struct uart_ops sunxi_uart_ops = {
-	.tx_empty = sunxi_uart_fifo_empty,
+	.tx_empty = sunxi_uart_tx_empty,
 	.set_mctrl = sunxi_uart_set_mctrl,
 	.get_mctrl = sunxi_uart_get_mctrl,
 	.stop_tx = sunxi_uart_stop_tx,
