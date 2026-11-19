@@ -13,6 +13,7 @@
 
 #define SUNXI_MODNAME		"sound-ahub"
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "snd_sunxi_log.h"
 #include <linux/module.h>
 #include <linux/slab.h>
@@ -1680,7 +1681,7 @@ err_devm_kzalloc:
 	return ret;
 }
 
-static int sunxi_ahub_dev_remove(struct platform_device *pdev)
+static void sunxi_ahub_dev_remove(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct device_node *np = pdev->dev.of_node;
@@ -1702,7 +1703,7 @@ static int sunxi_ahub_dev_remove(struct platform_device *pdev)
 
 	SND_LOG_DEBUG("unregister ahub platform success\n");
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_ahub_of_match[] = {
@@ -1718,7 +1719,7 @@ static struct platform_driver sunxi_ahub_driver = {
 		.of_match_table	= sunxi_ahub_of_match,
 	},
 	.probe	= sunxi_ahub_dev_probe,
-	.remove	= sunxi_ahub_dev_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_ahub_dev_remove),
 };
 
 int __init sunxi_ahub_dev_init(void)

@@ -18,6 +18,7 @@
  */
 
 #include <linux/kernel.h>
+#include <sunxi-platform.h>
 #include <linux/platform_device.h>
 #include <linux/module.h>
 #include <linux/device.h>
@@ -185,7 +186,7 @@ iounmap_base:
 	return ret;
 }
 
-static int sunxi_hwspinlock_remove(struct platform_device *pdev)
+static void sunxi_hwspinlock_remove(struct platform_device *pdev)
 {
 	struct sunxi_hwspinlock_device *private = platform_get_drvdata(pdev);
 	struct hwspinlock_device *bank = private->bank;
@@ -195,7 +196,7 @@ static int sunxi_hwspinlock_remove(struct platform_device *pdev)
 	ret = hwspin_lock_unregister(bank);
 	if (ret) {
 		dev_err(&pdev->dev, "%s failed: %d\n", __func__, ret);
-		return ret;
+		return;
 	}
 
 	sunxi_hwspinlock_clk_dinit(private);
@@ -205,7 +206,7 @@ static int sunxi_hwspinlock_remove(struct platform_device *pdev)
 	kfree(bank);
 	kfree(private);
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_hwspinlock_of_match[] = {
@@ -216,7 +217,7 @@ MODULE_DEVICE_TABLE(of, sunxi_hwspinlock_of_match);
 
 static struct platform_driver sunxi_hwspinlock_driver = {
 	.probe		= sunxi_hwspinlock_probe,
-	.remove		= sunxi_hwspinlock_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_hwspinlock_remove),
 	.driver		= {
 		.name	= "sunxi-hwspinlock",
 		.owner	= THIS_MODULE,

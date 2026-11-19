@@ -11,6 +11,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/dma-mapping.h>
 #include <linux/clk.h>
 #include <drm/drm_print.h>
@@ -1131,14 +1132,14 @@ out:
 }
 
 //TODO
-static int sunxi_tcon_remove(struct platform_device *pdev)
+static void sunxi_tcon_remove(struct platform_device *pdev)
 {
-	return 0;
+	return;
 }
 
 struct platform_driver sunxi_tcon_platform_driver = {
 	.probe = sunxi_tcon_probe,
-	.remove = sunxi_tcon_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_tcon_remove),
 	.driver = {
 		   .name = "tcon",
 		   .owner = THIS_MODULE,

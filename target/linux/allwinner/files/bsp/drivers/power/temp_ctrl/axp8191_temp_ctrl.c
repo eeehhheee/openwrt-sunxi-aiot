@@ -2,6 +2,7 @@
 #define pr_fmt(x) KBUILD_MODNAME ": " x "\n"
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "sunxi-power-notifier.h"
 #include "axp2101.h"
 #include "axp8191_temp_ctrl.h"
@@ -243,12 +244,12 @@ err:
 	return ret;
 }
 
-static int axp8191_temp_ctrl_remove(struct platform_device *pdev)
+static void axp8191_temp_ctrl_remove(struct platform_device *pdev)
 {
 	PMIC_DEV_DEBUG(&pdev->dev, "==============AXP8191 unegister==============\n");
 	PMIC_DEV_DEBUG(&pdev->dev, "axp8191 teardown temp_ctrl dev\n");
 
-	return 0;
+	return;
 }
 
 static inline void axp8191_temp_ctrl_irq_set(unsigned int irq, bool enable)
@@ -324,7 +325,7 @@ static struct platform_driver axp8191_temp_ctrl_driver = {
 		.of_match_table = axp8191_temp_ctrl_match,
 	},
 	.probe = axp8191_temp_ctrl_probe,
-	.remove = axp8191_temp_ctrl_remove,
+	SUNXI_PLATFORM_REMOVE(axp8191_temp_ctrl_remove),
 	.shutdown = axp8191_temp_ctrl_shutdown,
 	.suspend = axp8191_temp_ctrl_suspend,
 	.resume = axp8191_temp_ctrl_resume,

@@ -17,6 +17,7 @@
  */
 
 #include <linux/io.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>
 #include <linux/clk-provider.h>
@@ -1966,7 +1967,7 @@ out_err:
 	return ret;
 }
 
-static int nsi_pmu_remove(struct platform_device *pdev)
+static void nsi_pmu_remove(struct platform_device *pdev)
 {
 	sunxi_nsi_ecc_exit(pdev);
 
@@ -1976,7 +1977,7 @@ static int nsi_pmu_remove(struct platform_device *pdev)
 		hw_nsi_pmu.dev_nsi = NULL;
 	}
 
-	return 0;
+	return;
 }
 
 #if IS_ENABLED(CONFIG_PM)
@@ -2025,7 +2026,7 @@ static struct platform_driver nsi_pmu_driver = {
 		.of_match_table = sunxi_nsi_matches,
 	},
 	.probe = nsi_pmu_probe,
-	.remove = nsi_pmu_remove,
+	SUNXI_PLATFORM_REMOVE(nsi_pmu_remove),
 };
 
 struct sunxi_nsi_data {

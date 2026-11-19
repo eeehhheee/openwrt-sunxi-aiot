@@ -2,6 +2,7 @@
 #define pr_fmt(x) KBUILD_MODNAME ": " x "\n"
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "axp2602_battery.h"
 
 #define DIVIDE_BY_50(n) (((n) / 50) * 50)
@@ -1294,7 +1295,7 @@ err:
 	return ret;
 }
 
-static int axp2602_battery_remove(struct platform_device *pdev)
+static void axp2602_battery_remove(struct platform_device *pdev)
 {
 	struct axp2602_bat_power *bat_power = platform_get_drvdata(pdev);
 
@@ -1305,7 +1306,7 @@ static int axp2602_battery_remove(struct platform_device *pdev)
 	}
 	PMIC_DEV_DEBUG(&pdev->dev, "axp2602 teardown battery dev\n");
 
-	return 0;
+	return;
 }
 
 static inline void axp2602_bat_irq_set(unsigned int irq, bool enable)
@@ -1399,7 +1400,7 @@ static struct platform_driver axp2602_bat_power_driver = {
 		.of_match_table = axp2602_bat_power_match,
 	},
 	.probe = axp2602_battery_probe,
-	.remove = axp2602_battery_remove,
+	SUNXI_PLATFORM_REMOVE(axp2602_battery_remove),
 	.shutdown = axp2602_bat_shutdown,
 	.suspend = axp2602_bat_suspend,
 	.resume = axp2602_bat_resume,

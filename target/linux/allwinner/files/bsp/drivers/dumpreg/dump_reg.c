@@ -17,6 +17,7 @@
  */
 
 #include <linux/kernel.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/device.h>
 #include <linux/err.h>
@@ -1133,7 +1134,7 @@ error:
 	return -1;
 }
 
-static int sunxi_dump_reg_remove(struct platform_device *pdev)
+static void sunxi_dump_reg_remove(struct platform_device *pdev)
 {
 	int i;
 
@@ -1142,12 +1143,12 @@ static int sunxi_dump_reg_remove(struct platform_device *pdev)
 	}
 
 	class_destroy(dump_class);
-	return 0;
+	return;
 }
 
 static struct platform_driver sunxi_dump_reg_driver = {
 	.probe  = sunxi_dump_reg_probe,
-	.remove = sunxi_dump_reg_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_dump_reg_remove),
 	.driver = {
 		.name   = "dump_reg",
 		.owner  = THIS_MODULE,

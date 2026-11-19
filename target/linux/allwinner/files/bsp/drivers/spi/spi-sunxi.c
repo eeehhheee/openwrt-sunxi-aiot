@@ -21,6 +21,7 @@
  */
 
 #include <linux/init.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/spinlock.h>
 #include <linux/interrupt.h>
@@ -3175,7 +3176,7 @@ err0:
 	return ret;
 }
 
-static int sunxi_spi_remove(struct platform_device *pdev)
+static void sunxi_spi_remove(struct platform_device *pdev)
 {
 	struct spi_master *master = spi_master_get(platform_get_drvdata(pdev));
 	struct sunxi_spi *sspi = spi_master_get_devdata(master);
@@ -3212,7 +3213,7 @@ static int sunxi_spi_remove(struct platform_device *pdev)
 	spi_master_put(master);
 	kfree(pdev->dev.platform_data);
 
-	return 0;
+	return;
 }
 
 #if IS_ENABLED(CONFIG_PM)
@@ -3276,7 +3277,7 @@ MODULE_DEVICE_TABLE(of, sunxi_spi_match);
 
 static struct platform_driver sunxi_spi_driver = {
 	.probe   = sunxi_spi_probe,
-	.remove  = sunxi_spi_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_spi_remove),
 	.driver = {
 		.name	= SUNXI_SPI_DEV_NAME,
 		.pm		= SUNXI_SPI_DEV_PM_OPS,

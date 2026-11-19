@@ -13,6 +13,7 @@
  * published by the Free Software Foundation.
  */
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #include <linux/clk.h>
 #include <linux/delay.h>
 #include <linux/devfreq.h>
@@ -1085,17 +1086,17 @@ remove_table:
 	return rc;
 }
 
-static int sunxi_dmcfreq_remove(struct platform_device *pdev)
+static void sunxi_dmcfreq_remove(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct sunxi_dmcfreq *dmcfreq = platform_get_drvdata(pdev);
 
 	if (dmcfreq == NULL)
-		return 0;
+		return;
 
 	dev_pm_opp_of_remove_table(dev);
 	devfreq_remove_governor(&sunxi_devfreq_governor);
-	return 0;
+	return;
 }
 
 static __maybe_unused int sunxi_dmcfreq_suspend(struct device *dev)
@@ -1151,7 +1152,7 @@ static SIMPLE_DEV_PM_OPS(sunxi_dmcfreq_pm, sunxi_dmcfreq_suspend,
 
 static struct platform_driver sunxi_dmcfreq_driver = {
 	.probe  = sunxi_dmcfreq_probe,
-	.remove  = sunxi_dmcfreq_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_dmcfreq_remove),
 	.driver = {
 		.name = "sunxi-dmcfreq",
 		.pm = &sunxi_dmcfreq_pm,

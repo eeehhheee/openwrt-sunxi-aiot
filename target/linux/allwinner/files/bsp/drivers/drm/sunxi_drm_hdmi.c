@@ -9,6 +9,7 @@
  * warranty of any kind, whether express or implied.
  ******************************************************************************/
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/delay.h>
 #include <linux/bitops.h>
 #include <linux/version.h>
@@ -3638,7 +3639,7 @@ static int sunxi_hdmi_probe(struct platform_device *pdev)
 	return component_add(dev, &sunxi_hdmi_compoent_ops);
 }
 
-static int sunxi_hdmi_remove(struct platform_device *pdev)
+static void sunxi_hdmi_remove(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 
@@ -3646,12 +3647,12 @@ static int sunxi_hdmi_remove(struct platform_device *pdev)
 
 	pm_runtime_put_sync(dev);
 	pm_runtime_disable(dev);
-	return 0;
+	return;
 }
 
 struct platform_driver sunxi_hdmi_platform_driver = {
 	.probe  = sunxi_hdmi_probe,
-	.remove = sunxi_hdmi_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_hdmi_remove),
 	.driver = {
 		   .name = "allwinner,sunxi-hdmi",
 		   .owner = THIS_MODULE,

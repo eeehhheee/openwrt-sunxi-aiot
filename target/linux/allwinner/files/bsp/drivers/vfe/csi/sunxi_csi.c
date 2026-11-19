@@ -33,6 +33,7 @@
  ****************************************************************************************
  */
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/delay.h>
@@ -572,7 +573,7 @@ ekzalloc:
 }
 
 
-static int csi_remove(struct platform_device *pdev)
+static void csi_remove(struct platform_device *pdev)
 {
 	struct csi_dev *csi = platform_get_drvdata(pdev);
 
@@ -583,7 +584,7 @@ static int csi_remove(struct platform_device *pdev)
 		iounmap(csi->base);
 	kfree(csi);
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_csi_match[] = {
@@ -595,7 +596,7 @@ MODULE_DEVICE_TABLE(of, sunxi_csi_match);
 
 static struct platform_driver csi_platform_driver = {
 	.probe    = csi_probe,
-	.remove   = csi_remove,
+	SUNXI_PLATFORM_REMOVE(csi_remove),
 	.driver = {
 		.name   = CSI_MODULE_NAME,
 		.owner  = THIS_MODULE,

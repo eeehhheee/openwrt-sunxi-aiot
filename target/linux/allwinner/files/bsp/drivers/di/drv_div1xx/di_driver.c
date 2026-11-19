@@ -13,6 +13,7 @@
  * GNU General Public License for more details.
  */
 #include <linux/kernel.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/interrupt.h>
 #include <linux/platform_device.h>
@@ -864,7 +865,7 @@ probe_done:
 
 }
 
-static int di_remove(struct platform_device *pdev)
+static void di_remove(struct platform_device *pdev)
 {
 	struct di_driver_data *drvdata;
 
@@ -890,7 +891,7 @@ static int di_remove(struct platform_device *pdev)
 		kfree(drvdata);
 	}
 
-	return 0;
+	return;
 }
 
 static int di_suspend(struct device *dev)
@@ -936,7 +937,7 @@ static const struct of_device_id di_dt_match[] = {
 
 static struct platform_driver di_driver = {
 	.probe = di_probe,
-	.remove = di_remove,
+	SUNXI_PLATFORM_REMOVE(di_remove),
 	.driver = {
 		.name = DI_MODULE_NAME,
 		.pm = &di_pm_ops,

@@ -7,6 +7,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "sunxi_cc_logic.h"
 
 static int sunxi_pmic_cc_logic_get_cc_status(struct sunxi_pmic_cc_logic *port)
@@ -1001,7 +1002,7 @@ static void sunxi_pmic_cc_logic_virq_dts_set(struct sunxi_pmic_cc_logic *port, b
 	}
 }
 
-static int sunxi_pmic_cc_logic_remove(struct platform_device *pdev)
+static void sunxi_pmic_cc_logic_remove(struct platform_device *pdev)
 {
 	struct sunxi_pmic_cc_logic *port = platform_get_drvdata(pdev);
 
@@ -1015,7 +1016,7 @@ static int sunxi_pmic_cc_logic_remove(struct platform_device *pdev)
 	power_supply_unregister(port->cc_logic_psy);
 	sunxi_power_debugfs_exit(port->debug);
 
-	return 0;
+	return;
 }
 
 static void sunxi_pmic_cc_logic_shutdown(struct platform_device *pdev)
@@ -1069,7 +1070,7 @@ static struct platform_driver sunxi_pmic_cc_logic_driver = {
 		.of_match_table = sunxi_pmic_cc_logic_of_id,
 	},
 	.probe = sunxi_pmic_cc_logic_probe,
-	.remove = sunxi_pmic_cc_logic_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_pmic_cc_logic_remove),
 	.shutdown = sunxi_pmic_cc_logic_shutdown,
 	.suspend = sunxi_pmic_cc_logic_suspend,
 	.resume = sunxi_pmic_cc_logic_resume,

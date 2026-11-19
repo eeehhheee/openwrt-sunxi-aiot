@@ -14,6 +14,7 @@
 #define SUNXI_MODNAME		"sound-i2s"
 #include "snd_sunxi_log.h"
 #include <linux/module.h>
+#include <sunxi-platform.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 #include <linux/regulator/consumer.h>
@@ -2577,7 +2578,7 @@ err_devm_kzalloc:
 	return ret;
 }
 
-static int sunxi_i2s_dev_remove(struct platform_device *pdev)
+static void sunxi_i2s_dev_remove(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct device_node *np = pdev->dev.of_node;
@@ -2617,7 +2618,7 @@ static int sunxi_i2s_dev_remove(struct platform_device *pdev)
 
 	SND_LOG_DEBUG("unregister i2s platform success\n");
 
-	return 0;
+	return;
 }
 
 static const struct sunxi_i2s_quirks sunxi_i2s_quirks = {
@@ -2677,7 +2678,7 @@ static struct platform_driver sunxi_i2s_driver = {
 		.of_match_table	= sunxi_i2s_of_match,
 	},
 	.probe	= sunxi_i2s_dev_probe,
-	.remove	= sunxi_i2s_dev_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_i2s_dev_remove),
 };
 
 int __init sunxi_i2s_dev_init(void)

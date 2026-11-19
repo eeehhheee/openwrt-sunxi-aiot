@@ -11,6 +11,7 @@
 */
 #define SUNXI_MODNAME "stmmac"
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #include <linux/io.h>
 #include <linux/iopoll.h>
 #include <linux/mdio-mux.h>
@@ -721,11 +722,11 @@ err_init:
 	return ret;
 }
 
-static int sunxi_dwmac_remove(struct platform_device *pdev)
+static void sunxi_dwmac_remove(struct platform_device *pdev)
 {
 	sunxi_dwmac_sysfs_exit(&pdev->dev);
 	stmmac_pltfr_remove(pdev);
-	return 0;
+	return;
 }
 
 static void sunxi_dwmac_shutdown(struct platform_device *pdev)
@@ -862,7 +863,7 @@ MODULE_DEVICE_TABLE(of, sunxi_dwmac_match);
 
 static struct platform_driver sunxi_dwmac_driver = {
 	.probe = sunxi_dwmac_probe,
-	.remove = sunxi_dwmac_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_dwmac_remove),
 	.shutdown = sunxi_dwmac_shutdown,
 	.driver = {
 		.name			= "dwmac-sunxi",

@@ -16,6 +16,7 @@
 
 #include "../utility/vin_log.h"
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/rpbuf.h>
@@ -3430,7 +3431,7 @@ ekzalloc:
 	return ret;
 }
 
-static int isp_remove(struct platform_device *pdev)
+static void isp_remove(struct platform_device *pdev)
 {
 	struct isp_dev *isp = platform_get_drvdata(pdev);
 	struct v4l2_subdev *sd = &isp->subdev;
@@ -3455,7 +3456,7 @@ static int isp_remove(struct platform_device *pdev)
 	vin_isp_h3a_cleanup(isp);
 	media_entity_cleanup(&isp->subdev.entity);
 	kfree(isp);
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_isp_match[] = {
@@ -3465,7 +3466,7 @@ static const struct of_device_id sunxi_isp_match[] = {
 
 static struct platform_driver isp_platform_driver = {
 	.probe = isp_probe,
-	.remove = isp_remove,
+	SUNXI_PLATFORM_REMOVE(isp_remove),
 	.driver = {
 		   .name = ISP_MODULE_NAME,
 		   .owner = THIS_MODULE,

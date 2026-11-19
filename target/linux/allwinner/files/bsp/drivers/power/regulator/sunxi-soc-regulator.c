@@ -14,6 +14,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "sunxi-power-regulator.h"
 #include "sunxi-soc-pmu.h"
 
@@ -153,9 +154,9 @@ static int soc_pmu_regulator_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int soc_pmu_regulator_remove(struct platform_device *pdev)
+static void soc_pmu_regulator_remove(struct platform_device *pdev)
 {
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_soc_pmu_of_match[] = {
@@ -171,7 +172,7 @@ static struct platform_driver soc_pmu_regulator_driver = {
 		.of_match_table	= of_match_ptr(sunxi_soc_pmu_of_match),
 	},
 	.probe			= soc_pmu_regulator_probe,
-	.remove			= soc_pmu_regulator_remove,
+	SUNXI_PLATFORM_REMOVE(soc_pmu_regulator_remove),
 };
 
 static int __init soc_pmu_regulator_init(void)

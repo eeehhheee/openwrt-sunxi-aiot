@@ -15,6 +15,7 @@
  */
 #include "../utility/vin_log.h"
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/delay.h>
@@ -1096,7 +1097,7 @@ ekzalloc:
 	return ret;
 }
 
-static int csi_remove(struct platform_device *pdev)
+static void csi_remove(struct platform_device *pdev)
 {
 	struct csi_dev *csi = platform_get_drvdata(pdev);
 	struct v4l2_subdev *sd = &csi->subdev;
@@ -1110,7 +1111,7 @@ static int csi_remove(struct platform_device *pdev)
 	mutex_destroy(&csi->reset_lock);
 	media_entity_cleanup(&csi->subdev.entity);
 	kfree(csi);
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_csi_match[] = {
@@ -1120,7 +1121,7 @@ static const struct of_device_id sunxi_csi_match[] = {
 
 static struct platform_driver csi_platform_driver = {
 	.probe = csi_probe,
-	.remove = csi_remove,
+	SUNXI_PLATFORM_REMOVE(csi_remove),
 	.driver = {
 		   .name = CSI_MODULE_NAME,
 		   .owner = THIS_MODULE,

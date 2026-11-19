@@ -11,6 +11,7 @@
  */
 
 #include <linux/mtd/aw-rawnand.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>
@@ -2539,7 +2540,7 @@ out:
 	return ret;
 }
 
-static int aw_rawnand_remove(struct platform_device *pdev)
+static void aw_rawnand_remove(struct platform_device *pdev)
 {
 
 	struct aw_nand_chip *chip = platform_get_drvdata(pdev);
@@ -2548,7 +2549,7 @@ static int aw_rawnand_remove(struct platform_device *pdev)
 
 #ifndef __UBOOT__
 	if (mtd_device_unregister(mtd))
-		return -1;
+		return;
 #endif
 
 	aw_host_exit(host);
@@ -2557,7 +2558,7 @@ static int aw_rawnand_remove(struct platform_device *pdev)
 
 	aw_rawnand_remove_cdev();
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id of_nand_id[] = {
@@ -2572,7 +2573,7 @@ static const struct of_device_id of_nand_id[] = {
 
 static struct platform_driver awrawnand_driver = {
     .probe = aw_rawnand_probe,
-    .remove = aw_rawnand_remove,
+    SUNXI_PLATFORM_REMOVE(aw_rawnand_remove),
     .driver = {
 	.name = "aw_rawnand",
 	.owner = THIS_MODULE,

@@ -10,6 +10,7 @@
 */
 
 #include <linux/delay.h>
+#include <sunxi-platform.h>
 #include <linux/errno.h>
 #include <linux/init.h>
 #include <linux/kernel.h>
@@ -3655,7 +3656,7 @@ static int tvd_release(void) /* fix */
 	return 0;
 }
 
-static int tvd_remove(struct platform_device *pdev)
+static void tvd_remove(struct platform_device *pdev)
 {
 	struct tvd_dev *dev = (struct tvd_dev *)dev_get_drvdata(&(pdev)->dev);
 	int i = 0;
@@ -3685,7 +3686,7 @@ static int tvd_remove(struct platform_device *pdev)
 			regu[i] = NULL;
 		}
 	}
-	return 0;
+	return;
 }
 
 #ifdef CONFIG_PM_RUNTIME
@@ -3764,7 +3765,7 @@ static const struct of_device_id sunxi_tvd_match[] = {
 
 static struct platform_driver tvd_driver = {
 	.probe = tvd_probe,
-	.remove = tvd_remove,
+	SUNXI_PLATFORM_REMOVE(tvd_remove),
 	.shutdown = tvd_shutdown,
 	.driver = {
 		.name = TVD_MODULE_NAME,

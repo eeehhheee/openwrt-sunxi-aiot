@@ -10,6 +10,7 @@
  * option) any later version.
  */
 #include <linux/version.h>
+#include <sunxi-platform.h>
 #include <drm/drm_atomic.h>
 #include <drm/drm_atomic_uapi.h>
 #include <drm/drm_modes.h>
@@ -1219,10 +1220,10 @@ static int sunxi_drm_platform_probe(struct platform_device *pdev)
 					       match);
 }
 
-static int sunxi_drm_platform_remove(struct platform_device *pdev)
+static void sunxi_drm_platform_remove(struct platform_device *pdev)
 {
 	component_master_del(&pdev->dev, &sunxi_drm_ops);
-	return 0;
+	return;
 }
 
 #if IS_ENABLED(CONFIG_PM_SLEEP)
@@ -1256,7 +1257,7 @@ MODULE_DEVICE_TABLE(of, sunxi_of_match);
 
 static struct platform_driver sunxi_drm_platform_driver = {
 	.probe = sunxi_drm_platform_probe,
-	.remove = sunxi_drm_platform_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_drm_platform_remove),
 	.driver = {
 		.owner = THIS_MODULE,
 		.name = "sunxi-drm",

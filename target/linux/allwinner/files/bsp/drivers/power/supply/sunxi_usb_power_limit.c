@@ -3,6 +3,7 @@
 #define pr_fmt(x) KBUILD_MODNAME ": " x "\n"
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "sunxi_usb_power_limit.h"
 
 /*------------------------------
@@ -1024,7 +1025,7 @@ static void sunxi_usb_power_limit_delayed_work_set(struct sunxi_usb_power_limit_
 	}
 }
 
-static int sunxi_usb_power_limit_remove(struct platform_device *pdev)
+static void sunxi_usb_power_limit_remove(struct platform_device *pdev)
 {
 	struct sunxi_usb_power_limit_supply_data *power_limit = platform_get_drvdata(pdev);
 
@@ -1036,7 +1037,7 @@ static int sunxi_usb_power_limit_remove(struct platform_device *pdev)
 	sunxi_power_debugfs_exit(power_limit->debug);
 	PMIC_DEV_DEBUG(&pdev->dev, "teardown sunxi power limit dev\n");
 
-	return 0;
+	return;
 }
 
 static void sunxi_usb_power_limit_shutdown(struct platform_device *pdev)
@@ -1077,7 +1078,7 @@ static struct platform_driver sunxi_usb_power_limit_driver = {
 		.of_match_table = sunxi_usb_power_limit_match,
 	},
 	.probe = sunxi_usb_power_limit_probe,
-	.remove = sunxi_usb_power_limit_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_usb_power_limit_remove),
 	.shutdown = sunxi_usb_power_limit_shutdown,
 	.suspend = sunxi_usb_power_limit_suspend,
 	.resume = sunxi_usb_power_limit_resume,

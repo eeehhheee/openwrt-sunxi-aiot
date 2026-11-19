@@ -7,6 +7,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/bitfield.h>
 #include <linux/clk.h>
 #include <linux/delay.h>
@@ -923,14 +924,14 @@ static int sunxi_synopsys_phy_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int sunxi_synopsys_phy_remove(struct platform_device *pdev)
+static void sunxi_synopsys_phy_remove(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct sunxi_synopsys_phy *sunxi_cphy = dev_get_drvdata(dev);
 
 	sunxi_synopsys_phy_subsys_exit(sunxi_cphy);
 
-	return 0;
+	return;
 }
 
 static int __maybe_unused sunxi_synopsys_phy_suspend(struct device *dev)
@@ -967,7 +968,7 @@ static const struct of_device_id sunxi_synopsys_phy_of_match_table[] = {
 
 static struct platform_driver sunxi_synopsys_phy_driver = {
 	.probe		= sunxi_synopsys_phy_probe,
-	.remove		= sunxi_synopsys_phy_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_synopsys_phy_remove),
 	.driver = {
 		.name	= "synopsys-combophy",
 		.pm	= &sunxi_synopsys_phy_pm_ops,

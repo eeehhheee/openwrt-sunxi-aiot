@@ -13,6 +13,7 @@
  *
  */
 #include <linux/bug.h>
+#include <sunxi-platform.h>
 #include <linux/delay.h>
 #ifdef CONFIG_SC2342_INTEG
 #include <linux/gnss.h>
@@ -653,14 +654,14 @@ err_attr_failed:
 	return ret;
 }
 
-static int gnss_common_ctl_remove(struct platform_device *pdev)
+static void gnss_common_ctl_remove(struct platform_device *pdev)
 {
 	wcn_gnss_ops_unregister();
 	sysfs_remove_group(&gnss_common_ctl_miscdev.this_device->kobj,
 				&gnss_common_ctl_group);
 
 	misc_deregister(&gnss_common_ctl_miscdev);
-	return 0;
+	return;
 }
 static struct platform_driver gnss_common_ctl_drv = {
 	.driver = {
@@ -669,7 +670,7 @@ static struct platform_driver gnss_common_ctl_drv = {
 		   .of_match_table = of_match_ptr(gnss_common_ctl_of_match),
 		   },
 	.probe = gnss_common_ctl_probe,
-	.remove = gnss_common_ctl_remove
+	SUNXI_PLATFORM_REMOVE(gnss_common_ctl_remove)
 };
 
 static int __init gnss_common_ctl_init(void)

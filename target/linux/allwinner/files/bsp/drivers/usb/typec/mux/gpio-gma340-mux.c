@@ -8,6 +8,7 @@
  */
 
 #include <linux/device.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/mutex.h>
 #include <linux/gpio/consumer.h>
@@ -156,11 +157,7 @@ static int gpio_gma340_mux_probe(struct platform_device *pdev)
 	return 0;
 }
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 3, 0)
-static int gpio_gma340_mux_remove(struct platform_device *pdev)
-#else
 static void gpio_gma340_mux_remove(struct platform_device *pdev)
-#endif
 {
 	struct gpio_gma340_mux *gma340_mux = platform_get_drvdata(pdev);
 
@@ -168,9 +165,6 @@ static void gpio_gma340_mux_remove(struct platform_device *pdev)
 
 	typec_mux_unregister(gma340_mux->mux);
 	typec_switch_unregister(gma340_mux->sw);
-#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 3, 0)
-	return 0;
-#endif
 }
 
 static const struct of_device_id gpio_gma340_mux_match[] = {
@@ -181,11 +175,7 @@ MODULE_DEVICE_TABLE(of, gpio_gma340_mux_match);
 
 static struct platform_driver gpio_gma340_mux_driver = {
 	.probe = gpio_gma340_mux_probe,
-#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 3, 0)
-	.remove 	= gpio_gma340_mux_remove,
-#else
-	.remove_new = gpio_gma340_mux_remove,
-#endif
+	SUNXI_PLATFORM_REMOVE(gpio_gma340_mux_remove),
 	.driver = {
 		.name = "gpio-gma340-mux",
 		.of_match_table = gpio_gma340_mux_match,

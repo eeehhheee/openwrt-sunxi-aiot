@@ -12,6 +12,7 @@
 
 /* #define DEBUG */
 #include <linux/kernel.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/rpmsg.h>
 #include <linux/workqueue.h>
@@ -167,7 +168,7 @@ static struct attribute_group rpmsg_heartbeat_attribute_group = {
 	.attrs = rpmsg_heartbeat_attributes
 };
 
-static int rpmsg_heartbeat_platform_remove(struct platform_device *pdev)
+static void rpmsg_heartbeat_platform_remove(struct platform_device *pdev)
 {
 	sysfs_remove_group(&rpmsg_heartbeat_dev->kobj, &rpmsg_heartbeat_attribute_group);
 	device_destroy(rpmsg_heartbeat_class, devid);
@@ -176,7 +177,7 @@ static int rpmsg_heartbeat_platform_remove(struct platform_device *pdev)
 	cdev_del(rpmsg_heartbeat_cdev);
 	dev_dbg(&pdev->dev, "rpmsg heartbeat module exit\n");
 
-	return 0;
+	return;
 }
 
 static int rpmsg_heartbeat_platform_probe(struct platform_device *pdev)
@@ -239,7 +240,7 @@ static const struct of_device_id rpmsg_heartbeat_dt_ids[] = {
 
 static struct platform_driver rpmsg_heartbeat_driver = {
 	.probe = rpmsg_heartbeat_platform_probe,
-	.remove = rpmsg_heartbeat_platform_remove,
+	SUNXI_PLATFORM_REMOVE(rpmsg_heartbeat_platform_remove),
 	.driver = {
 		.name = MODULE_NAME,
 		.pm = NULL,

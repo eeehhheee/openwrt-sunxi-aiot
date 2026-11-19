@@ -22,6 +22,7 @@
  */
 
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #include <sunxi-common.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -3182,7 +3183,7 @@ err0:
 	return err;
 }
 
-static int sunxi_twi_remove(struct platform_device *pdev)
+static void sunxi_twi_remove(struct platform_device *pdev)
 {
 	struct sunxi_twi *twi = platform_get_drvdata(pdev);
 
@@ -3215,7 +3216,7 @@ static int sunxi_twi_remove(struct platform_device *pdev)
 
 	TWI_DBG(twi, "remove\n");
 
-	return 0;
+	return;
 }
 
 static void sunxi_twi_shutdown(struct platform_device *pdev)
@@ -3439,7 +3440,7 @@ MODULE_DEVICE_TABLE(of, sunxi_twi_match);
 
 static struct platform_driver sunxi_twi_driver = {
 	.probe		= sunxi_twi_probe,
-	.remove		= sunxi_twi_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_twi_remove),
 	.shutdown	= sunxi_twi_shutdown,
 	.driver		= {
 		.name	= "sunxi-twi",

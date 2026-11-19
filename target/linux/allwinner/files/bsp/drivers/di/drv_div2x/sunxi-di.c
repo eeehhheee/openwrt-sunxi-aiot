@@ -11,6 +11,7 @@
  *  published by the Free Software Foundation.
  */
 #include <linux/module.h>
+#include <sunxi-platform.h>
 #include <linux/delay.h>
 #include <linux/clk.h>
 #include <linux/ioport.h>
@@ -1630,7 +1631,7 @@ create_work_err:
 	return ret;
 }
 
-static int sunxi_di_remove(struct platform_device *pdev)
+static void sunxi_di_remove(struct platform_device *pdev)
 {
 #ifdef DI_MULPLEX_SUPPORT
 	if (gsunxi_dev && (gsunxi_dev->count != 0)) {
@@ -1667,7 +1668,7 @@ static int sunxi_di_remove(struct platform_device *pdev)
 
 	pr_info("%s: module unloaded\n", __func__);
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_di_match[] = {
@@ -1679,7 +1680,7 @@ MODULE_DEVICE_TABLE(of, sunxi_di_match);
 
 static struct platform_driver di_platform_driver = {
 	.probe  = sunxi_di_probe,
-	.remove = sunxi_di_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_di_remove),
 	.driver = {
 		.name	= DI_MODULE_NAME,
 		.of_match_table = sunxi_di_match,

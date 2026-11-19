@@ -15,6 +15,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "sunxi-power-regulator.h"
 #include "axp2101.h"
 
@@ -2021,9 +2022,9 @@ static int axp2101_regulator_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int axp2101_regulator_remove(struct platform_device *pdev)
+static void axp2101_regulator_remove(struct platform_device *pdev)
 {
-	return 0;
+	return;
 }
 
 static struct of_device_id axp_regulator_id_tab[] = {
@@ -2036,7 +2037,7 @@ static struct of_device_id axp_regulator_id_tab[] = {
 
 static struct platform_driver axp2101_regulator_driver = {
 	.probe	= axp2101_regulator_probe,
-	.remove	= axp2101_regulator_remove,
+	SUNXI_PLATFORM_REMOVE(axp2101_regulator_remove),
 	.driver	= {
 		.of_match_table = axp_regulator_id_tab,
 		.name		= "axp2101-regulator",

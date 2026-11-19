@@ -14,6 +14,7 @@
 
 #define SUNXI_MODNAME "pcie"
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #include <linux/clk.h>
 #include <linux/delay.h>
 #include <linux/gpio.h>
@@ -1149,11 +1150,7 @@ err0:
 	return ret;
 }
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 12, 0)
-static int sunxi_pcie_plat_remove(struct platform_device *pdev)
-#else
 static void sunxi_pcie_plat_remove(struct platform_device *pdev)
-#endif
 {
 	struct sunxi_pcie *pci = platform_get_drvdata(pdev);
 
@@ -1179,9 +1176,6 @@ static void sunxi_pcie_plat_remove(struct platform_device *pdev)
 
 	sunxi_pcie_plat_ltssm_disable(pci);
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 12, 0)
-	return 0;
-#endif
 }
 
 #if IS_ENABLED(CONFIG_PM)
@@ -1254,11 +1248,7 @@ static struct platform_driver sunxi_pcie_plat_driver = {
 		.pm = &sunxi_pcie_plat_pm_ops,
 	},
 	.probe  = sunxi_pcie_plat_probe,
-#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 12, 0)
-	.remove = sunxi_pcie_plat_remove,
-#else
-	.remove_new = sunxi_pcie_plat_remove,
-#endif
+	SUNXI_PLATFORM_REMOVE(sunxi_pcie_plat_remove),
 };
 
 module_platform_driver(sunxi_pcie_plat_driver);

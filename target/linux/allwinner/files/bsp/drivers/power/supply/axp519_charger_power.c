@@ -3,6 +3,7 @@
 #define pr_fmt(x) KBUILD_MODNAME ": " x "\n"
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "axp519_charger_power.h"
 
 enum usb_state {
@@ -1063,7 +1064,7 @@ err:
 	return ret;
 }
 
-static int axp519_charger_remove(struct platform_device *pdev)
+static void axp519_charger_remove(struct platform_device *pdev)
 {
 	struct axp519_power *charger_power = platform_get_drvdata(pdev);
 
@@ -1075,7 +1076,7 @@ static int axp519_charger_remove(struct platform_device *pdev)
 		power_supply_unregister(charger_power->charger_supply);
 	PMIC_DEV_DEBUG(&pdev->dev, "axp519 teardown charger dev\n");
 
-	return 0;
+	return;
 }
 
 static void axp519_charger_shutdown(struct platform_device *pdev)
@@ -1134,7 +1135,7 @@ static struct platform_driver axp519_charger_power_driver = {
 		.of_match_table = axp519_charger_power_match,
 	},
 	.probe = axp519_charger_probe,
-	.remove = axp519_charger_remove,
+	SUNXI_PLATFORM_REMOVE(axp519_charger_remove),
 	.shutdown = axp519_charger_shutdown,
 	.suspend = axp519_charger_suspend,
 	.resume = axp519_charger_resume,

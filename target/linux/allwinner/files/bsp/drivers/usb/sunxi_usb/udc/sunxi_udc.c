@@ -15,6 +15,7 @@
  */
 
 #include <linux/module.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/delay.h>
 #include <linux/ioport.h>
@@ -4258,9 +4259,10 @@ static int sunxi_udc_probe(struct platform_device *pdev)
 	return sunxi_udc_probe_otg(pdev);
 }
 
-static int sunxi_udc_remove(struct platform_device *pdev)
+static void sunxi_udc_remove(struct platform_device *pdev)
 {
-	return sunxi_udc_remove_otg(pdev);
+	sunxi_udc_remove_otg(pdev);
+
 }
 
 #if IS_ENABLED(CONFIG_PM)
@@ -4357,7 +4359,7 @@ static struct platform_driver sunxi_udc_driver = {
 	},
 
 	.probe		= sunxi_udc_probe,
-	.remove		= sunxi_udc_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_udc_remove),
 };
 
 static void cfg_udc_command(enum sunxi_udc_cmd_e cmd)

@@ -11,6 +11,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "g2d_driver_i.h"
 #include "linux/hwspinlock.h"
 #include "linux/pm_runtime.h"
@@ -2097,7 +2098,7 @@ dealloc_fb:
 	return ret;
 }
 
-static int g2d_remove(struct platform_device *pdev)
+static void g2d_remove(struct platform_device *pdev)
 {
 #if (IS_ENABLED(CONFIG_G2D_USE_HWSPINLOCK) && !IS_ENABLED(CONFIG_PM_GENERIC_DOMAINS))
 	pm_runtime_put_sync(para.dev);
@@ -2120,7 +2121,7 @@ static int g2d_remove(struct platform_device *pdev)
 	sysfs_remove_group(&g2d_dev->kobj, &g2d_attribute_group);
 
 	G2D_INFO("Driver unloaded succesfully.\n");
-	return 0;
+	return;
 }
 
 int g2d_suspend(struct device *dev)
@@ -2205,7 +2206,7 @@ static const struct of_device_id sunxi_g2d_match[] = {
 
 static struct platform_driver g2d_driver = {
 	.probe = g2d_probe,
-	.remove = g2d_remove,
+	SUNXI_PLATFORM_REMOVE(g2d_remove),
 	.driver = {
 
 		   .owner = THIS_MODULE,

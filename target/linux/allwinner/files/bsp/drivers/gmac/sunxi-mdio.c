@@ -13,6 +13,7 @@
 /* #define DEBUG */
 #define SUNXI_MODNAME "mdio"
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #include <linux/delay.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -404,7 +405,7 @@ iomap_err:
 	return ret;
 }
 
-static int sunxi_mdio_remove(struct platform_device *pdev)
+static void sunxi_mdio_remove(struct platform_device *pdev)
 {
 	struct mii_bus *bus = platform_get_drvdata(pdev);
 	struct device *dev = &pdev->dev;
@@ -416,7 +417,7 @@ static int sunxi_mdio_remove(struct platform_device *pdev)
 #endif
 	iounmap(chip->base);
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_mdio_dt_ids[] = {
@@ -427,7 +428,7 @@ MODULE_DEVICE_TABLE(of, sunxi_mdio_dt_ids);
 
 static struct platform_driver sunxi_mdio_driver = {
 	.probe = sunxi_mdio_probe,
-	.remove = sunxi_mdio_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_mdio_remove),
 	.driver = {
 		.name = "sunxi-mdio",
 		.of_match_table = sunxi_mdio_dt_ids,

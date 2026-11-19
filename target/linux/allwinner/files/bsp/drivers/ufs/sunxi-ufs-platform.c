@@ -10,6 +10,7 @@
  * the License, or (at your option) any later version.
  */
 #include <linux/kernel.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>
 #include <linux/of.h>
@@ -2053,14 +2054,14 @@ static int sunxi_ufs_pltfm_probe(struct platform_device *pdev)
  * @pdev: pointer to platform device structure
  *
  */
-static int sunxi_ufs_pltfm_remove(struct platform_device *pdev)
+static void sunxi_ufs_pltfm_remove(struct platform_device *pdev)
 {
 	struct ufs_hba *hba =  platform_get_drvdata(pdev);
 
 	pm_runtime_get_sync(&(pdev)->dev);
 	ufshcd_remove(hba);
 
-	return 0;
+	return;
 }
 
 static const struct dev_pm_ops sunxi_ufs_pltfm_pm_ops = {
@@ -2072,7 +2073,7 @@ static const struct dev_pm_ops sunxi_ufs_pltfm_pm_ops = {
 
 static struct platform_driver sunxi_ufs_pltfm_driver = {
 	.probe		= sunxi_ufs_pltfm_probe,
-	.remove		= sunxi_ufs_pltfm_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_ufs_pltfm_remove),
 	.driver		= {
 		.name	= "sunxi-ufs-pltfm",
 		.pm	= &sunxi_ufs_pltfm_pm_ops,

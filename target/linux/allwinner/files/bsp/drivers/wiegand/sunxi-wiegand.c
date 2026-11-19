@@ -15,6 +15,7 @@
  */
 //#define DEBUG
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/clk.h>
 #include <linux/gpio.h>
 #include <linux/module.h>
@@ -447,7 +448,7 @@ err0:
 	return err;
 }
 
-static int sunxi_wiegand_remove(struct platform_device *pdev)
+static void sunxi_wiegand_remove(struct platform_device *pdev)
 {
 	struct sunxi_wiegand *chip = platform_get_drvdata(pdev);
 
@@ -457,7 +458,7 @@ static int sunxi_wiegand_remove(struct platform_device *pdev)
 	sunxi_wiegand_input_destroy(chip);
 	misc_deregister(&wiegand_dev);
 
-	return 0;
+	return;
 }
 
 #ifdef CONFIG_PM
@@ -507,7 +508,7 @@ MODULE_DEVICE_TABLE(of, sunxi_wiegand_of_match);
 
 static struct platform_driver sunxi_wiegand_driver = {
 	.probe = sunxi_wiegand_probe,
-	.remove = sunxi_wiegand_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_wiegand_remove),
 	.driver = {
 		.name	= "sunxi-wiegand",
 		.owner	= THIS_MODULE,

@@ -25,6 +25,7 @@
  */
 
 #include <linux/netdevice.h>
+#include <sunxi-platform.h>
 #include <linux/can.h>
 #include <linux/can/dev.h>
 #include <linux/can/error.h>
@@ -688,14 +689,14 @@ static const struct of_device_id sunxi_awlink_of_match[] = {
 
 MODULE_DEVICE_TABLE(of, sunxi_awlink_of_match);
 
-static int sunxi_awlink_remove(struct platform_device *pdev)
+static void sunxi_awlink_remove(struct platform_device *pdev)
 {
 	struct net_device *dev = platform_get_drvdata(pdev);
 	struct sunxi_awlink_priv *priv = netdev_priv(dev);
 	iounmap(priv->base);
 	unregister_netdev(dev);
 	free_candev(dev);
-	return 0;
+	return;
 }
 
 static int sunxi_awlink_probe(struct platform_device *pdev)
@@ -870,7 +871,7 @@ static struct platform_driver sunxi_awlink_driver = {
 		.of_match_table = sunxi_awlink_of_match,
 	},
 	.probe = sunxi_awlink_probe,
-	.remove = sunxi_awlink_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_awlink_remove),
 };
 
 static int sunxi_awlink_driver_initcall(void)

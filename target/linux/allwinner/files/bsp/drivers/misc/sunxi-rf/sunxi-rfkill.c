@@ -15,6 +15,7 @@
  */
 
 #include <linux/kernel.h>
+#include <sunxi-platform.h>
 #include <linux/types.h>
 #include <linux/module.h>
 #include <linux/init.h>
@@ -224,7 +225,7 @@ err_wlan:
 	return ret;
 }
 
-static int rfkill_remove(struct platform_device *pdev)
+static void rfkill_remove(struct platform_device *pdev)
 {
 	sunxi_gnss_deinit(pdev);
 	sunxi_modem_deinit(pdev);
@@ -232,7 +233,7 @@ static int rfkill_remove(struct platform_device *pdev)
 	sunxi_wlan_deinit(pdev);
 	misc_deregister(&sunxi_rfkill_miscdev);
 	rfkill_data = NULL;
-	return 0;
+	return;
 }
 
 static const struct of_device_id rfkill_ids[] = {
@@ -263,7 +264,7 @@ static const struct dev_pm_ops sunxi_rfkill_pm_ops = {
 
 static struct platform_driver rfkill_driver = {
 	.probe  = rfkill_probe,
-	.remove = rfkill_remove,
+	SUNXI_PLATFORM_REMOVE(rfkill_remove),
 	.driver = {
 		.owner = THIS_MODULE,
 		.name  = "sunxi-rfkill",

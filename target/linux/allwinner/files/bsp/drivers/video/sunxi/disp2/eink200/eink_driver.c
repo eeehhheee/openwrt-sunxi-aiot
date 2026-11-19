@@ -5,6 +5,7 @@
 #include "include/eink_sys_source.h"
 
 #include <linux/kernel.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/interrupt.h>
 #include <linux/platform_device.h>
@@ -449,7 +450,7 @@ static void eink_shutdown(struct platform_device *pdev)
 	return;
 }
 
-static int eink_remove(struct platform_device *pdev)
+static void eink_remove(struct platform_device *pdev)
 {
 	struct eink_driver_info *drvdata;
 
@@ -470,7 +471,7 @@ static int eink_remove(struct platform_device *pdev)
 
 	sunxi_info(NULL, "%s finish!\n", __func__);
 
-	return 0;
+	return;
 }
 
 static int eink_runtime_suspend(struct device *dev)
@@ -901,7 +902,7 @@ static const struct of_device_id sunxi_eink_match[] = {
 
 static struct platform_driver eink_driver = {
 	.probe = eink_probe,
-	.remove = eink_remove,
+	SUNXI_PLATFORM_REMOVE(eink_remove),
 	.shutdown = eink_shutdown,
 	.driver = {
 		.name = EINK_MODULE_NAME,

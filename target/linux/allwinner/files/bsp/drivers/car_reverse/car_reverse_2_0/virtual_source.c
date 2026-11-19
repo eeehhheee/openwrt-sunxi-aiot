@@ -15,6 +15,7 @@
 
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "video_source.h"
 #include "buffer_pool.h"
 
@@ -398,12 +399,12 @@ static int vir_src_probe(struct platform_device *pdev)
 }
 
 
-static int vir_src_remove(struct platform_device *pdev)
+static void vir_src_remove(struct platform_device *pdev)
 {
 
 	car_reverse_video_source_unregister(&video_source_virtual);
 
-	return 0;
+	return;
 }
 
 
@@ -430,7 +431,7 @@ static const struct of_device_id vir_src_match[] = {
 
 static struct platform_driver virtual_source_driver = {
 	.probe = vir_src_probe,
-	.remove = vir_src_remove,
+	SUNXI_PLATFORM_REMOVE(vir_src_remove),
 	.driver = {
 	   .owner = THIS_MODULE,
 	   .name = VIR_SRC_DRIVER_NAME,

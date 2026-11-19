@@ -626,7 +626,7 @@ extern u32 disp_hdmi_pad_get(void);
 
 #if IS_ENABLED(CONFIG_AW_HDMI2_CEC_SUNXI)
 int aw_hdmi_cec_probe(struct platform_device *pdev);
-int aw_hdmi_cec_remove(struct platform_device *pdev);
+void aw_hdmi_cec_remove(struct platform_device *pdev);
 #if IS_ENABLED(CONFIG_PM_SLEEP)
 int aw_hdmi_cec_suspend(struct device *dev);
 int aw_hdmi_cec_resume(struct device *dev);

@@ -13,6 +13,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "sunxi-power-regulator.h"
 
 static int virtual_consumer_regulator_probe(struct platform_device *pdev)
@@ -30,9 +31,9 @@ static int virtual_consumer_regulator_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int virtual_consumer_regulator_remove(struct platform_device *pdev)
+static void virtual_consumer_regulator_remove(struct platform_device *pdev)
 {
-	return 0;
+	return;
 }
 
 static const struct of_device_id virtual_consumer_of_match[] = {
@@ -47,7 +48,7 @@ static struct platform_driver sunxi_virtual_consumer_regulator_driver = {
 		.of_match_table = of_match_ptr(virtual_consumer_of_match),
 	},
 	.probe = virtual_consumer_regulator_probe,
-	.remove = virtual_consumer_regulator_remove,
+	SUNXI_PLATFORM_REMOVE(virtual_consumer_regulator_remove),
 };
 
 module_platform_driver(sunxi_virtual_consumer_regulator_driver);

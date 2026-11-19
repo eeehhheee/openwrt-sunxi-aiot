@@ -16,6 +16,7 @@
 #define pr_fmt(x) KBUILD_MODNAME ": " x
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "sunxi-power-powerkey.h"
 #include "axp2101.h"
 
@@ -1185,7 +1186,7 @@ static int axp20x_pek_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int axp20x_pek_remove(struct platform_device *pdev)
+static void axp20x_pek_remove(struct platform_device *pdev)
 {
 	struct axp20x_pek *axp20x_pek = platform_get_drvdata(pdev);
 	struct sunxi_power_dev *axp20x = axp20x_pek->axp20x;
@@ -1196,7 +1197,7 @@ static int axp20x_pek_remove(struct platform_device *pdev)
 
 	input_unregister_device(axp20x_pek->input);
 
-	return 0;
+	return;
 }
 
 static int axp2101_powerkey_suspend(struct device *dev)
@@ -1286,7 +1287,7 @@ static struct of_device_id axp_match_table[] = {
 
 static struct platform_driver axp20x_pek_driver = {
 	.probe		= axp20x_pek_probe,
-	.remove		= axp20x_pek_remove,
+	SUNXI_PLATFORM_REMOVE(axp20x_pek_remove),
 	.driver		= {
 		.of_match_table = axp_match_table,
 		.name = "axp2101-pek",

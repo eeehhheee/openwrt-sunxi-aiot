@@ -10,6 +10,7 @@
  * warranty of any kind, whether express or implied.
  */
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "drv_vdpo.h"
 #include "../disp/disp_sys_intf.h"
 #include <linux/regulator/consumer.h>
@@ -532,7 +533,7 @@ OUT:
 	return ret;
 }
 
-s32 vdpo_remove(struct platform_device *pdev)
+void vdpo_remove(struct platform_device *pdev)
 {
 	s32 ret = 0;
 	u32 i = 0;
@@ -540,7 +541,7 @@ s32 vdpo_remove(struct platform_device *pdev)
 	for (i = 0; i < g_vdpo_num; ++i)
 		vdpo_disable(i);
 
-	return ret;
+	return;
 }
 
 static const struct of_device_id sunxi_vdpo_match[] = {
@@ -552,7 +553,7 @@ static const struct of_device_id sunxi_vdpo_match[] = {
 
 static struct platform_driver vdpo_driver = {
 	.probe = vdpo_probe,
-	.remove = vdpo_remove,
+	SUNXI_PLATFORM_REMOVE(vdpo_remove),
 	.driver = {
 		.name = "vdpo",
 		.owner = THIS_MODULE,

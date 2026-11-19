@@ -19,6 +19,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "sunxi-power-regulator.h"
 #include "bmu-ext.h"
 
@@ -133,9 +134,9 @@ static int bmu_ext_regulator_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int bmu_ext_regulator_remove(struct platform_device *pdev)
+static void bmu_ext_regulator_remove(struct platform_device *pdev)
 {
-	return 0;
+	return;
 }
 
 static struct platform_driver bmu_ext_regulator_driver = {
@@ -143,7 +144,7 @@ static struct platform_driver bmu_ext_regulator_driver = {
 		.name = "bmu-ext-regulator",
 	},
 	.probe = bmu_ext_regulator_probe,
-	.remove	= bmu_ext_regulator_remove,
+	SUNXI_PLATFORM_REMOVE(bmu_ext_regulator_remove),
 };
 
 static int __init bmu_ext_regulator_init(void)

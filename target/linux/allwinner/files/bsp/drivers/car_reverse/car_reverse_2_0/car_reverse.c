@@ -19,6 +19,7 @@
 #include "include.h"
 
 #include <linux/err.h>
+#include <sunxi-platform.h>
 #include <linux/gpio.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
@@ -1738,7 +1739,7 @@ _err_out:
 	return ret;
 }
 
-static int car_reverse_remove(struct platform_device *pdev)
+static void car_reverse_remove(struct platform_device *pdev)
 {
 	struct car_reverse_private_data *priv = car_reverse;
 
@@ -1756,7 +1757,7 @@ static int car_reverse_remove(struct platform_device *pdev)
 	class_destroy(car_reverse_class);
 	cdev_del(car_reverse_cdev);
 	CAR_REVERSE_DEV_INFO(&pdev->dev, "car reverse module exit\n");
-	return 0;
+	return;
 }
 
 static int car_reverse_suspend(struct device *dev)
@@ -1795,7 +1796,7 @@ static const struct of_device_id car_reverse_dt_ids[] = {
 
 static struct platform_driver car_reverse_driver = {
 	.probe = car_reverse_probe,
-	.remove = car_reverse_remove,
+	SUNXI_PLATFORM_REMOVE(car_reverse_remove),
 	.driver = {
 		.name = MODULE_NAME,
 		.pm = &car_reverse_pm_ops,

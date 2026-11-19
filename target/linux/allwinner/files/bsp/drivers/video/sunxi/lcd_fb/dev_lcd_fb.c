@@ -15,6 +15,7 @@
  *
  */
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "include.h"
 #include "./panels/panels.h"
 #include "disp_lcd.h"
@@ -90,7 +91,7 @@ static void lcd_fb_shutdown(struct platform_device *pdev)
 	lcd_fb_wrn("Finish\n");
 }
 
-static int lcd_fb_remove(struct platform_device *pdev)
+static void lcd_fb_remove(struct platform_device *pdev)
 {
 	int ret = 0;
 
@@ -99,7 +100,7 @@ static int lcd_fb_remove(struct platform_device *pdev)
 	disp_exit_lcd();
 	sysfs_remove_group(&pdev->dev.kobj, &lcd_fb_attribute_group);
 	platform_set_drvdata(pdev, NULL);
-	return ret;
+	return;
 }
 
 
@@ -143,7 +144,7 @@ static const struct dev_pm_ops lcd_fb_runtime_pm_ops = {
 
 struct platform_driver lcd_fb_driver = {
 	.probe = lcd_fb_probe,
-	.remove = lcd_fb_remove,
+	SUNXI_PLATFORM_REMOVE(lcd_fb_remove),
 	.shutdown = lcd_fb_shutdown,
 	.driver = {
 		.name = "lcd_fb",

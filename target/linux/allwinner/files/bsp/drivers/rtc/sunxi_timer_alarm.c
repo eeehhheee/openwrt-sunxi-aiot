@@ -14,6 +14,7 @@
  */
 
 #include <linux/module.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/cdev.h>
 #include <linux/device.h>
@@ -263,7 +264,7 @@ static int alarm_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int alarm_remove (struct platform_device *pdev)
+static void alarm_remove (struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	int i;
@@ -278,7 +279,7 @@ static int alarm_remove (struct platform_device *pdev)
 		class_remove_file(&timer_alarm_class, &timer_alarm_attrs[i]);
 	class_unregister(&timer_alarm_class);
 
-	return 0;
+	return;
 }
 
 int sunxi_alarm_suspend(struct device *dev)
@@ -316,7 +317,7 @@ static struct platform_driver alarm_driver = {
 		.of_match_table = of_match_ptr(dt_ids),
 	},
 	.probe  = alarm_probe,
-	.remove = alarm_remove,
+	SUNXI_PLATFORM_REMOVE(alarm_remove),
 };
 
 static int sunxi_alarm_init(void)

@@ -9,6 +9,7 @@
  */
 
 #include <linux/gpio/consumer.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/of_platform.h>
 #include <linux/platform_device.h>
@@ -289,7 +290,7 @@ static int general_panel_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int general_panel_remove(struct platform_device *pdev)
+static void general_panel_remove(struct platform_device *pdev)
 {
 	struct general_panel *edp_panel = platform_get_drvdata(pdev);
 
@@ -297,7 +298,7 @@ static int general_panel_remove(struct platform_device *pdev)
 
 	drm_panel_disable(&edp_panel->panel);
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id general_panel_of_table[] = {
@@ -311,7 +312,7 @@ MODULE_DEVICE_TABLE(of, general_panel_of_table);
 
 static struct platform_driver general_panel_driver = {
 	.probe		= general_panel_probe,
-	.remove		= general_panel_remove,
+	SUNXI_PLATFORM_REMOVE(general_panel_remove),
 	.driver		= {
 		.name	= "edp-general-panel",
 		.of_match_table = general_panel_of_table,

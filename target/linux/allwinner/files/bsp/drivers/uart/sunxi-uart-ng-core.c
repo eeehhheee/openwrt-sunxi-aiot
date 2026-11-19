@@ -23,6 +23,7 @@
 #define SUNXI_UART_NG_VERSION		"1.1.20"
 
 #include <linux/kernel.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/io.h>
 #include <linux/irq.h>
@@ -1962,7 +1963,7 @@ static int sunxi_uart_probe(struct platform_device *pdev)
 	return uart_add_one_port(&sunxi_uart_driver, port);
 }
 
-static int sunxi_uart_remove(struct platform_device *pdev)
+static void sunxi_uart_remove(struct platform_device *pdev)
 {
 #ifdef CONFIG_AW_AMP_SYS_RSC_MANAGER
 	int err;
@@ -1988,7 +1989,7 @@ static int sunxi_uart_remove(struct platform_device *pdev)
 	sunxi_uart_release_resource(uart_port, pdev->dev.platform_data);
 
 	uart_remove_one_port(&sunxi_uart_driver, port);
-	return 0;
+	return;
 }
 
 /* UART power management code */
@@ -2050,7 +2051,7 @@ static const struct dev_pm_ops sunxi_uart_pm_ops = {
 
 static struct platform_driver uart_port_platform_driver = {
 	.probe  = sunxi_uart_probe,
-	.remove = sunxi_uart_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_uart_remove),
 	.driver = {
 		.name  = SUNXI_UART_DEV_NAME,
 		.pm    = SERIAL_SW_PM_OPS,

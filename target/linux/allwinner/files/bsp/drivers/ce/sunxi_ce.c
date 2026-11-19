@@ -13,6 +13,7 @@
  */
 
 #include <linux/init.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/spinlock.h>
@@ -1398,7 +1399,7 @@ err0:
 	return ret;
 }
 
-static int sunxi_ss_remove(struct platform_device *pdev)
+static void sunxi_ss_remove(struct platform_device *pdev)
 {
 	sunxi_ce_cdev_t *sss = platform_get_drvdata(pdev);
 
@@ -1415,7 +1416,7 @@ static int sunxi_ss_remove(struct platform_device *pdev)
 #endif
 	platform_set_drvdata(pdev, NULL);
 	ss_dev = NULL;
-	return 0;
+	return;
 }
 
 #ifdef CONFIG_PM
@@ -1468,7 +1469,7 @@ static const struct dev_pm_ops sunxi_ss_dev_pm_ops = {
 
 static struct platform_driver sunxi_ss_driver = {
 	.probe   = sunxi_ss_probe,
-	.remove  = sunxi_ss_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_ss_remove),
 	.driver = {
 	.name	= SUNXI_SS_DEV_NAME,
 		.owner	= THIS_MODULE,

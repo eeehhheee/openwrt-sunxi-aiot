@@ -15,6 +15,7 @@
 /* #define DEBUG */
 #define SUNXI_MODNAME "gpadc"
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <sunxi-log.h>
 #include <linux/init.h>
 #include <linux/module.h>
@@ -2073,7 +2074,7 @@ err0:
 	return err;
 }
 
-static int sunxi_gpadc_remove(struct platform_device *pdev)
+static void sunxi_gpadc_remove(struct platform_device *pdev)
 {
 	struct sunxi_gpadc *chip = platform_get_drvdata(pdev);
 	int err;
@@ -2088,7 +2089,7 @@ static int sunxi_gpadc_remove(struct platform_device *pdev)
 	sunxi_gpadc_sysfs_destroy(chip);
 	err = sunxi_gpadc_hw_exit(chip);
 	if (err)
-		return err;
+		return;
 	sunxi_gpadc_inputdev_unregister(chip);
 
 #ifdef CONFIG_AW_AMP_SYS_RSC_MANAGER
@@ -2099,7 +2100,7 @@ static int sunxi_gpadc_remove(struct platform_device *pdev)
 
 	sunxi_gpadc_resource_put(chip);
 
-	return 0;
+	return;
 }
 
 #if IS_ENABLED(CONFIG_PM)
@@ -2274,7 +2275,7 @@ MODULE_DEVICE_TABLE(of, sunxi_gpadc_of_match);
 
 static struct platform_driver sunxi_gpadc_driver = {
 	.probe  = sunxi_gpadc_probe,
-	.remove = sunxi_gpadc_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_gpadc_remove),
 	.driver = {
 		.name   = SUNXI_GPADC_DEV_NAME,
 		.owner  = THIS_MODULE,

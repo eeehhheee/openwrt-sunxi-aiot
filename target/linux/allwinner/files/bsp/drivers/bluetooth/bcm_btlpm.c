@@ -25,6 +25,7 @@
 #define DEBUG
 
 #include <linux/module.h>
+#include <sunxi-platform.h>
 #include <linux/errno.h>
 #include <linux/init.h>
 #include <linux/interrupt.h>
@@ -713,7 +714,7 @@ static int __init bluesleep_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int bluesleep_remove(struct platform_device *pdev)
+static void bluesleep_remove(struct platform_device *pdev)
 {
 	/* assert bt wake */
 	gpio_set_value(bsi->ext_wake, bsi->ext_wake_assert);
@@ -733,7 +734,7 @@ static int bluesleep_remove(struct platform_device *pdev)
 		dev_pm_clear_wake_irq(&pdev->dev);
 	}
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_btlpm_ids[] = {
@@ -742,7 +743,7 @@ static const struct of_device_id sunxi_btlpm_ids[] = {
 };
 
 static struct platform_driver bluesleep_driver = {
-	.remove	= bluesleep_remove,
+	SUNXI_PLATFORM_REMOVE(bluesleep_remove),
 	.driver	= {
 		.owner	= THIS_MODULE,
 		.name	= "sunxi-btlpm",

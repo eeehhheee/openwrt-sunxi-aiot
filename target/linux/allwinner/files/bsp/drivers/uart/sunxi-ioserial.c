@@ -16,6 +16,7 @@
  * more details.
  */
 #include <sunxi-common.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/io.h>
@@ -243,14 +244,14 @@ static int sunxi_ioserial_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int sunxi_ioserial_remove(struct platform_device *pdev)
+static void sunxi_ioserial_remove(struct platform_device *pdev)
 {
 	misc_deregister(&mdev);
 
 	if (tx_gpio)
 		gpiod_put(tx_gpio);
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_ioserial_match[] = {
@@ -261,7 +262,7 @@ MODULE_DEVICE_TABLE(of, sunxi_ioserial_match);
 
 static struct platform_driver sunxi_ioserial_driver = {
 	.probe  = sunxi_ioserial_probe,
-	.remove = sunxi_ioserial_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_ioserial_remove),
 	.driver = {
 		.name  = "sunxi-ioserial",
 		.of_match_table = sunxi_ioserial_match,

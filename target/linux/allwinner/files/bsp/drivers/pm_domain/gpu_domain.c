@@ -14,6 +14,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <sunxi-log.h>
 #include <linux/reset.h>
 #include <linux/module.h>
@@ -386,7 +387,7 @@ assert_reset:
 	return ret;
 }
 
-static int gpu_domain_remove(struct platform_device *pdev)
+static void gpu_domain_remove(struct platform_device *pdev)
 {
 	struct device_node *np = pdev->dev.of_node;
 	struct gpu_pm_domain *pd = platform_get_drvdata(pdev);
@@ -397,12 +398,12 @@ static int gpu_domain_remove(struct platform_device *pdev)
 	}
 	clk_disable_unprepare(pd->clk);
 	reset_control_assert(pd->reset);
-	return 0;
+	return;
 }
 
 static struct platform_driver gpu_domain_driver = {
 	.probe   = gpu_domain_probe,
-	.remove  = gpu_domain_remove,
+	SUNXI_PLATFORM_REMOVE(gpu_domain_remove),
 	.driver  = {
 		.name  = DRIVER_NAME,
 		.of_match_table = gpu_pm_domain_of_match,

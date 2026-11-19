@@ -12,6 +12,7 @@
 
 /* #define DEBUG */
 #include <linux/init.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/device.h>
@@ -536,19 +537,19 @@ static int sunxi_jtag_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int sunxi_jtag_remove(struct platform_device *pdev)
+static void sunxi_jtag_remove(struct platform_device *pdev)
 {
 	struct sunxi_jtag *chip = platform_get_drvdata(pdev);
 
 	sunxi_jtag_clk_exit(chip);
 	sunxi_jtag_class_exit(chip);
 
-	return 0;
+	return;
 }
 
 static struct platform_driver sunxi_jtag_driver = {
 	.probe = sunxi_jtag_probe,
-	.remove = sunxi_jtag_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_jtag_remove),
 	.driver = {
 		.name = "sunxi-jtag",
 		.of_match_table = sunxi_jtag_match,

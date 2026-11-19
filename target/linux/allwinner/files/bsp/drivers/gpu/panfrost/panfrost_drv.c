@@ -5,6 +5,7 @@
 /* Copyright 2019 Collabora ltd. */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/of_platform.h>
 #include <linux/pagemap.h>
@@ -717,7 +718,7 @@ err_out0:
 	return err;
 }
 
-static int panfrost_remove(struct platform_device *pdev)
+static void panfrost_remove(struct platform_device *pdev)
 {
 	struct panfrost_device *pfdev = platform_get_drvdata(pdev);
 	struct drm_device *ddev = pfdev->ddev;
@@ -731,7 +732,7 @@ static int panfrost_remove(struct platform_device *pdev)
 	pm_runtime_set_suspended(pfdev->dev);
 
 	drm_dev_put(ddev);
-	return 0;
+	return;
 }
 
 static const char * const default_supplies[] = { "mali" };
@@ -786,7 +787,7 @@ static const struct dev_pm_ops panfrost_pm_ops = {
 
 static struct platform_driver panfrost_driver = {
 	.probe		= panfrost_probe,
-	.remove		= panfrost_remove,
+	SUNXI_PLATFORM_REMOVE(panfrost_remove),
 	.driver		= {
 		.name	= "panfrost",
 		.pm	= &panfrost_pm_ops,

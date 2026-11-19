@@ -2,6 +2,7 @@
 #define pr_fmt(x) KBUILD_MODNAME ": " x "\n"
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "axp515_charger.h"
 
 #define DIVIDE_BY_64(n) (((n) >> 6) << 6)
@@ -2002,7 +2003,7 @@ err:
 	return ret;
 }
 
-static int axp515_battery_remove(struct platform_device *pdev)
+static void axp515_battery_remove(struct platform_device *pdev)
 {
 	struct axp515_bat_power *bat_power = platform_get_drvdata(pdev);
 
@@ -2020,7 +2021,7 @@ static int axp515_battery_remove(struct platform_device *pdev)
 	sunxi_power_debugfs_exit(bat_power->debug);
 	PMIC_DEV_DEBUG(&pdev->dev, "axp515 teardown battery dev\n");
 
-	return 0;
+	return;
 }
 
 static inline void axp515_bat_irq_set(unsigned int irq, bool enable)
@@ -2138,7 +2139,7 @@ static struct platform_driver axp515_bat_power_driver = {
 		.of_match_table = axp515_bat_power_match,
 	},
 	.probe = axp515_battery_probe,
-	.remove = axp515_battery_remove,
+	SUNXI_PLATFORM_REMOVE(axp515_battery_remove),
 	.shutdown = axp515_bat_shutdown,
 	.suspend = axp515_bat_suspend,
 	.resume = axp515_bat_resume,

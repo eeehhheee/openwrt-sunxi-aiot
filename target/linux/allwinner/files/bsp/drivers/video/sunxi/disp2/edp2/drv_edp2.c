@@ -11,6 +11,7 @@
  * published by the Free Software Foundation.
 */
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "drv_edp2.h"
 #include "../disp/disp_sys_intf.h"
 #if IS_ENABLED(CONFIG_EXTCON)
@@ -3223,7 +3224,7 @@ OUT:
 	return ret;
 }
 
-s32 edp_remove(struct platform_device *pdev)
+void edp_remove(struct platform_device *pdev)
 {
 	struct sunxi_edp_output_desc *desc = g_edp_info[pdev->id].desc;
 	s32 ret = 0;
@@ -3244,7 +3245,7 @@ s32 edp_remove(struct platform_device *pdev)
 	class_destroy(edp_class[pdev->id]);
 	cdev_del(edp_cdev[pdev->id]);
 
-	return ret;
+	return;
 }
 
 static const struct dev_pm_ops edp_pm_ops = {
@@ -3946,7 +3947,7 @@ static const struct of_device_id sunxi_edp_match[] = {
 
 static struct platform_driver edp_driver = {
 	.probe = edp_probe,
-	.remove = edp_remove,
+	SUNXI_PLATFORM_REMOVE(edp_remove),
 	.driver = {
 		.name = "edp",
 		.owner = THIS_MODULE,

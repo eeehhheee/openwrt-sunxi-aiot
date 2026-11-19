@@ -10,6 +10,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/delay.h>
 #include <linux/clk.h>
@@ -5226,17 +5227,17 @@ static int drm_edp_probe(struct platform_device *pdev)
 	return ret;
 }
 
-int drm_edp_remove(struct platform_device *pdev)
+void drm_edp_remove(struct platform_device *pdev)
 {
 	component_del(&pdev->dev, &sunxi_drm_edp_component_ops);
 
-	return 0;
+	return;
 }
 
 
 struct platform_driver sunxi_drm_edp_platform_driver = {
 	.probe = drm_edp_probe,
-	.remove = drm_edp_remove,
+	SUNXI_PLATFORM_REMOVE(drm_edp_remove),
 	.driver = {
 		   .name = "drm_edp",
 		   .owner = THIS_MODULE,

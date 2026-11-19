@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: GPL-2.0-or-later */
 /* Copyright(c) 2020 - 2023 Allwinner Technology Co.,Ltd. All rights reserved. */
 #include <linux/module.h>
+#include <sunxi-platform.h>
 #include <linux/delay.h>
 #include <linux/leds.h>
 #include <linux/io.h>
@@ -249,13 +250,13 @@ static int led_level_resume(struct device *dev)
 static SIMPLE_DEV_PM_OPS(led_level_pm, led_level_suspend, led_level_resume);
 #endif
 
-static int led_level_ctrl_remove(struct platform_device *pdev)
+static void led_level_ctrl_remove(struct platform_device *pdev)
 {
 	printk("led_level_ctrl: driver exit\n");
 	hrtimer_cancel(&led_ctrl_data.hrtimer);
 
 	misc_deregister(&led_ctrl_dev);
-	return 0;
+	return;
 }
 
 static const struct of_device_id led_level_ids[] = {
@@ -265,7 +266,7 @@ static const struct of_device_id led_level_ids[] = {
 
 static struct platform_driver led_level_driver = {
 	.probe	= led_level_ctrl_probe,
-	.remove	= led_level_ctrl_remove,
+	SUNXI_PLATFORM_REMOVE(led_level_ctrl_remove),
 	.driver	= {
 			.owner	= THIS_MODULE,
 			.name	= "led-level-ctrl",

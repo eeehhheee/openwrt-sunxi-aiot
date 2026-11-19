@@ -10,6 +10,7 @@
 #define pr_fmt(fmt)	KBUILD_MODNAME ": " fmt
 
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #include <linux/clk.h>
 #include <linux/cpu.h>
 #include <linux/cpufreq.h>
@@ -507,11 +508,11 @@ err:
 	return ret;
 }
 
-static int dt_cpufreq_remove(struct platform_device *pdev)
+static void dt_cpufreq_remove(struct platform_device *pdev)
 {
 	cpufreq_unregister_driver(&dt_cpufreq_driver);
 	dt_cpufreq_release();
-	return 0;
+	return;
 }
 
 static struct platform_driver dt_cpufreq_platdrv = {
@@ -519,7 +520,7 @@ static struct platform_driver dt_cpufreq_platdrv = {
 		.name	= "cpufreq-dt",
 	},
 	.probe		= dt_cpufreq_probe,
-	.remove		= dt_cpufreq_remove,
+	SUNXI_PLATFORM_REMOVE(dt_cpufreq_remove),
 };
 module_platform_driver(dt_cpufreq_platdrv);
 

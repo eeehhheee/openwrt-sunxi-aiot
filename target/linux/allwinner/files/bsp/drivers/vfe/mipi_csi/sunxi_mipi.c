@@ -34,6 +34,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <media/v4l2-device.h>
@@ -367,7 +368,7 @@ ekzalloc:
 }
 
 
-static int mipi_remove(struct platform_device *pdev)
+static void mipi_remove(struct platform_device *pdev)
 {
 	struct mipi_dev *mipi = platform_get_drvdata(pdev);
 
@@ -376,7 +377,7 @@ static int mipi_remove(struct platform_device *pdev)
 		iounmap(mipi->base);
 	mipi_clk_release(mipi);
 	kfree(mipi);
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_mipi_match[] = {
@@ -386,7 +387,7 @@ static const struct of_device_id sunxi_mipi_match[] = {
 
 static struct platform_driver mipi_platform_driver = {
 	.probe    = mipi_probe,
-	.remove   = mipi_remove,
+	SUNXI_PLATFORM_REMOVE(mipi_remove),
 	.driver = {
 		.name   = MIPI_MODULE_NAME,
 		.owner  = THIS_MODULE,

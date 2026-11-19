@@ -14,6 +14,7 @@
 #define SUNXI_MODNAME		"sound-owa"
 #include "snd_sunxi_log.h"
 #include <linux/module.h>
+#include <sunxi-platform.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 #include <linux/regulator/consumer.h>
@@ -1621,7 +1622,7 @@ err_devm_kzalloc:
 	return ret;
 }
 
-static int sunxi_owa_dev_remove(struct platform_device *pdev)
+static void sunxi_owa_dev_remove(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct device_node *np = pdev->dev.of_node;
@@ -1657,7 +1658,7 @@ static int sunxi_owa_dev_remove(struct platform_device *pdev)
 
 	SND_LOG_DEBUG("unregister owa platform success\n");
 
-	return 0;
+	return;
 }
 
 static const struct sunxi_owa_quirks sunxi_owa_quirks = {
@@ -1706,7 +1707,7 @@ static struct platform_driver sunxi_owa_driver = {
 		.of_match_table	= sunxi_owa_of_match,
 	},
 	.probe	= sunxi_owa_dev_probe,
-	.remove	= sunxi_owa_dev_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_owa_dev_remove),
 };
 
 int __init sunxi_owa_dev_init(void)

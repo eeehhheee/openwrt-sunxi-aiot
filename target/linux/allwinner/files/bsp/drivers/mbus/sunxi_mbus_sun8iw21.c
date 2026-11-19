@@ -18,6 +18,7 @@
  */
 
 #include <linux/io.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>
 #include <linux/of_address.h>
@@ -1087,12 +1088,12 @@ out_err:
 	return ret;
 }
 
-static int mbus_pmu_remove(struct platform_device *pdev)
+static void mbus_pmu_remove(struct platform_device *pdev)
 {
 	devm_hwmon_device_unregister(hw_mbus_pmu.hwmon_dev);
 	sysfs_remove_group(&pdev->dev.kobj, &mbus_group);
 
-	return 0;
+	return;
 }
 
 #if IS_ENABLED(CONFIG_PM)
@@ -1128,7 +1129,7 @@ static struct platform_driver mbus_pmu_driver = {
 		.of_match_table = sunxi_mbus_matches,
 	},
 	.probe = mbus_pmu_probe,
-	.remove = mbus_pmu_remove,
+	SUNXI_PLATFORM_REMOVE(mbus_pmu_remove),
 };
 
 static int __init mbus_pmu_init(void)

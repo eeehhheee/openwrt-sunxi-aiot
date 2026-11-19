@@ -6,6 +6,7 @@
  * Copyright (C) 2023 panzhijian@allwinnertech.com
  */
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/of.h>
@@ -96,13 +97,13 @@ static int sunxi_dsu_vf_test_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int sunxi_dsu_vf_test_remove(struct platform_device *pdev)
+static void sunxi_dsu_vf_test_remove(struct platform_device *pdev)
 {
 	struct sunxi_dsu_vf_dev *dsu_vf_dev = platform_get_drvdata(pdev);
 
 	clk_disable_unprepare(dsu_vf_dev->clk);
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_dsu_vf_test_of_match[] = {
@@ -114,7 +115,7 @@ MODULE_DEVICE_TABLE(of, sunxi_dsu_vf_test_of_match);
 
 static struct platform_driver sunxi_dsu_vf_test_driver = {
 	.probe = sunxi_dsu_vf_test_probe,
-	.remove	= sunxi_dsu_vf_test_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_dsu_vf_test_remove),
 	.driver = {
 		.name = "sunxi-dsu-vf-test",
 		.of_match_table = sunxi_dsu_vf_test_of_match,

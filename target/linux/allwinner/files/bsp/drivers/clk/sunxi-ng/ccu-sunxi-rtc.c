@@ -17,6 +17,7 @@
  *
  */
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -512,27 +513,16 @@ static int sunxi_rtc_ccu_probe(struct platform_device *pdev)
 	return 0;
 }
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 13, 0)
 static void sunxi_rtc_ccu_remove(struct platform_device *pdev)
 {
 	struct sunxi_rtc_ccu *priv = platform_get_drvdata(pdev);
 
 	sunxi_rtc_clk_provider_unregister(priv);
 }
-#else
-static int sunxi_rtc_ccu_remove(struct platform_device *pdev)
-{
-	struct sunxi_rtc_ccu *priv = platform_get_drvdata(pdev);
-
-	sunxi_rtc_clk_provider_unregister(priv);
-
-	return 0;
-}
-#endif
 
 static struct platform_driver sunxi_rtc_ccu = {
 	.probe    = sunxi_rtc_ccu_probe,
-	.remove   = sunxi_rtc_ccu_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_rtc_ccu_remove),
 	.driver   = {
 		.name  = "sunxi-rtc-ccu",
 		.owner = THIS_MODULE,

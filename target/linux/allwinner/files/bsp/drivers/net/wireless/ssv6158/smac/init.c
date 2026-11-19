@@ -17,6 +17,7 @@
 
 
 #include <linux/module.h>
+#include <sunxi-platform.h>
 #include <linux/platform_device.h>
 #include <linux/nl80211.h>
 #include <linux/kthread.h>
@@ -1787,7 +1788,7 @@ static void ssv6xxx_stop_all_running_threads(struct ssv_softc *sc)
 
 }
 
-int ssv6xxx_dev_remove(struct platform_device *pdev)
+void ssv6xxx_dev_remove(struct platform_device *pdev)
 {
     struct ieee80211_hw *hw=dev_get_drvdata(&pdev->dev);
     struct ssv_softc *sc=hw->priv;
@@ -1808,7 +1809,7 @@ int ssv6xxx_dev_remove(struct platform_device *pdev)
     printk("ieee80211_free_hw(): \n");
     ieee80211_free_hw(hw);
     pr_info("ssv6200: Driver unloaded\n");
-    return 0;
+    return;
 }
 
 EXPORT_SYMBOL(ssv6xxx_dev_remove);
@@ -1851,7 +1852,7 @@ static struct platform_driver ssv6xxx_driver =
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3,7,0)
     .remove         = __devexit_p(ssv6xxx_dev_remove),
 #else
-    .remove         = ssv6xxx_dev_remove,
+    SUNXI_PLATFORM_REMOVE(ssv6xxx_dev_remove),
 #endif
     .id_table       = ssv6xxx_id_table,
     .driver     = {

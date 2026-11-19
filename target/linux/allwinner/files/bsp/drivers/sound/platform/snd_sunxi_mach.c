@@ -15,6 +15,7 @@
 
 #define SUNXI_MODNAME		"sound-mach"
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "snd_sunxi_log.h"
 #include <linux/module.h>
 #include <sound/soc.h>
@@ -1017,13 +1018,14 @@ err:
 	return ret;
 }
 
-static int asoc_simple_remove(struct platform_device *pdev)
+static void asoc_simple_remove(struct platform_device *pdev)
 {
 	struct snd_soc_card *card = platform_get_drvdata(pdev);
 
 	SND_LOG_DEBUG("\n");
 
-	return asoc_simple_clean_reference(card);
+	asoc_simple_clean_reference(card);
+
 }
 
 static const struct of_device_id snd_soc_sunxi_of_match[] = {
@@ -1039,7 +1041,7 @@ static struct platform_driver sunxi_soundcard_machine_driver = {
 		.of_match_table	= snd_soc_sunxi_of_match,
 	},
 	.probe	= asoc_simple_probe,
-	.remove	= asoc_simple_remove,
+	SUNXI_PLATFORM_REMOVE(asoc_simple_remove),
 };
 
 int __init sunxi_soundcard_machine_dev_init(void)

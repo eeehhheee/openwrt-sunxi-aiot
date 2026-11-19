@@ -15,6 +15,7 @@
 /* #define DEBUG */
 #define SUNXI_MODNAME "irtx"
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/kernel.h>
@@ -925,7 +926,7 @@ err_startup:
 	return ret;
 }
 
-static int sunxi_irtx_remove(struct platform_device *pdev)
+static void sunxi_irtx_remove(struct platform_device *pdev)
 {
 	struct sunxi_irtx *chip = platform_get_drvdata(pdev);
 
@@ -934,7 +935,7 @@ static int sunxi_irtx_remove(struct platform_device *pdev)
 	rc_unregister_device(chip->rcdev);
 	sunxi_irtx_regulator_release(chip);
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_irtx_of_match[] = {
@@ -984,7 +985,7 @@ static const struct dev_pm_ops sunxi_irtx_pm_ops = {
 
 static struct platform_driver sunxi_irtx_driver = {
 	.probe  = sunxi_irtx_probe,
-	.remove = sunxi_irtx_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_irtx_remove),
 	.driver = {
 		.name   = SUNXI_IR_TX_DRIVER_NAME,
 		.owner  = THIS_MODULE,

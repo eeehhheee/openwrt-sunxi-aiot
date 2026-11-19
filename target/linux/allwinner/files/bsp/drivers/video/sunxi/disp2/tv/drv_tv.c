@@ -10,6 +10,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <sunxi-log.h>
 #include <linux/regulator/consumer.h>
 #include <linux/reset.h>
@@ -1624,10 +1625,10 @@ err_iomap:
 	return -EINVAL;
 }
 
-static int tv_remove(struct platform_device *pdev)
+static void tv_remove(struct platform_device *pdev)
 {
 	tv_exit();
-	return 0;
+	return;
 }
 
 /* int tv_suspend(struct platform_device *pdev, pm_message_t state)
@@ -1644,7 +1645,7 @@ static int tv_remove(struct platform_device *pdev)
 static struct platform_driver tv_driver = {
 
 	.probe	  = tv_probe,
-	.remove	 = tv_remove,
+	SUNXI_PLATFORM_REMOVE(tv_remove),
 	/* .suspend	= tv_suspend, */
 	/* .resume	 = tv_resume, */
 	.driver = {

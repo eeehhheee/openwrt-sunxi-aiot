@@ -12,6 +12,7 @@
 #define DEBUG
 
 #include <linux/kernel.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/miscdevice.h>
 #include <linux/of.h>
@@ -375,15 +376,15 @@ static int addr_mgt_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int addr_mgt_remove(struct platform_device *pdev)
+static void addr_mgt_remove(struct platform_device *pdev)
 {
 	class_unregister(&addr_class);
-	return 0;
+	return;
 }
 
 static struct platform_driver addr_mgt_driver = {
 	.probe  = addr_mgt_probe,
-	.remove = addr_mgt_remove,
+	SUNXI_PLATFORM_REMOVE(addr_mgt_remove),
 	.driver = {
 		.owner = THIS_MODULE,
 		.name  = "sunxi-addr-mgt",

@@ -17,6 +17,7 @@
 
 #include "../utility/vin_log.h"
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/slab.h>
@@ -308,7 +309,7 @@ ekzalloc:
 	return ret;
 }
 
-static int cci_remove(struct platform_device *pdev)
+static void cci_remove(struct platform_device *pdev)
 {
 	struct cci_dev *cci = platform_get_drvdata(pdev);
 
@@ -321,7 +322,7 @@ static int cci_remove(struct platform_device *pdev)
 		iounmap(cci->base);
 	list_del(&cci->cci_list);
 	kfree(cci);
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_cci_match[] = {
@@ -333,7 +334,7 @@ MODULE_DEVICE_TABLE(of, sunxi_cci_match);
 
 static struct platform_driver cci_platform_driver = {
 	.probe = cci_probe,
-	.remove = cci_remove,
+	SUNXI_PLATFORM_REMOVE(cci_remove),
 	.driver = {
 		   .name = CCI_MODULE_NAME,
 		   .owner = THIS_MODULE,

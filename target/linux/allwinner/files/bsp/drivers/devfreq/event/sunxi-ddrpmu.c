@@ -13,6 +13,7 @@
  * published by the Free Software Foundation.
  */
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #include <linux/clk.h>
 #include <linux/devfreq-event.h>
 #include <linux/kernel.h>
@@ -212,9 +213,9 @@ static int sunxi_ddrpmu_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int sunxi_ddrpmu_remove(struct platform_device *pdev)
+static void sunxi_ddrpmu_remove(struct platform_device *pdev)
 {
-	return 0;
+	return;
 }
 static __maybe_unused int sunxi_ddrpmu_suspend(struct device *dev)
 {
@@ -239,7 +240,7 @@ static SIMPLE_DEV_PM_OPS(sunxi_ddrpmu_pm, sunxi_ddrpmu_suspend,
 
 static struct platform_driver sunxi_ddrpmu_driver = {
 	.probe	= sunxi_ddrpmu_probe,
-	.remove  = sunxi_ddrpmu_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_ddrpmu_remove),
 	.driver = {
 		.name	= "sunxi-ddrpmu",
 		.pm = &sunxi_ddrpmu_pm,

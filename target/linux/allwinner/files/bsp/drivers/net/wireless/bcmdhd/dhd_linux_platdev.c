@@ -23,6 +23,7 @@
  * $Id$
  */
 #include <typedefs.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/init.h>
@@ -467,7 +468,7 @@ static int wifi_plat_dev_drv_probe(struct platform_device *pdev)
 	return wifi_plat_dev_probe_ret;
 }
 
-static int wifi_plat_dev_drv_remove(struct platform_device *pdev)
+static void wifi_plat_dev_drv_remove(struct platform_device *pdev)
 {
 	wifi_adapter_info_t *adapter;
 
@@ -493,7 +494,7 @@ static int wifi_plat_dev_drv_remove(struct platform_device *pdev)
 #ifdef BCMDHD_PLATDEV
 	dhd_wlan_deinit_plat_data(adapter);
 #endif
-	return 0;
+	return;
 }
 
 static int wifi_plat_dev_drv_suspend(struct platform_device *pdev, pm_message_t state)
@@ -526,7 +527,7 @@ static const struct of_device_id wifi_device_dt_match[] = {
 
 static struct platform_driver wifi_platform_dev_driver = {
 	.probe          = wifi_plat_dev_drv_probe,
-	.remove         = wifi_plat_dev_drv_remove,
+	SUNXI_PLATFORM_REMOVE(wifi_plat_dev_drv_remove),
 	.suspend        = wifi_plat_dev_drv_suspend,
 	.resume         = wifi_plat_dev_drv_resume,
 #ifdef DHD_WIFI_SHUTDOWN
@@ -542,7 +543,7 @@ static struct platform_driver wifi_platform_dev_driver = {
 
 static struct platform_driver wifi_platform_dev_driver_legacy = {
 	.probe          = wifi_plat_dev_drv_probe,
-	.remove         = wifi_plat_dev_drv_remove,
+	SUNXI_PLATFORM_REMOVE(wifi_plat_dev_drv_remove),
 	.suspend        = wifi_plat_dev_drv_suspend,
 	.resume         = wifi_plat_dev_drv_resume,
 #ifdef DHD_WIFI_SHUTDOWN
@@ -745,7 +746,7 @@ static int bcmdhd_wifi_plat_dev_drv_probe(struct platform_device *pdev)
 	return dhd_wifi_platform_load();
 }
 
-static int bcmdhd_wifi_plat_dev_drv_remove(struct platform_device *pdev)
+static void bcmdhd_wifi_plat_dev_drv_remove(struct platform_device *pdev)
 {
 	int i;
 	wifi_adapter_info_t *adapter;
@@ -757,12 +758,12 @@ static int bcmdhd_wifi_plat_dev_drv_remove(struct platform_device *pdev)
 		wifi_platform_set_power(adapter, FALSE, WIFI_TURNOFF_DELAY);
 		wifi_platform_bus_enumerate(adapter, FALSE);
 	}
-	return 0;
+	return;
 }
 
 static struct platform_driver dhd_wifi_platform_dev_driver = {
 	.probe          = bcmdhd_wifi_plat_dev_drv_probe,
-	.remove         = bcmdhd_wifi_plat_dev_drv_remove,
+	SUNXI_PLATFORM_REMOVE(bcmdhd_wifi_plat_dev_drv_remove),
 	.driver         = {
 	.name   = WIFI_PLAT_EXT,
 	}

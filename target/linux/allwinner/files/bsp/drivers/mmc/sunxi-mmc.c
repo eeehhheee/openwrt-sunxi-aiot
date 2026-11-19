@@ -16,6 +16,7 @@
  */
 
 #include <linux/kernel.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/io.h>
 #include <linux/device.h>
@@ -4443,7 +4444,7 @@ error_free_host:
 	return ret;
 }
 
-static int sunxi_mmc_remove(struct platform_device *pdev)
+static void sunxi_mmc_remove(struct platform_device *pdev)
 {
 	struct mmc_host *mmc = platform_get_drvdata(pdev);
 	struct sunxi_mmc_host *host = mmc_priv(mmc);
@@ -4482,7 +4483,7 @@ static int sunxi_mmc_remove(struct platform_device *pdev)
 			  host->sg_dma);
 	mmc_free_host(mmc);
 
-	return 0;
+	return;
 }
 
 static void sunxi_mmc_regs_save(struct sunxi_mmc_host *host)
@@ -4834,7 +4835,7 @@ static struct platform_driver sunxi_mmc_driver = {
 		   .pm = sunxi_mmc_pm_ops,
 		   },
 	.probe = sunxi_mmc_probe,
-	.remove = sunxi_mmc_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_mmc_remove),
 	.shutdown = sunxi_shutdown_mmc,
 };
 

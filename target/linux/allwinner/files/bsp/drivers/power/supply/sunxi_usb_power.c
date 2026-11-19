@@ -3,6 +3,7 @@
 #define pr_fmt(x) KBUILD_MODNAME ": " x "\n"
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "sunxi_usb_power.h"
 
 static enum power_supply_property sunxi_usb_power_props[] = {
@@ -454,7 +455,7 @@ static void sunxi_usb_power_delayed_work_set(struct sunxi_usb_power_supply_data 
 	}
 }
 
-static int sunxi_usb_power_remove(struct platform_device *pdev)
+static void sunxi_usb_power_remove(struct platform_device *pdev)
 {
 	struct sunxi_usb_power_supply_data *usb_power = platform_get_drvdata(pdev);
 
@@ -466,7 +467,7 @@ static int sunxi_usb_power_remove(struct platform_device *pdev)
 	}
 	PMIC_DEV_DEBUG(&pdev->dev, "teardown sunxi usb power dev\n");
 
-	return 0;
+	return;
 }
 
 static void sunxi_usb_power_shutdown(struct platform_device *pdev)
@@ -510,7 +511,7 @@ static struct platform_driver sunxi_usb_power_driver = {
 		.of_match_table = sunxi_usb_power_match,
 	},
 	.probe = sunxi_usb_power_probe,
-	.remove = sunxi_usb_power_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_usb_power_remove),
 	.shutdown = sunxi_usb_power_shutdown,
 	.suspend = sunxi_usb_power_suspend,
 	.resume = sunxi_usb_power_resume,

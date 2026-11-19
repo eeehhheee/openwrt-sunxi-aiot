@@ -19,6 +19,7 @@
 
 /* #define DEBUG */	/* Enable dev_dbg */
 #include <linux/delay.h>
+#include <sunxi-platform.h>
 #include <linux/err.h>
 #include <linux/init.h>
 #include <linux/interrupt.h>
@@ -1484,7 +1485,7 @@ err1:
 	return err;
 }
 
-static int sunxi_rtc_remove(struct platform_device *pdev)
+static void sunxi_rtc_remove(struct platform_device *pdev)
 {
 	struct sunxi_rtc_dev *chip = platform_get_drvdata(pdev);
 	struct device *dev = &pdev->dev;
@@ -1501,12 +1502,12 @@ static int sunxi_rtc_remove(struct platform_device *pdev)
 	clk_disable_unprepare(chip->clk_bus);
 	reset_control_assert(chip->reset);
 
-	return 0;
+	return;
 }
 
 static struct platform_driver sunxi_rtc_driver = {
 	.probe    = sunxi_rtc_probe,
-	.remove   = sunxi_rtc_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_rtc_remove),
 	.driver   = {
 		.name  = "sunxi-rtc",
 		.owner = THIS_MODULE,

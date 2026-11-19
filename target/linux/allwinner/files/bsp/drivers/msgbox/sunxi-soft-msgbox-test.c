@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0
 
 #include <linux/bitops.h>
+#include <sunxi-platform.h>
 #include <linux/clk.h>
 #include <linux/device.h>
 #include <linux/err.h>
@@ -142,7 +143,7 @@ static int sunxi_mbox_test_probe(struct platform_device *pdev)
 }
 
 
-static int sunxi_mbox_test_remove(struct platform_device *pdev)
+static void sunxi_mbox_test_remove(struct platform_device *pdev)
 {
 	int i;
 	struct sunxi_mbox_test *mbox_test = platform_get_drvdata(pdev);
@@ -151,7 +152,7 @@ static int sunxi_mbox_test_remove(struct platform_device *pdev)
 		class_destroy(mbox_test->class);
 		mbox_test->class = NULL;
 	}
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_mbox_test_of_match[] = {
@@ -167,7 +168,7 @@ static struct platform_driver sunxi_mbox_test_driver = {
 		.of_match_table = sunxi_mbox_test_of_match,
 	},
 	.probe  = sunxi_mbox_test_probe,
-	.remove = sunxi_mbox_test_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_mbox_test_remove),
 };
 
 module_platform_driver(sunxi_mbox_test_driver);

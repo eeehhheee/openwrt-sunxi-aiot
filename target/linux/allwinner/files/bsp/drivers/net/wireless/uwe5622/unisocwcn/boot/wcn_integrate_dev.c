@@ -11,6 +11,7 @@
  * GNU General Public License for more details.
  */
 #include <linux/clk.h>
+#include <sunxi-platform.h>
 #include <linux/delay.h>
 #include <linux/file.h>
 #include <linux/firmware.h>
@@ -784,7 +785,7 @@ static int wcn_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int  wcn_remove(struct platform_device *pdev)
+static void  wcn_remove(struct platform_device *pdev)
 {
 	struct wcn_device *wcn_dev = platform_get_drvdata(pdev);
 
@@ -795,7 +796,7 @@ static int  wcn_remove(struct platform_device *pdev)
 	kfree(wcn_dev);
 	wcn_dev = NULL;
 
-	return 0;
+	return;
 }
 
 static void wcn_shutdown(struct platform_device *pdev)
@@ -829,7 +830,7 @@ static struct platform_driver wcn_driver = {
 		.of_match_table = wcn_match_table,
 	},
 	.probe = wcn_probe,
-	.remove = wcn_remove,
+	SUNXI_PLATFORM_REMOVE(wcn_remove),
 	.shutdown = wcn_shutdown,
 };
 

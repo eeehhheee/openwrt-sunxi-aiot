@@ -13,6 +13,7 @@
 
 /* only applies to linux-5.4 */
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <sound/soc.h>
 #include <sound/pcm.h>
@@ -580,14 +581,14 @@ err_devm_kzalloc:
 	return ret;
 }
 
-static int sunxi_loopback_dev_remove(struct platform_device *pdev)
+static void sunxi_loopback_dev_remove(struct platform_device *pdev)
 {
 	snd_sunxi_dma_platform_loopback_unregister(&pdev->dev);
 	snd_soc_unregister_component(&pdev->dev);
 
 	SND_LOG_DEBUG("unregister loopback platform success\n");
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_loopback_of_match[] = {
@@ -603,7 +604,7 @@ static struct platform_driver sunxi_loopback_driver = {
 		.of_match_table	= sunxi_loopback_of_match,
 	},
 	.probe	= sunxi_loopback_dev_probe,
-	.remove	= sunxi_loopback_dev_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_loopback_dev_remove),
 };
 
 int __init sunxi_loopback_dev_init(void)

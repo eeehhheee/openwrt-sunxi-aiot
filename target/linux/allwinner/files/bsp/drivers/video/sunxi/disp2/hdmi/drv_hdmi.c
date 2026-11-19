@@ -11,6 +11,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "drv_hdmi_i.h"
 #include "hdmi_core.h"
 #include "../disp/disp_sys_intf.h"
@@ -1414,17 +1415,17 @@ static int hdmi_probe(struct platform_device *pdev)
 }
 
 
-static int hdmi_remove(struct platform_device *pdev)
+static void hdmi_remove(struct platform_device *pdev)
 {
 	hdmi_inf("hdmi_remove call\n");
 	hdmi_exit();
-	return 0;
+	return;
 }
 
 static struct platform_driver hdmi_driver = {
 
 	.probe	  = hdmi_probe,
-	.remove	 = hdmi_remove,
+	SUNXI_PLATFORM_REMOVE(hdmi_remove),
 	.driver = {
 
 		.name   = "hdmi",

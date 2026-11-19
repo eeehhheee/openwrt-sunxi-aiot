@@ -11,6 +11,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "de/disp_lcd.h"
 #include "dev_disp.h"
 #include "fb_top.h"
@@ -3682,7 +3683,7 @@ err_iomap:
 	return ret;
 }
 
-static int disp_remove(struct platform_device *pdev)
+static void disp_remove(struct platform_device *pdev)
 {
 	int i;
 
@@ -3714,7 +3715,7 @@ static int disp_remove(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, NULL);
 
-	return 0;
+	return;
 }
 
 static int disp_blank(bool blank)
@@ -5549,7 +5550,7 @@ static const struct of_device_id sunxi_disp_match[] = {
 
 static struct platform_driver disp_driver = {
 	.probe    = disp_probe,
-	.remove   = disp_remove,
+	SUNXI_PLATFORM_REMOVE(disp_remove),
 	.shutdown = disp_shutdown,
 	.driver   = {
 		  .name           = "disp",

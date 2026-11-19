@@ -14,6 +14,7 @@
 /* #define PKT_DEBUG */
 #define SUNXI_MODNAME "gmac"
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/ctype.h>
 #include <linux/printk.h>
@@ -3902,7 +3903,7 @@ alloc_etherdev_err:
 	return ret;
 }
 
-static int sunxi_gmac_remove(struct platform_device *pdev)
+static void sunxi_gmac_remove(struct platform_device *pdev)
 {
 	struct net_device *ndev = platform_get_drvdata(pdev);
 	struct sunxi_gmac *chip = netdev_priv(ndev);
@@ -3919,12 +3920,12 @@ static int sunxi_gmac_remove(struct platform_device *pdev)
 	netif_napi_del(&chip->napi_tx);
 	sunxi_gmac_hardware_deinit(pdev);
 	sunxi_gmac_resource_put(pdev);
-	return 0;
+	return;
 }
 
 static struct platform_driver sunxi_gmac_driver = {
 	.probe	= sunxi_gmac_probe,
-	.remove = sunxi_gmac_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_gmac_remove),
 #if IS_ENABLED(CONFIG_AW_EPHY)
 	.shutdown = sunxi_gmac_shutdown,
 #endif /* CONFIG_AW_EPHY */

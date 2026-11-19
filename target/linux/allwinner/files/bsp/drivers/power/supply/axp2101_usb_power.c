@@ -2,6 +2,7 @@
 #define pr_fmt(x) KBUILD_MODNAME ": " x "\n"
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "axp2101_charger.h"
 
 /* #define DONOT_Correction */
@@ -374,7 +375,7 @@ err:
 	return ret;
 }
 
-static int axp2101_usb_remove(struct platform_device *pdev)
+static void axp2101_usb_remove(struct platform_device *pdev)
 {
 	struct axp2101_usb_power *usb_power = platform_get_drvdata(pdev);
 #if ((defined DONOT_Correction) || (defined POLL_READ))
@@ -389,7 +390,7 @@ static int axp2101_usb_remove(struct platform_device *pdev)
 		power_supply_unregister(usb_power->usb_supply);
 	dev_dbg(&pdev->dev, "axp2101 teardown usb dev\n");
 
-	return 0;
+	return;
 }
 
 static inline void axp2101_irq_set(unsigned int irq, bool enable)
@@ -457,7 +458,7 @@ static struct platform_driver axp2101_usb_power_driver = {
 		.of_match_table = axp2101_usb_power_match,
 	},
 	.probe = axp2101_usb_probe,
-	.remove = axp2101_usb_remove,
+	SUNXI_PLATFORM_REMOVE(axp2101_usb_remove),
 	.shutdown = axp2101_usb_shutdown,
 	.suspend = axp2101_usb_suspend,
 	.resume = axp2101_usb_resume,

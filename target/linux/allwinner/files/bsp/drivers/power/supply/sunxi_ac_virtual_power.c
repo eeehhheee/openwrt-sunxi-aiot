@@ -2,6 +2,7 @@
 #define pr_fmt(x) KBUILD_MODNAME ": " x "\n"
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "sunxi-power-supply.h"
 
 struct sunxi_virtual_ac_power {
@@ -74,9 +75,9 @@ static int sunxi_virtual_ac_power_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int sunxi_virtual_ac_power_remove(struct platform_device *pdev)
+static void sunxi_virtual_ac_power_remove(struct platform_device *pdev)
 {
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_virtual_ac_power_match[] = {
@@ -91,7 +92,7 @@ static struct platform_driver sunxi_virtual_ac_power_driver = {
 		.of_match_table = sunxi_virtual_ac_power_match,
 	},
 	.probe = sunxi_virtual_ac_power_probe,
-	.remove = sunxi_virtual_ac_power_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_virtual_ac_power_remove),
 };
 
 module_platform_driver(sunxi_virtual_ac_power_driver);

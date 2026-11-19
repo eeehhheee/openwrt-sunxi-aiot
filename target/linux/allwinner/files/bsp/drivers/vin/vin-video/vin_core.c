@@ -14,6 +14,7 @@
  */
 #include "../utility/vin_log.h"
 #include <linux/module.h>
+#include <sunxi-platform.h>
 #include <linux/errno.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -2270,7 +2271,7 @@ ekzalloc:
 	return ret;
 }
 
-static int vin_core_remove(struct platform_device *pdev)
+static void vin_core_remove(struct platform_device *pdev)
 {
 	struct vin_core *vinc = (struct vin_core *)dev_get_drvdata(&pdev->dev);
 
@@ -2278,7 +2279,7 @@ static int vin_core_remove(struct platform_device *pdev)
 		dev_set_drvdata(&vinc->pdev->dev, NULL);
 		kfree(vinc);
 		vin_log(VIN_LOG_VIDEO, "%s end\n", __func__);
-		return 0;
+		return;
 	}
 
 	sysfs_remove_group(&vinc->pdev->dev.kobj, &vin_attribute_group);
@@ -2296,7 +2297,7 @@ static int vin_core_remove(struct platform_device *pdev)
 	}
 	kfree(vinc);
 	vin_log(VIN_LOG_VIDEO, "%s end\n", __func__);
-	return 0;
+	return;
 }
 
 #if IS_ENABLED(CONFIG_DEBUG_FS)
@@ -2384,7 +2385,7 @@ static const struct of_device_id sunxi_vin_core_match[] = {
 
 static struct platform_driver vin_core_driver = {
 	.probe = vin_core_probe,
-	.remove = vin_core_remove,
+	SUNXI_PLATFORM_REMOVE(vin_core_remove),
 	.shutdown = vin_core_shutdown,
 	.driver = {
 		   .name = VIN_CORE_NAME,

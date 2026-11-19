@@ -15,6 +15,7 @@
  */
 #include "utility/vin_log.h"
 #include <linux/module.h>
+#include <sunxi-platform.h>
 #include <linux/errno.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -2612,7 +2613,7 @@ freedev:
 	return ret;
 }
 
-static int vin_remove(struct platform_device *pdev)
+static void vin_remove(struct platform_device *pdev)
 {
 	struct vin_md *vind = (struct vin_md *)dev_get_drvdata(&pdev->dev);
 
@@ -2643,7 +2644,7 @@ static int vin_remove(struct platform_device *pdev)
 
 	devm_kfree(&pdev->dev, vind);
 	vin_log(VIN_LOG_MD, "%s ok!\n", __func__);
-	return 0;
+	return;
 }
 
 static void vin_shutdown(struct platform_device *pdev)
@@ -2692,7 +2693,7 @@ static const struct of_device_id sunxi_vin_match[] = {
 
 static struct platform_driver vin_driver = {
 	.probe = vin_probe,
-	.remove = vin_remove,
+	SUNXI_PLATFORM_REMOVE(vin_remove),
 	.shutdown = vin_shutdown,
 	.driver = {
 		   .name = VIN_MODULE_NAME,

@@ -18,6 +18,7 @@
  */
 //#define DEBUG
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/input.h>
@@ -915,14 +916,14 @@ err0:
 	return err;
 }
 
-static int sunxi_lradc_remove(struct platform_device *pdev)
+static void sunxi_lradc_remove(struct platform_device *pdev)
 {
 	struct sunxi_lradc *chip = platform_get_drvdata(pdev);
 
 	sunxi_lradc_hw_exit(chip);
 	sunxi_lradc_inputdev_unregister(chip);
 	sunxi_lradc_resource_put(chip);
-	return 0;
+	return;
 }
 
 #if IS_ENABLED(CONFIG_PM)
@@ -1021,7 +1022,7 @@ static const struct dev_pm_ops sunxi_lradc_pm_ops = {
 
 static struct platform_driver sunxi_lradc_driver = {
 	.probe  = sunxi_lradc_probe,
-	.remove = sunxi_lradc_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_lradc_remove),
 	.driver = {
 		.name   = "sunxi-lradc",
 		.owner  = THIS_MODULE,

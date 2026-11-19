@@ -14,6 +14,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <sunxi-log.h>
 #include <linux/module.h>
 #include <linux/clk.h>
@@ -309,17 +310,17 @@ out:
 	return ret;
 }
 
-static int ddr_clock_remove(struct platform_device *pdev)
+static void ddr_clock_remove(struct platform_device *pdev)
 {
 	struct device_node *np = pdev->dev.of_node;
 
 	of_clk_del_provider(np);
-	return 0;
+	return;
 }
 
 static struct platform_driver ddr_clock_driver = {
 	.probe   = ddr_clock_probe,
-	.remove  = ddr_clock_remove,
+	SUNXI_PLATFORM_REMOVE(ddr_clock_remove),
 	.driver  = {
 		.name  = "sunxi-ddrclock",
 		.of_match_table = clk_ddr_of_match,

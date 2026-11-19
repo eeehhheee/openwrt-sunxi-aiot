@@ -13,6 +13,7 @@
  * published by the Free Software Foundation.
  */
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #include <linux/clk.h>
 #include <linux/devfreq-event.h>
 #include <linux/kernel.h>
@@ -177,14 +178,14 @@ static int sunxi_nsipmu_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int sunxi_nsipmu_remove(struct platform_device *pdev)
+static void sunxi_nsipmu_remove(struct platform_device *pdev)
 {
-	return 0;
+	return;
 }
 
 static struct platform_driver sunxi_nsipmu_driver = {
 	.probe	= sunxi_nsipmu_probe,
-	.remove  = sunxi_nsipmu_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_nsipmu_remove),
 	.driver = {
 		.name	= "sunxi-nsipmu",
 		.of_match_table = sunxi_nsipmu_id_match,

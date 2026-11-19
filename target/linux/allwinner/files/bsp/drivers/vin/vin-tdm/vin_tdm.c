@@ -17,6 +17,7 @@
  */
 #include "../utility/vin_log.h"
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/delay.h>
@@ -2572,7 +2573,7 @@ ekzalloc:
 	return ret;
 }
 
-static int tdm_remove(struct platform_device *pdev)
+static void tdm_remove(struct platform_device *pdev)
 {
 	struct tdm_dev *tdm = platform_get_drvdata(pdev);
 	struct v4l2_subdev *sd;
@@ -2593,7 +2594,7 @@ static int tdm_remove(struct platform_device *pdev)
 	}
 
 	kfree(tdm);
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_tdm_match[] = {
@@ -2603,7 +2604,7 @@ static const struct of_device_id sunxi_tdm_match[] = {
 
 static struct platform_driver tdm_platform_driver = {
 	.probe = tdm_probe,
-	.remove = tdm_remove,
+	SUNXI_PLATFORM_REMOVE(tdm_remove),
 	.driver = {
 		.name = TDM_MODULE_NAME,
 		.owner = THIS_MODULE,

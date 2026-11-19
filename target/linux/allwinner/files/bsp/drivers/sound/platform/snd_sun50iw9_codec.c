@@ -14,6 +14,7 @@
 #define SUNXI_MODNAME		"sound-codec"
 #include "snd_sunxi_log.h"
 #include <linux/module.h>
+#include <sunxi-platform.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 #include <linux/regulator/consumer.h>
@@ -1250,7 +1251,7 @@ err_devm_kzalloc:
 	return ret;
 }
 
-static int sunxi_internal_codec_dev_remove(struct platform_device *pdev)
+static void sunxi_internal_codec_dev_remove(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct sunxi_codec *codec = dev_get_drvdata(dev);
@@ -1282,7 +1283,7 @@ static int sunxi_internal_codec_dev_remove(struct platform_device *pdev)
 
 	SND_LOG_DEBUG("unregister internal-codec codec success\n");
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_internal_codec_of_match[] = {
@@ -1298,7 +1299,7 @@ static struct platform_driver sunxi_internal_codec_driver = {
 		.of_match_table	= sunxi_internal_codec_of_match,
 	},
 	.probe	= sunxi_internal_codec_dev_probe,
-	.remove	= sunxi_internal_codec_dev_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_internal_codec_dev_remove),
 };
 
 int __init sunxi_internal_codec_dev_init(void)

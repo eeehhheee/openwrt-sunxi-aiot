@@ -9,6 +9,7 @@
 #define pr_fmt(fmt)	KBUILD_MODNAME ": " fmt
 
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #include <linux/clk.h>
 #include <linux/cpu.h>
 #include <linux/cpufreq.h>
@@ -515,7 +516,7 @@ static struct platform_driver dt_cpufreq_platdrv = {
 		.name	= "cpufreq-dt",
 	},
 	.probe		= dt_cpufreq_probe,
-	.remove_new	= dt_cpufreq_remove,
+	SUNXI_PLATFORM_REMOVE(dt_cpufreq_remove),
 };
 module_platform_driver(dt_cpufreq_platdrv);
 

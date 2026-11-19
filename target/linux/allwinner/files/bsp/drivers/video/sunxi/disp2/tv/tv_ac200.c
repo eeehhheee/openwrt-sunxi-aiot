@@ -10,6 +10,7 @@
  * warranty of any kind, whether express or implied.
  */
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <sunxi-log.h>
 #include "tv_ac200.h"
 #include "tv_ac200_lowlevel.h"
@@ -756,13 +757,12 @@ static void tv_shutdown(struct platform_device *pdev)
 }
 
 
-static int  tv_remove(struct platform_device *pdev) /* delete __devexit */
+static void tv_remove(struct platform_device *pdev)
 {
 	if (tv_device)
 		disp_vdevice_unregister(tv_device);
 	tv_device = NULL;
 	tv_clk_exit();
-	return 0;
 }
 
 static struct platform_driver tv_ac200_driver = {
@@ -776,7 +776,7 @@ static struct platform_driver tv_ac200_driver = {
 	.suspend = tv_platform_suspend,
 	.resume = tv_platform_resume,
 
-	.remove = tv_remove,
+	SUNXI_PLATFORM_REMOVE(tv_remove),
 	.shutdown = tv_shutdown,
 };
 

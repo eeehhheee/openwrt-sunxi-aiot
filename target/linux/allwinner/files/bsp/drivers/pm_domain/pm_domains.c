@@ -7,6 +7,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <sunxi-log.h>
 #include <linux/reset.h>
 #include <linux/module.h>
@@ -521,7 +522,7 @@ err_out:
 	return error;
 }
 
-static int sunxi_pm_domain_remove(struct platform_device *pdev)
+static void sunxi_pm_domain_remove(struct platform_device *pdev)
 {
 	struct device_node *np = pdev->dev.of_node;
 	struct sunxi_pmu *pmu = platform_get_drvdata(pdev);
@@ -533,7 +534,7 @@ static int sunxi_pm_domain_remove(struct platform_device *pdev)
 
 	clk_disable_unprepare(pmu->clk);
 	reset_control_assert(pmu->reset);
-	return 0;
+	return;
 }
 
 static const struct sunxi_domain_info tv303_pm_domains[] = {
@@ -626,7 +627,7 @@ static const struct of_device_id sunxi_pm_domain_dt_match[] = {
 
 static struct platform_driver power_domain_driver = {
 	.probe = sunxi_pm_domain_probe,
-	.remove  = sunxi_pm_domain_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_pm_domain_remove),
 	.driver = {
 		.name   = "sunxi-pm-domain",
 		.of_match_table = sunxi_pm_domain_dt_match,

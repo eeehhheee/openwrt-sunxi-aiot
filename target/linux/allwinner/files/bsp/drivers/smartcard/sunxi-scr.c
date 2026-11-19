@@ -13,6 +13,7 @@
  */
 
 #include <linux/kernel.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/delay.h>
 #include <linux/clk.h>
@@ -1373,7 +1374,7 @@ emloc:
 
 }
 
-static int sunxi_scr_remove(struct platform_device *pdev)
+static void sunxi_scr_remove(struct platform_device *pdev)
 {
 	struct sunxi_scr *pscr = platform_get_drvdata(pdev);
 
@@ -1391,7 +1392,7 @@ static int sunxi_scr_remove(struct platform_device *pdev)
 
 	SCR_EXIT();
 
-	return 0;
+	return;
 }
 
 #ifdef CONFIG_PM
@@ -1482,7 +1483,7 @@ MODULE_DEVICE_TABLE(of, sunxi_scr_match);
 
 static struct platform_driver scr_platform_driver = {
 	.probe = sunxi_scr_probe,
-	.remove = sunxi_scr_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_scr_remove),
 	.driver = {
 		   .name = SCR_MODULE_NAME,
 		   .owner = THIS_MODULE,

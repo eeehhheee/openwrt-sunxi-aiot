@@ -3136,7 +3136,7 @@ int aw_hdmi_cec_probe(struct platform_device *pdev)
 	return 0;
 }
 
-int aw_hdmi_cec_remove(struct platform_device *pdev)
+void aw_hdmi_cec_remove(struct platform_device *pdev)
 {
 	struct aw_hdmi_cec *cec = platform_get_drvdata(pdev);
 
@@ -3144,7 +3144,7 @@ int aw_hdmi_cec_remove(struct platform_device *pdev)
 	cec_unregister_adapter(cec->adap);
 	devm_kfree(&pdev->dev, cec);
 
-	return 0;
+	return;
 }
 
 #if IS_ENABLED(CONFIG_PM_SLEEP)

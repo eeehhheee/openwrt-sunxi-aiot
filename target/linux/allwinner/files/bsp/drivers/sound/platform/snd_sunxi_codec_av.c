@@ -13,6 +13,7 @@
 
 #define SUNXI_MODNAME		"sound-codec-av"
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "snd_sunxi_log.h"
 #include <linux/module.h>
 #include <sound/soc.h>
@@ -223,7 +224,7 @@ static int sunxi_codec_dev_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int sunxi_codec_dev_remove(struct platform_device *pdev)
+static void sunxi_codec_dev_remove(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct sunxi_codec *codec = dev_get_drvdata(dev);
@@ -236,7 +237,7 @@ static int sunxi_codec_dev_remove(struct platform_device *pdev)
 
 	SND_LOG_DEBUG("unregister codec-hdmi success\n");
 
-	return 0;
+	return;
 }
 
 static struct platform_driver sunxi_codec_driver = {
@@ -244,7 +245,7 @@ static struct platform_driver sunxi_codec_driver = {
 		.name = DRV_NAME,
 	},
 	.probe	= sunxi_codec_dev_probe,
-	.remove	= sunxi_codec_dev_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_codec_dev_remove),
 };
 
 int __init sunxi_av_codec_dev_init(void)

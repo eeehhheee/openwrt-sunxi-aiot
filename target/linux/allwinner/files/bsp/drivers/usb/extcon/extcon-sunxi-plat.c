@@ -7,6 +7,7 @@
  */
 
 #include <linux/module.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/platform_device.h>
@@ -289,13 +290,13 @@ static void __extcon_sunxi_teardown(struct extcon_sunxi_plat *extcon)
 	gpiod_set_value(extcon->bcten_gpiod, 0);
 }
 
-static int extcon_sunxi_plat_remove(struct platform_device *pdev)
+static void extcon_sunxi_plat_remove(struct platform_device *pdev)
 {
 	struct extcon_sunxi_plat	*extcon = platform_get_drvdata(pdev);
 
 	__extcon_sunxi_teardown(extcon);
 
-	return 0;
+	return;
 }
 
 static void extcon_sunxi_plat_shutdown(struct platform_device *pdev)
@@ -359,7 +360,7 @@ MODULE_DEVICE_TABLE(of, of_extcon_sunxi_match);
 
 static struct platform_driver extcon_sunxi_plat_driver = {
 	.probe		= extcon_sunxi_plat_probe,
-	.remove		= extcon_sunxi_plat_remove,
+	SUNXI_PLATFORM_REMOVE(extcon_sunxi_plat_remove),
 	.shutdown	= extcon_sunxi_plat_shutdown,
 	.driver		= {
 		.name	= "extcon-sunxi-plat",

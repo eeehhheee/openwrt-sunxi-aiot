@@ -19,6 +19,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "sunxi-power-regulator.h"
 #include "pmu-ext.h"
 
@@ -583,9 +584,9 @@ static int pmu_ext_regulator_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int pmu_ext_regulator_remove(struct platform_device *pdev)
+static void pmu_ext_regulator_remove(struct platform_device *pdev)
 {
-	return 0;
+	return;
 }
 
 static struct of_device_id pmu_ext_match_table[] = {
@@ -600,7 +601,7 @@ static struct platform_driver pmu_ext_regulator_driver = {
 		.of_match_table = pmu_ext_match_table,
 	},
 	.probe = pmu_ext_regulator_probe,
-	.remove	= pmu_ext_regulator_remove,
+	SUNXI_PLATFORM_REMOVE(pmu_ext_regulator_remove),
 };
 
 static int __init pmu_ext_regulator_init(void)

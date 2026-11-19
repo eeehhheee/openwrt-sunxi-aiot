@@ -18,6 +18,7 @@
 
  #define DEBUG 1
 #include <linux/version.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/gpio.h>
 #include <linux/delay.h>
@@ -4213,18 +4214,18 @@ static int atbm_usb_platform_probe(struct platform_device *pdev)
 #endif
 	return 0;
 }
-static int atbm_usb_platform_remove(struct platform_device *pdev)
+static void atbm_usb_platform_remove(struct platform_device *pdev)
 {
 #ifdef CONFIG_PM_SLEEP
 	atbm_printk_exit("%s\n",__func__);
 	unregister_pm_notifier(&atbm_usb_pm_nb);
 #endif
-	return 0;
+	return;
 }
 
 static struct platform_driver atbm_usb_platform_driver = {
 	.probe = atbm_usb_platform_probe,
-	.remove = atbm_usb_platform_remove,
+	SUNXI_PLATFORM_REMOVE(atbm_usb_platform_remove),
 	.driver = {
 		.name = WIFI_PLFDEVNAME,
 	},

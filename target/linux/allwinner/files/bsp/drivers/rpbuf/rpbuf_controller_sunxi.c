@@ -16,6 +16,7 @@
  */
 
 #include <linux/kernel.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>
 #include <linux/of.h>
@@ -198,7 +199,7 @@ err_out:
 	return ret;
 }
 
-static int sunxi_rpbuf_controller_remove(struct platform_device *pdev)
+static void sunxi_rpbuf_controller_remove(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct rpbuf_controller *controller = dev_get_drvdata(dev);
@@ -223,9 +224,9 @@ static int sunxi_rpbuf_controller_remove(struct platform_device *pdev)
 
 	devm_kfree(dev, chip);
 
-	return 0;
+	return;
 err_out:
-	return ret;
+	return;
 }
 
 static const struct of_device_id sunxi_rpbuf_controller_ids[] = {
@@ -235,7 +236,7 @@ static const struct of_device_id sunxi_rpbuf_controller_ids[] = {
 
 static struct platform_driver sunxi_rpbuf_controller_driver = {
 	.probe	= sunxi_rpbuf_controller_probe,
-	.remove	= sunxi_rpbuf_controller_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_rpbuf_controller_remove),
 	.driver	= {
 		.owner = THIS_MODULE,
 		.name = "sunxi-rpbuf-controller",

@@ -10,6 +10,7 @@
  * warranty of any kind, whether express or implied.
  */
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <sunxi-log.h>
 #include <linux/cdev.h>
 #include <linux/poll.h>
@@ -65,7 +66,7 @@ static SIMPLE_DEV_PM_OPS(aw_hdmi_cec_pm_ops,
 
 static struct platform_driver aw_hdmi_cec_driver = {
 	.probe	= aw_hdmi_cec_probe,
-	.remove	= aw_hdmi_cec_remove,
+	SUNXI_PLATFORM_REMOVE(aw_hdmi_cec_remove),
 	.driver = {
 		.name = "aw-hdmi-cec",
 #if IS_ENABLED(CONFIG_PM_SLEEP)

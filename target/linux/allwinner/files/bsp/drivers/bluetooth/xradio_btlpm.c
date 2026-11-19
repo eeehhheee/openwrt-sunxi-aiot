@@ -9,6 +9,7 @@
 ** published by the Free Software Foundation.
 */
 #include <linux/module.h>
+#include <sunxi-platform.h>
 #include <linux/errno.h>
 #include <linux/init.h>
 #include <linux/interrupt.h>
@@ -774,7 +775,7 @@ exit:
 	return ret;
 }
 
-static int bluesleep_remove(struct platform_device *pdev)
+static void bluesleep_remove(struct platform_device *pdev)
 {
 	BT_SLEEP_DBG();
 	/* assert bt wake */
@@ -796,7 +797,7 @@ static int bluesleep_remove(struct platform_device *pdev)
 		dev_pm_clear_wake_irq(&pdev->dev);
 	}
 
-	return 0;
+	return;
 }
 
 static int bluesleep_resume(struct platform_device *pdev)
@@ -831,7 +832,7 @@ static const struct of_device_id sunxi_btlpm_ids[] = {
 
 static struct platform_driver bluesleep_driver = {
 	.probe = bluesleep_probe,
-	.remove = bluesleep_remove,
+	SUNXI_PLATFORM_REMOVE(bluesleep_remove),
 	.suspend = bluesleep_suspend,
 	.resume = bluesleep_resume,
 	.driver = {

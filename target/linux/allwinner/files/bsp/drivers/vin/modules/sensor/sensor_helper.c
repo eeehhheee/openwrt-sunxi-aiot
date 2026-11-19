@@ -12,6 +12,7 @@
   * published by the Free Software Foundation.
   */
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "../../utility/vin_log.h"
 #include <linux/module.h>
 #include <linux/videodev2.h>
@@ -1136,7 +1137,7 @@ ekzalloc:
 	return ret;
 }
 
-static int sensor_helper_remove(struct platform_device *pdev)
+static void sensor_helper_remove(struct platform_device *pdev)
 {
 	struct sensor_helper_dev *sensor_helper = platform_get_drvdata(pdev);
 
@@ -1152,7 +1153,7 @@ static int sensor_helper_remove(struct platform_device *pdev)
 	sensor_helper->pmic[DVDD] = NULL;
 #endif
 	kfree(sensor_helper);
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_sensor_helper_match[] = {
@@ -1162,7 +1163,7 @@ static const struct of_device_id sunxi_sensor_helper_match[] = {
 
 static struct platform_driver sensor_helper_platform_driver = {
 	.probe = sensor_helper_probe,
-	.remove = sensor_helper_remove,
+	SUNXI_PLATFORM_REMOVE(sensor_helper_remove),
 	.driver = {
 		   .name = SENSOR_MODULE_NAME,
 		   .owner = THIS_MODULE,

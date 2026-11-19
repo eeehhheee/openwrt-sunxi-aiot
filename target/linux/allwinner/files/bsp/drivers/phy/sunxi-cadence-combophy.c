@@ -7,6 +7,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/bitfield.h>
 #include <linux/clk.h>
 #include <linux/delay.h>
@@ -4303,14 +4304,14 @@ static int sunxi_cadence_phy_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int sunxi_cadence_phy_remove(struct platform_device *pdev)
+static void sunxi_cadence_phy_remove(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct sunxi_cadence_phy *sunxi_cphy = dev_get_drvdata(dev);
 
 	sunxi_cadence_phy_serdes_exit(sunxi_cphy);
 
-	return 0;
+	return;
 }
 
 static int __maybe_unused sunxi_cadence_phy_suspend(struct device *dev)
@@ -4358,7 +4359,7 @@ static const struct of_device_id sunxi_cadence_phy_of_match_table[] = {
 
 static struct platform_driver sunxi_cadence_phy_driver = {
 	.probe		= sunxi_cadence_phy_probe,
-	.remove		= sunxi_cadence_phy_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_cadence_phy_remove),
 	.driver = {
 		.name	= "sunxi-cadence-combophy",
 		.pm	= &sunxi_cadence_phy_pm_ops,

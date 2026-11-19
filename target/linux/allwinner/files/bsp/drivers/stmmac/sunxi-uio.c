@@ -4,6 +4,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/of_address.h>
@@ -1055,13 +1056,13 @@ static int sunxi_uio_probe(struct platform_device *pdev)
  * sunxi_uio_remove() - UIO platform driver release
  * routine - unregister uio devices
  */
-static int sunxi_uio_remove(struct platform_device *pdev)
+static void sunxi_uio_remove(struct platform_device *pdev)
 {
 	struct sunxi_uio *chip = platform_get_drvdata(pdev);
 	struct net_device *netdev;
 
 	if (!chip)
-		return -EINVAL;
+		return;
 
 	netdev = chip->ndev;
 
@@ -1081,7 +1082,7 @@ static int sunxi_uio_remove(struct platform_device *pdev)
 		rtnl_unlock();
 	}
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_uio_of_match[] = {
@@ -1096,7 +1097,7 @@ static struct platform_driver sunxi_uio_driver = {
 		.of_match_table	= sunxi_uio_of_match,
 	},
 	.probe	= sunxi_uio_probe,
-	.remove	= sunxi_uio_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_uio_remove),
 };
 module_platform_driver(sunxi_uio_driver);
 

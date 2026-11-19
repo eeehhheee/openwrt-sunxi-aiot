@@ -11,6 +11,7 @@
 #define pr_fmt(x) KBUILD_MODNAME ": " x "\n"
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "axp2202_charger.h"
 
 struct axp2202_acin_power {
@@ -364,7 +365,7 @@ err:
 	return ret;
 }
 
-static int axp2202_acin_remove(struct platform_device *pdev)
+static void axp2202_acin_remove(struct platform_device *pdev)
 {
 	struct axp2202_acin_power *acin_power = platform_get_drvdata(pdev);
 
@@ -376,7 +377,7 @@ static int axp2202_acin_remove(struct platform_device *pdev)
 		power_supply_unregister(acin_power->acin_supply);
 	PMIC_DEV_DEBUG(&pdev->dev, "axp2202 teardown acin dev\n");
 
-	return 0;
+	return;
 }
 
 static inline void axp2202_acin_irq_set(unsigned int irq, bool enable)
@@ -445,7 +446,7 @@ static struct platform_driver axp2202_acin_power_driver = {
 		.of_match_table = axp2202_acin_power_match,
 	},
 	.probe = axp2202_acin_probe,
-	.remove = axp2202_acin_remove,
+	SUNXI_PLATFORM_REMOVE(axp2202_acin_remove),
 	.shutdown = axp2202_acin_shutdown,
 	.suspend = axp2202_acin_suspend,
 	.resume = axp2202_acin_resume,

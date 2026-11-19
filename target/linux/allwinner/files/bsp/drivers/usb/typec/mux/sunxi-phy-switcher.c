@@ -9,6 +9,7 @@
  */
 
 #include <linux/kernel.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/version.h>
 #include <linux/delay.h>
@@ -449,19 +450,12 @@ static int sunxi_phy_switcher_probe(struct platform_device *pdev)
 	return 0;
 }
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 3, 0)
-static int sunxi_phy_switcher_remove(struct platform_device *pdev)
-#else
 static void sunxi_phy_switcher_remove(struct platform_device *pdev)
-#endif
 {
 	struct sunxi_phy_switcher *phy_switcher = dev_get_drvdata(&pdev->dev);
 
 	typec_mux_unregister(phy_switcher->mux);
 	typec_switch_unregister(phy_switcher->sw);
-#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 3, 0)
-	return 0;
-#endif
 }
 
 static const struct of_device_id sunxi_phy_switcher_match[] = {
@@ -470,11 +464,7 @@ static const struct of_device_id sunxi_phy_switcher_match[] = {
 
 static struct platform_driver sunxi_phy_switcher_driver = {
 	.probe = sunxi_phy_switcher_probe,
-#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 3, 0)
-	.remove = sunxi_phy_switcher_remove,
-#else
-	.remove_new = sunxi_phy_switcher_remove,
-#endif
+	SUNXI_PLATFORM_REMOVE(sunxi_phy_switcher_remove),
 	.driver = {
 		.name = "switcher",
 		.owner = THIS_MODULE,

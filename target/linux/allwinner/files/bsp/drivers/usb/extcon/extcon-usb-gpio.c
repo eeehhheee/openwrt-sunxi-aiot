@@ -9,6 +9,7 @@
  */
 
 #include <linux/extcon-provider.h>
+#include <sunxi-platform.h>
 #include <linux/gpio/consumer.h>
 #include <linux/init.h>
 #include <linux/interrupt.h>
@@ -241,7 +242,7 @@ static int usb_extcon_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int usb_extcon_remove(struct platform_device *pdev)
+static void usb_extcon_remove(struct platform_device *pdev)
 {
 	struct usb_extcon_info *info = platform_get_drvdata(pdev);
 
@@ -251,7 +252,7 @@ static int usb_extcon_remove(struct platform_device *pdev)
 		dev_pm_clear_wake_irq(info->dev);
 	}
 
-	return 0;
+	return;
 }
 
 #ifdef CONFIG_PM_SLEEP
@@ -303,7 +304,7 @@ MODULE_DEVICE_TABLE(platform, usb_extcon_platform_ids);
 
 static struct platform_driver usb_extcon_driver = {
 	.probe		= usb_extcon_probe,
-	.remove		= usb_extcon_remove,
+	SUNXI_PLATFORM_REMOVE(usb_extcon_remove),
 	.driver		= {
 		.name	= "extcon-usb-gpio",
 		.pm	= &usb_extcon_pm_ops,

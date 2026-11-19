@@ -14,6 +14,7 @@
 
 /* #define DEBUG */
 #include <linux/arm-smccc.h>
+#include <sunxi-platform.h>
 #include <linux/dma-mapping.h>
 #include <linux/interrupt.h>
 #include <linux/remoteproc.h>
@@ -1796,7 +1797,7 @@ static struct dev_pm_ops sunxi_rproc_pm_ops = {
 };
 #endif
 
-static int sunxi_rproc_remove(struct platform_device *pdev)
+static void sunxi_rproc_remove(struct platform_device *pdev)
 {
 	struct rproc *rproc = platform_get_drvdata(pdev);
 	struct sunxi_rproc *chip = rproc->priv;
@@ -1823,7 +1824,7 @@ static int sunxi_rproc_remove(struct platform_device *pdev)
 
 	rproc_free(rproc);
 
-	return 0;
+	return;
 }
 
 static void sunxi_rproc_shutdown(struct platform_device *pdev)
@@ -1845,7 +1846,7 @@ static void sunxi_rproc_shutdown(struct platform_device *pdev)
 
 static struct platform_driver sunxi_rproc_driver = {
 	.probe = sunxi_rproc_probe,
-	.remove = sunxi_rproc_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_rproc_remove),
 	.shutdown = sunxi_rproc_shutdown,
 	.driver = {
 		.name = "sunxi-rproc", /* dev name */

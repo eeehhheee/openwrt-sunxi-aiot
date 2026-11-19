@@ -16,6 +16,7 @@
  */
 #include "../utility/vin_log.h"
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/aw_rpmsg.h>
@@ -1365,7 +1366,7 @@ ekzalloc:
 	return ret;
 }
 
-static int scaler_remove(struct platform_device *pdev)
+static void scaler_remove(struct platform_device *pdev)
 {
 	struct scaler_dev *scaler = platform_get_drvdata(pdev);
 	struct v4l2_subdev *sd = &scaler->subdev;
@@ -1381,7 +1382,7 @@ static int scaler_remove(struct platform_device *pdev)
 		platform_set_drvdata(pdev, NULL);
 		media_entity_cleanup(&sd->entity);
 		kfree(scaler);
-		return 0;
+		return;
 	}
 	scaler_resource_free(scaler);
 	platform_set_drvdata(pdev, NULL);
@@ -1398,7 +1399,7 @@ static int scaler_remove(struct platform_device *pdev)
 #endif
 	}
 	kfree(scaler);
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_scaler_match[] = {
@@ -1408,7 +1409,7 @@ static const struct of_device_id sunxi_scaler_match[] = {
 
 static struct platform_driver scaler_platform_driver = {
 	.probe    = scaler_probe,
-	.remove   = scaler_remove,
+	SUNXI_PLATFORM_REMOVE(scaler_remove),
 	.driver = {
 		.name   = SCALER_MODULE_NAME,
 		.owner  = THIS_MODULE,

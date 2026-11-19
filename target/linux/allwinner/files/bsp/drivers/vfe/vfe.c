@@ -21,6 +21,7 @@
  * Author: raymonxiu
  */
 #include <linux/module.h>
+#include <sunxi-platform.h>
 #include <linux/errno.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -4864,7 +4865,7 @@ static int vfe_release(void)
 	return 0;
 }
 
-static int vfe_remove(struct platform_device *pdev)
+static void vfe_remove(struct platform_device *pdev)
 {
 	struct vfe_dev *dev = (struct vfe_dev *)dev_get_drvdata(&pdev->dev);
 	int input_num, i, video_cnt = 1;
@@ -4926,7 +4927,7 @@ static int vfe_remove(struct platform_device *pdev)
 
 	vfe_print("vfe_remove ok!\n");
 
-	return 0;
+	return;
 }
 
 static void vfe_suspend_helper(struct vfe_dev *dev)
@@ -5052,7 +5053,7 @@ static const struct of_device_id sunxi_vfe_match[] = {
 
 static struct platform_driver vfe_driver = {
 	.probe    = vfe_probe,
-	.remove   = vfe_remove,
+	SUNXI_PLATFORM_REMOVE(vfe_remove),
 	.shutdown = vfe_shutdown,
 	.driver = {
 		.name   = VFE_MODULE_NAME,

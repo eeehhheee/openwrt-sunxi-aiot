@@ -11,6 +11,7 @@
 #define pr_fmt(x) KBUILD_MODNAME ": " x "\n"
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "sunxi_multi_charge.h"
 
 struct sunxi_multi_charge {
@@ -317,7 +318,7 @@ err:
 	return ret;
 }
 
-static int sunxi_multi_charge_remove(struct platform_device *pdev)
+static void sunxi_multi_charge_remove(struct platform_device *pdev)
 {
 	struct sunxi_multi_charge *mc_power = platform_get_drvdata(pdev);
 
@@ -329,7 +330,7 @@ static int sunxi_multi_charge_remove(struct platform_device *pdev)
 		power_supply_unregister(mc_power->mc_supply);
 	PMIC_DEV_DEBUG(&pdev->dev, "sunxi multi charge teardown dev\n");
 
-	return 0;
+	return;
 }
 
 static inline void sunxi_multi_charge_irq_set(unsigned int irq, bool enable)
@@ -393,7 +394,7 @@ static struct platform_driver sunxi_multi_charge_driver = {
 		.of_match_table = sunxi_multi_charge_match,
 	},
 	.probe = sunxi_multi_charge_probe,
-	.remove = sunxi_multi_charge_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_multi_charge_remove),
 	.shutdown = sunxi_multi_charge_shutdown,
 	.suspend = sunxi_multi_charge_suspend,
 	.resume = sunxi_multi_charge_resume,

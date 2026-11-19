@@ -7,6 +7,7 @@
  */
 
 #include <linux/backlight.h>
+#include <sunxi-platform.h>
 #include <linux/gpio/consumer.h>
 #include <linux/module.h>
 #include <linux/of_platform.h>
@@ -337,7 +338,7 @@ static int panel_lvds_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int panel_lvds_remove(struct platform_device *pdev)
+static void panel_lvds_remove(struct platform_device *pdev)
 {
 	struct panel_lvds *lvds_panel = dev_get_drvdata(&pdev->dev);
 
@@ -346,7 +347,7 @@ static int panel_lvds_remove(struct platform_device *pdev)
 				panel_lvds_disable(&lvds_panel->panel);
 				panel_lvds_unprepare(&lvds_panel->panel);
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id panel_lvds_of_table[] = {
@@ -358,7 +359,7 @@ MODULE_DEVICE_TABLE(of, panel_lvds_of_table);
 
 static struct platform_driver panel_lvds_driver = {
 	.probe = panel_lvds_probe,
-	.remove = panel_lvds_remove,
+	SUNXI_PLATFORM_REMOVE(panel_lvds_remove),
 	.driver = {
 		.name = "sunxi-lvds",
 		.of_match_table = panel_lvds_of_table,

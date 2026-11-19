@@ -15,6 +15,7 @@
  */
 
 #include <linux/module.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/delay.h>
 #include <linux/ioport.h>
@@ -863,7 +864,7 @@ static int sunxi_otg_manager_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int sunxi_otg_manager_remove(struct platform_device *pdev)
+static void sunxi_otg_manager_remove(struct platform_device *pdev)
 {
 
 	int ret;
@@ -873,7 +874,7 @@ static int sunxi_otg_manager_remove(struct platform_device *pdev)
 
 	if (g_usb_cfg.port.enable == 0) {
 		DMSG_WARN("wrn: usb0 is disable\n");
-		return 0;
+		return;
 	}
 
 	if (g_usb_cfg.port.port_type == USB_PORT_TYPE_OTG) {
@@ -917,7 +918,7 @@ static int sunxi_otg_manager_remove(struct platform_device *pdev)
 	sunxi_det_vbus_gpio_disable_power(&g_usb_cfg);
 	cancel_work_sync(&g_usb_cfg.resume_work);
 
-	return 0;
+	return;
 }
 
 #if IS_ENABLED(CONFIG_PM)
@@ -988,7 +989,7 @@ MODULE_DEVICE_TABLE(of, sunxi_otg_manager_match);
 
 static struct platform_driver sunxi_otg_manager_platform_driver = {
 	.probe  = sunxi_otg_manager_probe,
-	.remove = sunxi_otg_manager_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_otg_manager_remove),
 	.driver = {
 		.name  = "otg manager",
 		.pm    = OTG_MANAGER_PM_OPS,

@@ -7,6 +7,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "tcpci_axp517_core.h"
 
 static const char * const typec_cc_status_name[] = {
@@ -638,7 +639,7 @@ static void axp517_tcpci_delayed_work_set(struct axp517_tcpci_chip *chip, bool e
 	}
 }
 
-static int axp517_tcpci_remove(struct platform_device *pdev)
+static void axp517_tcpci_remove(struct platform_device *pdev)
 {
 	struct axp517_tcpci_chip *chip = platform_get_drvdata(pdev);
 
@@ -649,7 +650,7 @@ static int axp517_tcpci_remove(struct platform_device *pdev)
 	usb_role_switch_put(chip->role_sw);
 	axp517_tcpci_unregister_port_overrides(chip->tcpci);
 
-	return 0;
+	return;
 }
 
 /*
@@ -747,7 +748,7 @@ static struct platform_driver axp517_tcpci_plat_driver = {
 		.of_match_table = axp517_tcpci_of_id,
 	},
 	.probe = axp517_tcpci_probe,
-	.remove = axp517_tcpci_remove,
+	SUNXI_PLATFORM_REMOVE(axp517_tcpci_remove),
 	.shutdown = axp517_tcpci_shutdown,
 };
 module_platform_driver(axp517_tcpci_plat_driver);

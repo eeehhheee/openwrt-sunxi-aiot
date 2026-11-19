@@ -17,6 +17,7 @@
 #include <linux/module.h>
 #include <linux/of_device.h>
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/regulator/consumer.h>
 #include "ahci.h"
 
@@ -343,7 +344,7 @@ MODULE_DEVICE_TABLE(of, ahci_sunxi_of_match);
 
 static struct platform_driver ahci_sunxi_driver = {
 	.probe = ahci_sunxi_probe,
-	.remove = ata_platform_remove_one,
+	SUNXI_PLATFORM_REMOVE(ata_platform_remove_one),
 	.driver = {
 		.name = DRV_NAME,
 		.of_match_table = ahci_sunxi_of_match,

@@ -17,6 +17,7 @@
  */
 
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #if defined(CONFIG_AW_SERIAL_CONSOLE) && defined(CONFIG_MAGIC_SYSRQ)
 #define SUPPORT_SYSRQ
 #endif
@@ -2305,7 +2306,7 @@ static int sw_uart_probe(struct platform_device *pdev)
 	return uart_add_one_port(&sw_uart_driver, port);
 }
 
-static int sw_uart_remove(struct platform_device *pdev)
+static void sw_uart_remove(struct platform_device *pdev)
 {
 	struct sw_uart_port *sw_uport = platform_get_drvdata(pdev);
 
@@ -2315,7 +2316,7 @@ static int sw_uart_remove(struct platform_device *pdev)
 	sw_uart_release_dma_rx(sw_uport);
 #endif
 	sw_uart_release_resource(sw_uport, pdev->dev.platform_data);
-	return 0;
+	return;
 }
 
 /* UART power management code */
@@ -2389,7 +2390,7 @@ MODULE_DEVICE_TABLE(of, sunxi_uart_match);
 
 static struct platform_driver sw_uport_platform_driver = {
 	.probe  = sw_uart_probe,
-	.remove = sw_uart_remove,
+	SUNXI_PLATFORM_REMOVE(sw_uart_remove),
 	.driver = {
 		.name  = SUNXI_UART_DEV_NAME,
 		.pm    = SERIAL_SW_PM_OPS,

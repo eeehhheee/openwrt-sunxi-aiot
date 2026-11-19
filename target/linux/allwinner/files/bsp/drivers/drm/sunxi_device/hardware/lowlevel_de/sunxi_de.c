@@ -10,6 +10,7 @@
  * option) any later version.
  */
 #include <linux/version.h>
+#include <sunxi-platform.h>
 #include <linux/of_device.h>
 #include <linux/hrtimer.h>
 #include <linux/dma-mapping.h>
@@ -1636,7 +1637,7 @@ OUT:
 	return ret;
 }
 
-static int sunxi_de_remove(struct platform_device *pdev)
+static void sunxi_de_remove(struct platform_device *pdev)
 {
 	struct sunxi_display_engine *engine;
 	engine = dev_get_drvdata(&pdev->dev);
@@ -1645,7 +1646,7 @@ static int sunxi_de_remove(struct platform_device *pdev)
 	component_del(&pdev->dev, &sunxi_de_component_ops);
 	sunxi_de_reg_mem_deinit(engine);
 	sunxi_display_engine_exit(&pdev->dev);
-	return 0;
+	return;
 }
 
 static const struct de_match_data de350_data = {
@@ -1702,7 +1703,7 @@ static const struct of_device_id sunxi_de_match[] = {
 
 struct platform_driver sunxi_de_platform_driver = {
 	.probe = sunxi_de_probe,
-	.remove = sunxi_de_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_de_remove),
 	.driver = {
 		   .name = "sunxi-display-engine",
 		   .owner = THIS_MODULE,

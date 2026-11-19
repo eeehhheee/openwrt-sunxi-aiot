@@ -7,6 +7,7 @@
  */
 
 #include <linux/backlight.h>
+#include <sunxi-platform.h>
 #include <linux/gpio/consumer.h>
 #include <linux/module.h>
 #include <linux/of_platform.h>
@@ -349,7 +350,7 @@ static int panel_rgb_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int panel_rgb_remove(struct platform_device *pdev)
+static void panel_rgb_remove(struct platform_device *pdev)
 {
 	struct panel_rgb *rgb_panel = dev_get_drvdata(&pdev->dev);
 
@@ -358,7 +359,7 @@ static int panel_rgb_remove(struct platform_device *pdev)
 				panel_rgb_disable(&rgb_panel->panel);
 				panel_rgb_unprepare(&rgb_panel->panel);
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id panel_rgb_of_table[] = {
@@ -370,7 +371,7 @@ MODULE_DEVICE_TABLE(of, panel_rgb_of_table);
 
 static struct platform_driver panel_rgb_driver = {
 	.probe = panel_rgb_probe,
-	.remove = panel_rgb_remove,
+	SUNXI_PLATFORM_REMOVE(panel_rgb_remove),
 	.driver = {
 		.name = "sunxi-rgb",
 		.of_match_table = panel_rgb_of_table,

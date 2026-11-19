@@ -3,6 +3,7 @@
 #define pr_fmt(x) KBUILD_MODNAME ": " x "\n"
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "eta6973_charger.h"
 
 #define DIVIDE_BY_60(n) (((n) / 60) * 60)
@@ -1282,7 +1283,7 @@ err:
 	return ret;
 }
 
-static int eta6973_charger_remove(struct platform_device *pdev)
+static void eta6973_charger_remove(struct platform_device *pdev)
 {
 	struct eta6973_power *charger_power = platform_get_drvdata(pdev);
 
@@ -1293,7 +1294,7 @@ static int eta6973_charger_remove(struct platform_device *pdev)
 		power_supply_unregister(charger_power->charger_supply);
 	PMIC_DEV_DEBUG(&pdev->dev, "eta6973 teardown charger dev\n");
 
-	return 0;
+	return;
 }
 
 static void eta6973_charger_shutdown(struct platform_device *pdev)
@@ -1359,7 +1360,7 @@ static struct platform_driver eta6973_charger_power_driver = {
 		.of_match_table = eta6973_charger_power_match,
 	},
 	.probe = eta6973_charger_probe,
-	.remove = eta6973_charger_remove,
+	SUNXI_PLATFORM_REMOVE(eta6973_charger_remove),
 	.shutdown = eta6973_charger_shutdown,
 	.suspend = eta6973_charger_suspend,
 	.resume = eta6973_charger_resume,

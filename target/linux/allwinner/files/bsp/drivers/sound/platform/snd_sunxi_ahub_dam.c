@@ -13,6 +13,7 @@
 
 #define SUNXI_MODNAME		"sound-ahub-dam"
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "snd_sunxi_log.h"
 #include <linux/module.h>
 #include <sound/soc.h>
@@ -1075,7 +1076,7 @@ err_snd_sunxi_mem_init:
 	return ret;
 }
 
-static int sunxi_ahub_dam_dev_remove(struct platform_device *pdev)
+static void sunxi_ahub_dam_dev_remove(struct platform_device *pdev)
 {
 	struct sunxi_ahub_mem *mem = &sunxi_mem;
 	struct sunxi_ahub_clk *clk = &sunxi_clk;
@@ -1096,7 +1097,7 @@ static int sunxi_ahub_dam_dev_remove(struct platform_device *pdev)
 
 	SND_LOG_DEBUG("unregister ahub_dam platform success\n");
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_ahub_dam_of_match[] = {
@@ -1112,7 +1113,7 @@ static struct platform_driver sunxi_ahub_dam_driver = {
 		.of_match_table	= sunxi_ahub_dam_of_match,
 	},
 	.probe	= sunxi_ahub_dam_dev_probe,
-	.remove	= sunxi_ahub_dam_dev_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_ahub_dam_dev_remove),
 };
 
 int __init sunxi_ahub_dam_dev_init(void)

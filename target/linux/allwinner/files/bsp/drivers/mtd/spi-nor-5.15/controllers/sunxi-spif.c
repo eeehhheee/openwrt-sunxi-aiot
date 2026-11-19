@@ -17,6 +17,7 @@
  */
 
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/spinlock.h>
@@ -2039,7 +2040,7 @@ err0:
 	return err;
 }
 
-static int sunxi_spif_remove(struct platform_device *pdev)
+static void sunxi_spif_remove(struct platform_device *pdev)
 {
 	struct sunxi_spif *sspi = platform_get_drvdata(pdev);
 	int i;
@@ -2051,7 +2052,7 @@ static int sunxi_spif_remove(struct platform_device *pdev)
 	dmam_pool_destroy(sspi->pool);
 	platform_set_drvdata(pdev, NULL);
 
-	return 0;
+	return;
 }
 
 #if IS_ENABLED(CONFIG_PM)
@@ -2114,7 +2115,7 @@ static const struct dev_pm_ops sunxi_spif_dev_pm_ops = {
 
 static struct platform_driver sunxi_spif_driver = {
 	.probe   = sunxi_spif_probe,
-	.remove  = sunxi_spif_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_spif_remove),
 	.driver = {
 		.name		= SUNXI_SPIF_DEV_NAME,
 		.owner		= THIS_MODULE,

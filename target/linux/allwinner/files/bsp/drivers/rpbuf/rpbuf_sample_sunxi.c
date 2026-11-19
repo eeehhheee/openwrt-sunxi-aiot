@@ -17,6 +17,7 @@
 
 
 #include <linux/kernel.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>
 #include <linux/of.h>
@@ -395,7 +396,7 @@ err_out:
 	return ret;
 }
 
-static int sunxi_rpbuf_sample_remove(struct platform_device *pdev)
+static void sunxi_rpbuf_sample_remove(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct sunxi_rpbuf_sample_instance *inst = dev_get_drvdata(dev);
@@ -404,7 +405,7 @@ static int sunxi_rpbuf_sample_remove(struct platform_device *pdev)
 
 	devm_kfree(dev, inst);
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_rpbuf_sample_ids[] = {
@@ -414,7 +415,7 @@ static const struct of_device_id sunxi_rpbuf_sample_ids[] = {
 
 static struct platform_driver sunxi_rpbuf_sample_driver = {
 	.probe	= sunxi_rpbuf_sample_probe,
-	.remove	= sunxi_rpbuf_sample_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_rpbuf_sample_remove),
 	.driver	= {
 		.owner = THIS_MODULE,
 		.name = "sunxi-rpbuf-sample",

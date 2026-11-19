@@ -2,6 +2,7 @@
 /* Copyright(c) 2007 - 2017 Realtek Corporation */
 
 #include <drv_types.h>
+#include <sunxi-platform.h>
 
 #if defined(RTW_ENABLE_WIFI_CONTROL_FUNC)
 #include <linux/platform_device.h>
@@ -683,7 +684,7 @@ static int wifi_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int wifi_remove(struct platform_device *pdev)
+static void wifi_remove(struct platform_device *pdev)
 {
 	struct wifi_platform_data *wifi_ctrl =
 		(struct wifi_platform_data *)(pdev->dev.platform_data);
@@ -695,7 +696,7 @@ static int wifi_remove(struct platform_device *pdev)
 	wifi_set_carddetect(0);	/* CardDetect (1->0) */
 
 	up(&wifi_control_sem);
-	return 0;
+	return;
 }
 
 static int wifi_suspend(struct platform_device *pdev, pm_message_t state)
@@ -720,7 +721,7 @@ static int wifi_resume(struct platform_device *pdev)
 /* temporarily use these two */
 static struct platform_driver wifi_device = {
 	.probe          = wifi_probe,
-	.remove         = wifi_remove,
+	SUNXI_PLATFORM_REMOVE(wifi_remove),
 	.suspend        = wifi_suspend,
 	.resume         = wifi_resume,
 	.driver         = {
@@ -730,7 +731,7 @@ static struct platform_driver wifi_device = {
 
 static struct platform_driver wifi_device_legacy = {
 	.probe          = wifi_probe,
-	.remove         = wifi_remove,
+	SUNXI_PLATFORM_REMOVE(wifi_remove),
 	.suspend        = wifi_suspend,
 	.resume         = wifi_resume,
 	.driver         = {

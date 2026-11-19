@@ -52,6 +52,7 @@
 *
 *****************************************************************************/
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <gc_vip_kernel_pm.h>
 #include <gc_vip_kernel_debug.h>
 #include <gc_vip_kernel_drv.h>
@@ -1658,7 +1659,7 @@ static vip_int32_t gckvip_platform_probe(
     return ret;
 }
 
-static vip_int32_t gckvip_platform_remove(
+static void gckvip_platform_remove(
     struct platform_device *pdev
     )
 {
@@ -1666,7 +1667,7 @@ static vip_int32_t gckvip_platform_remove(
 
     gckvip_drv_unadjust_param(kdriver);
 
-    return 0;
+    return;
 }
 
 static vip_int32_t gckvip_platform_suspend(
@@ -1703,7 +1704,7 @@ end:
 
 static struct platform_driver gcvip_platform_driver = {
     .probe      = gckvip_platform_probe,
-    .remove     = gckvip_platform_remove,
+    SUNXI_PLATFORM_REMOVE(gckvip_platform_remove),
     .suspend    = gckvip_platform_suspend,
     .resume     = gckvip_platform_resume,
     .driver     = {

@@ -9,6 +9,7 @@
  */
 
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/of.h>
 #include <linux/of_platform.h>
@@ -124,7 +125,7 @@ remove_file:
 	return ret;
 }
 
-static int sunxi_pdtest_remove(struct platform_device *pdev)
+static void sunxi_pdtest_remove(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 
@@ -132,7 +133,7 @@ static int sunxi_pdtest_remove(struct platform_device *pdev)
 	pm_runtime_dont_use_autosuspend(&pdev->dev);
 	device_remove_file(dev, &dev_attr_status);
 
-	return 0;
+	return;
 }
 
 static int sunxi_pdtest_runtime_suspend(struct device *dev)
@@ -185,7 +186,7 @@ static const struct of_device_id sunxi_pdtest_match[] = {
 
 static struct platform_driver sunxi_pdtest_driver = {
 	.probe = sunxi_pdtest_probe,
-	.remove	= sunxi_pdtest_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_pdtest_remove),
 	.driver = {
 		.name = "pdtest",
 		.owner = THIS_MODULE,

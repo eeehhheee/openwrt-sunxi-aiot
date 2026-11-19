@@ -2,6 +2,7 @@
 #define pr_fmt(x) KBUILD_MODNAME ": " x "\n"
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "axp803_charger.h"
 
 struct axp803_ac_power {
@@ -239,13 +240,13 @@ static int axp803_ac_power_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int axp803_ac_power_remove(struct platform_device *pdev)
+static void axp803_ac_power_remove(struct platform_device *pdev)
 {
 	struct axp803_ac_power *ac_power = platform_get_drvdata(pdev);
 
 	cancel_delayed_work_sync(&ac_power->ac_supply_mon);
 
-	return 0;
+	return;
 }
 
 static inline void axp_irq_set(unsigned int irq, bool enable)
@@ -309,7 +310,7 @@ static struct platform_driver axp803_ac_power_driver = {
 		.of_match_table = axp803_ac_power_match,
 	},
 	.probe = axp803_ac_power_probe,
-	.remove = axp803_ac_power_remove,
+	SUNXI_PLATFORM_REMOVE(axp803_ac_power_remove),
 	.shutdown = axp803_ac_power_shutdown,
 	.suspend = axp803_ac_power_suspend,
 	.resume = axp803_ac_power_resume,

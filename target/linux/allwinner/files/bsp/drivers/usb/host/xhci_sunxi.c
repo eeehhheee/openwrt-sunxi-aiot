@@ -15,6 +15,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/time.h>
 #include <linux/timer.h>
 #include <linux/dma-mapping.h>
@@ -530,21 +531,21 @@ static int sunxi_xhci_hcd_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int sunxi_xhci_hcd_remove(struct platform_device *pdev)
+static void sunxi_xhci_hcd_remove(struct platform_device *pdev)
 {
 	struct sunxi_hci_hcd *sunxi_xhci = NULL;
 	struct sunxi_hci_hcd *dev_data = NULL;
 
 	if (pdev == NULL) {
 		DMSG_ERR("%s, Argment is invalid\n", __func__);
-		return -1;
+		return;
 	}
 
 	sunxi_xhci = g_sunxi_xhci;
 	dev_data = g_dev_data;
 	if (sunxi_xhci == NULL) {
 		DMSG_ERR("%s, sunxi_xhci is null\n", __func__);
-		return -1;
+		return;
 	}
 
 	device_remove_file(&pdev->dev, &dev_attr_xhci_enable);
@@ -554,7 +555,7 @@ static int sunxi_xhci_hcd_remove(struct platform_device *pdev)
 
 	dev_data->probe = 0;
 
-	return 0;
+	return;
 }
 
 static void sunxi_xhci_hcd_shutdown(struct platform_device *pdev)
@@ -779,7 +780,7 @@ MODULE_DEVICE_TABLE(of, sunxi_xhci_match);
 
 static struct platform_driver sunxi_xhci_hcd_driver = {
 	.probe  = sunxi_xhci_hcd_probe,
-	.remove	= sunxi_xhci_hcd_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_xhci_hcd_remove),
 	.shutdown = sunxi_xhci_hcd_shutdown,
 	.driver = {
 			.name	= xhci_name,

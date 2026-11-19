@@ -14,6 +14,7 @@
 
 #define SUNXI_MODNAME	"google_vp9"
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/ioctl.h>
@@ -899,10 +900,10 @@ static void googleVp9dev_exit(void)
 	kfree(google_vp9_devp);
 }
 
-static int  sunxi_google_vp9_remove(struct platform_device *pdev)
+static void  sunxi_google_vp9_remove(struct platform_device *pdev)
 {
 	googleVp9dev_exit();
-	return 0;
+	return;
 }
 
 static int  sunxi_google_vp9_probe(struct platform_device *pdev)
@@ -919,7 +920,7 @@ MODULE_DEVICE_TABLE(of, sunxi_google_vp9_match);
 
 static struct platform_driver sunxi_google_vp9_driver = {
 	.probe		= sunxi_google_vp9_probe,
-	.remove		= sunxi_google_vp9_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_google_vp9_remove),
 	.suspend	= snd_sw_google_vp9_suspend,
 	.resume		= snd_sw_google_vp9_resume,
 	.driver		= {

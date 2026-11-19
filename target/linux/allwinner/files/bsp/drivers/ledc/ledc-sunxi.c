@@ -13,6 +13,7 @@
  */
 
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/delay.h>
 #include <linux/leds.h>
@@ -1812,7 +1813,7 @@ err0:
 	return ret;
 }
 
-static int sunxi_ledc_remove(struct platform_device *pdev)
+static void sunxi_ledc_remove(struct platform_device *pdev)
 {
 	struct sunxi_ledc *led = platform_get_drvdata(pdev);
 
@@ -1830,7 +1831,7 @@ static int sunxi_ledc_remove(struct platform_device *pdev)
 
 	sunxi_info(led->dev, "ledc remove finish\n");
 
-	return 0;
+	return;
 }
 
 #if IS_ENABLED(CONFIG_PM)
@@ -1984,7 +1985,7 @@ static const struct of_device_id sunxi_led_dt_ids[] = {
 
 static struct platform_driver sunxi_ledc_driver = {
 	.probe		= sunxi_ledc_probe,
-	.remove		= sunxi_ledc_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_ledc_remove),
 	.driver		= {
 		.name	= "sunxi-leds",
 		.owner	= THIS_MODULE,

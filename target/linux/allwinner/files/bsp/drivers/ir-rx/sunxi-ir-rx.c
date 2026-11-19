@@ -16,6 +16,7 @@
 /* #define DEBUG */
 #define SUNXI_MODNAME "irrx"
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/module.h>
@@ -785,7 +786,7 @@ err0:
 	return ret;
 }
 
-static int sunxi_irrx_remove(struct platform_device *pdev)
+static void sunxi_irrx_remove(struct platform_device *pdev)
 {
 	struct sunxi_ir_rx *chip = platform_get_drvdata(pdev);
 
@@ -796,7 +797,7 @@ static int sunxi_irrx_remove(struct platform_device *pdev)
 
 	rc_map_unregister(&sunxi_map);
 
-	return 0;
+	return;
 }
 
 #ifdef CONFIG_PM
@@ -869,7 +870,7 @@ static const struct dev_pm_ops sunxi_ir_recv_pm_ops = {
 
 static struct platform_driver sunxi_ir_recv_driver = {
 	.probe  = sunxi_irrx_probe,
-	.remove = sunxi_irrx_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_irrx_remove),
 	.driver = {
 		.name   = SUNXI_IR_DRIVER_NAME,
 		.owner  = THIS_MODULE,

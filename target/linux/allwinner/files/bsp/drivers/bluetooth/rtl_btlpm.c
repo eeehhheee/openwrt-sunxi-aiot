@@ -27,7 +27,8 @@
 */
 #define DEBUG
 
-#include <linux/module.h>       /* kernel module definitions */
+#include <linux/module.h>
+#include <sunxi-platform.h>       /* kernel module definitions */
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/platform_device.h>
@@ -551,7 +552,7 @@ static int __init bluesleep_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int bluesleep_remove(struct platform_device *pdev)
+static void bluesleep_remove(struct platform_device *pdev)
 {
 	if (test_bit(BT_PROTO, &flags)) {
 		if (disable_irq_wake(bsi->host_wake_irq))
@@ -567,7 +568,7 @@ static int bluesleep_remove(struct platform_device *pdev)
 		dev_pm_clear_wake_irq(&pdev->dev);
 	}
 
-	return 0;
+	return;
 }
 
 static int bluesleep_resume(struct platform_device *pdev)
@@ -590,7 +591,7 @@ static const struct of_device_id sunxi_btlpm_ids[] = {
 };
 
 static struct platform_driver bluesleep_driver = {
-	.remove	= bluesleep_remove,
+	SUNXI_PLATFORM_REMOVE(bluesleep_remove),
 	.suspend = bluesleep_suspend,
 	.resume = bluesleep_resume,
 	.driver	= {

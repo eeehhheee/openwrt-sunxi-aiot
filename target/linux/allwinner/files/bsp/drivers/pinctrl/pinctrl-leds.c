@@ -15,6 +15,7 @@
 
 
 #include <linux/kernel.h>
+#include <sunxi-platform.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
 #include <linux/module.h>
@@ -517,7 +518,7 @@ err0:
 	return err;
 }
 
-static int sunxi_dirgpio_remove(struct platform_device *pdev)
+static void sunxi_dirgpio_remove(struct platform_device *pdev)
 {
 	struct sunxi_dirgpio *chip = platform_get_drvdata(pdev);
 
@@ -528,7 +529,7 @@ static int sunxi_dirgpio_remove(struct platform_device *pdev)
 	class_destroy(chip->gpio_class);
 
 	dev_info(chip->dev, "sunxi direct gpio remove success\n");
-	return 0;
+	return;
 }
 
 #if IS_ENABLED(CONFIG_PM)
@@ -575,7 +576,7 @@ static struct platform_driver sunxi_dirgpio_driver = {
 		   .of_match_table = of_match_ptr(sunxi_dirgpio_of_match),
 	},
 	.probe	= sunxi_dirgpio_probe,
-	.remove	= sunxi_dirgpio_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_dirgpio_remove),
 };
 
 module_platform_driver(sunxi_dirgpio_driver);

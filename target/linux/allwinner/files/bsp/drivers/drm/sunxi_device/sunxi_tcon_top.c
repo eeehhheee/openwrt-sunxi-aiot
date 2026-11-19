@@ -11,6 +11,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/of_device.h>
 #include <linux/clk.h>
 #include <linux/reset.h>
@@ -130,10 +131,10 @@ static int sunxi_tcon_top_probe(struct platform_device *pdev)
 	return component_add(&pdev->dev, &sunxi_tcon_top_component_ops);
 }
 
-static int sunxi_tcon_top_remove(struct platform_device *pdev)
+static void sunxi_tcon_top_remove(struct platform_device *pdev)
 {
 	component_del(&pdev->dev, &sunxi_tcon_top_component_ops);
-	return 0;
+	return;
 }
 
 /* Note: sunxi-lcd is represented of sunxi tcon,
@@ -157,7 +158,7 @@ static const struct of_device_id sunxi_tcon_top_match[] = {
 
 struct platform_driver sunxi_tcon_top_platform_driver = {
 	.probe = sunxi_tcon_top_probe,
-	.remove = sunxi_tcon_top_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_tcon_top_remove),
 	.driver = {
 		   .name = "tcon-top",
 		   .owner = THIS_MODULE,

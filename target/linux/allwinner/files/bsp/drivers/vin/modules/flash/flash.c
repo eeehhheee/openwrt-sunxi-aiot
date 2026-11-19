@@ -18,6 +18,7 @@
  */
 #include "../../utility/vin_log.h"
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/delay.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -397,7 +398,7 @@ ekzalloc:
 	return ret;
 }
 
-static int flash_remove(struct platform_device *pdev)
+static void flash_remove(struct platform_device *pdev)
 {
 	struct flash_dev *flash = platform_get_drvdata(pdev);
 	struct v4l2_subdev *sd = &flash->subdev;
@@ -408,7 +409,7 @@ static int flash_remove(struct platform_device *pdev)
 	list_del(&flash->flash_list);
 
 	kfree(flash);
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_flash_match[] = {
@@ -418,7 +419,7 @@ static const struct of_device_id sunxi_flash_match[] = {
 
 static struct platform_driver flash_platform_driver = {
 	.probe = flash_probe,
-	.remove = flash_remove,
+	SUNXI_PLATFORM_REMOVE(flash_remove),
 	.driver = {
 		   .name = FLASH_MODULE_NAME,
 		   .owner = THIS_MODULE,

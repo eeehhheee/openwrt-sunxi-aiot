@@ -5,6 +5,7 @@
  * Copyright (C) 2019 frank@allwinnertech.com
  */
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #include <linux/clk.h>
 #include <linux/device.h>
 #include <linux/interrupt.h>
@@ -1007,7 +1008,7 @@ static int sunxi_ths_probe(struct platform_device *pdev)
 	return ret;
 }
 
-static int sunxi_ths_remove(struct platform_device *pdev)
+static void sunxi_ths_remove(struct platform_device *pdev)
 {
 	struct ths_device *tmdev = platform_get_drvdata(pdev);
 
@@ -1019,7 +1020,7 @@ static int sunxi_ths_remove(struct platform_device *pdev)
 	sunxi_ths_critical_handler_deinit();
 #endif
 
-	return 0;
+	return;
 }
 
 static int __maybe_unused sunxi_thermal_suspend(struct device *dev)
@@ -1198,7 +1199,7 @@ static SIMPLE_DEV_PM_OPS(sunxi_thermal_pm_ops,
 
 static struct platform_driver ths_driver = {
 	.probe = sunxi_ths_probe,
-	.remove = sunxi_ths_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_ths_remove),
 	.driver = {
 		.name = "sunxi-thermal",
 		.pm = &sunxi_thermal_pm_ops,

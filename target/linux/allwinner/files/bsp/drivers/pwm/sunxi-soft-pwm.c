@@ -11,6 +11,7 @@
  */
 
 #include <linux/init.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/device.h>
@@ -373,7 +374,7 @@ err_alloc_region:
 	return ret;
 }
 
-static int sunxi_soft_pwm_remove(struct platform_device *pdev)
+static void sunxi_soft_pwm_remove(struct platform_device *pdev)
 {
 	int i;
 	struct device *dev = &pdev->dev;
@@ -396,7 +397,7 @@ static int sunxi_soft_pwm_remove(struct platform_device *pdev)
 		unregister_chrdev_region(gpwm->devno, 1);
 	}
 
-	return 0;
+	return;
 }
 
 static struct of_device_id sunxi_soft_pwm_of_match[] = {
@@ -407,7 +408,7 @@ MODULE_DEVICE_TABLE(of, sunxi_soft_pwm_of_match);
 
 static struct platform_driver sunxi_soft_pwm_driver = {
 	.probe = sunxi_soft_pwm_probe,
-	.remove = sunxi_soft_pwm_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_soft_pwm_remove),
 	.driver = {
 		.name = "sunxi-soft-pwm",
 		.owner = THIS_MODULE,

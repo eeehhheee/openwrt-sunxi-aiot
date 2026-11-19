@@ -7,6 +7,7 @@
 
 #define SUNXI_MODNAME "spi"
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <sunxi-log.h>
 #include <linux/interrupt.h>
 #include <linux/dma-mapping.h>
@@ -2837,7 +2838,7 @@ err0:
 	return ret;
 }
 
-static int sunxi_spi_remove(struct platform_device *pdev)
+static void sunxi_spi_remove(struct platform_device *pdev)
 {
 	struct sunxi_spi *sspi = spi_controller_get_devdata(platform_get_drvdata(pdev));
 
@@ -2848,7 +2849,7 @@ static int sunxi_spi_remove(struct platform_device *pdev)
 	sunxi_spi_hw_exit(sspi);
 	sunxi_spi_release_dma(sspi);
 
-	return 0;
+	return;
 }
 
 static int __maybe_unused sunxi_spi_suspend(struct device *dev)
@@ -2990,7 +2991,7 @@ MODULE_DEVICE_TABLE(of, sunxi_spi_match);
 
 static struct platform_driver sunxi_spi_driver = {
 	.probe   = sunxi_spi_probe,
-	.remove  = sunxi_spi_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_spi_remove),
 	.driver = {
 		.name	= SUNXI_SPI_DEV_NAME,
 		.pm		= &sunxi_spi_dev_pm_ops,

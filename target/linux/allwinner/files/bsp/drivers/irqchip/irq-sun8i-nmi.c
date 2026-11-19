@@ -14,6 +14,7 @@
 #define pr_fmt(fmt)	DRV_NAME ": " fmt
 
 #include <linux/bitops.h>
+#include <sunxi-platform.h>
 #include <linux/device.h>
 #include <linux/io.h>
 #include <linux/irq.h>
@@ -274,7 +275,7 @@ static int sunxi_irq_nmi_probe(struct platform_device *pdev)
 	return sunxi_sc_nmi_irq_init(pdev->dev.of_node, reg_offs);
 }
 
-static int sunxi_irq_nmi_remove(struct platform_device *pdev)
+static void sunxi_irq_nmi_remove(struct platform_device *pdev)
 {
 	struct device_node *node = pdev->dev.of_node;
 	struct resource res;
@@ -285,7 +286,7 @@ static int sunxi_irq_nmi_remove(struct platform_device *pdev)
 	release_mem_region(res.start, resource_size(&res));
 	irq_domain_remove(sys_gc->domain);
 
-	return 0;
+	return;
 }
 
 static struct of_device_id sunxi_irq_nmi_match[] = {
@@ -296,7 +297,7 @@ static struct of_device_id sunxi_irq_nmi_match[] = {
 
 static struct platform_driver sunxi_irq_nmi_driver = {
 	.probe = sunxi_irq_nmi_probe,
-	.remove = sunxi_irq_nmi_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_irq_nmi_remove),
 	.driver = {
 		.name = "sunxi_irq_nmi",
 		.owner = THIS_MODULE,

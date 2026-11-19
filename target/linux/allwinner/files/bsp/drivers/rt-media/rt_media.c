@@ -2,6 +2,7 @@
 /* Copyright(c) 2020 - 2023 Allwinner Technology Co.,Ltd. All rights reserved. */
 #define LOG_TAG "rt_media"
 #include <linux/init.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/ioctl.h>
 #include <linux/fs.h>
@@ -2714,7 +2715,7 @@ static int rt_media_probe(struct platform_device *pdev)
 
 	return 0;
 }
-static int rt_media_remove(struct platform_device *pdev)
+static void rt_media_remove(struct platform_device *pdev)
 {
 	dev_t dev;
 
@@ -2736,12 +2737,12 @@ static int rt_media_remove(struct platform_device *pdev)
 	unregister_chrdev_region(dev, 1);
 
 	kfree(rt_media_devp);
-	return 0;
+	return;
 }
 
 static struct platform_driver rt_media_driver = {
 	.probe  = rt_media_probe,
-	.remove = rt_media_remove,
+	SUNXI_PLATFORM_REMOVE(rt_media_remove),
 #if defined(CONFIG_PM)
 	.suspend = rt_media_suspend,
 	.resume  = rt_media_resume,

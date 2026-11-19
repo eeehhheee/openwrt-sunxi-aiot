@@ -13,6 +13,7 @@
 
 #define SUNXI_MODNAME		"sound-syscfg"
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <sound/soc.h>
 #include <linux/of.h>
@@ -127,13 +128,13 @@ err_devm_kzalloc:
 	return ret;
 }
 
-static int sunxi_syscfg_dev_remove(struct platform_device *pdev)
+static void sunxi_syscfg_dev_remove(struct platform_device *pdev)
 {
 	struct sunxi_syscfg_mem *mem = dev_get_drvdata(&pdev->dev);
 
 	snd_sunxi_mem_exit(pdev, mem);
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id snd_syscfg_of_match[] = {
@@ -151,7 +152,7 @@ static struct platform_driver sunxi_syscfg_driver = {
 		.of_match_table	= snd_syscfg_of_match,
 	},
 	.probe	= sunxi_syscfg_dev_probe,
-	.remove	= sunxi_syscfg_dev_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_syscfg_dev_remove),
 };
 
 int __init sunxi_syscfg_dev_init(void)

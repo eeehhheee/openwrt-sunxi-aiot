@@ -11,6 +11,7 @@
  * warranty of any kind, whether express or implied.
  */
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/of_device.h>
 #include <linux/component.h>
 #include <linux/pinctrl/consumer.h>
@@ -948,15 +949,15 @@ static int sunxi_drm_rgb_probe(struct platform_device *pdev)
 	return component_add(&pdev->dev, &sunxi_drm_rgb_component_ops);
 }
 
-static int sunxi_drm_rgb_remove(struct platform_device *pdev)
+static void sunxi_drm_rgb_remove(struct platform_device *pdev)
 {
 	component_del(&pdev->dev, &sunxi_drm_rgb_component_ops);
-	return 0;
+	return;
 }
 
 struct platform_driver sunxi_rgb_platform_driver = {
 	.probe = sunxi_drm_rgb_probe,
-	.remove = sunxi_drm_rgb_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_drm_rgb_remove),
 	.driver = {
 		.name = "drm-rgb",
 		.owner = THIS_MODULE,

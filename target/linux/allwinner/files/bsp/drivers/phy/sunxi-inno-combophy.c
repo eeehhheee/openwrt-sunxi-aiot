@@ -7,6 +7,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/clk.h>
 #include <linux/delay.h>
 #include <linux/io.h>
@@ -1049,7 +1050,7 @@ static int sunxi_combphy_probe(struct platform_device *pdev)
 	return PTR_ERR_OR_ZERO(phy_provider);
 }
 
-static int sunxi_combphy_remove(struct platform_device *pdev)
+static void sunxi_combphy_remove(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct sunxi_combphy *combphy = platform_get_drvdata(pdev);
@@ -1058,7 +1059,7 @@ static int sunxi_combphy_remove(struct platform_device *pdev)
 	ret = pcie_usb3_sub_system_exit(pdev);
 	if (ret) {
 		dev_err(dev, "failed to exit sub system\n");
-		return ret;
+		return;
 	}
 
 	/* unregister inno power notifier */
@@ -1068,7 +1069,7 @@ static int sunxi_combphy_remove(struct platform_device *pdev)
 	pm_runtime_put_noidle(dev);
 	pm_runtime_set_suspended(dev);
 
-	return 0;
+	return;
 }
 
 static int __maybe_unused sunxi_combo_suspend(struct device *dev)
@@ -1138,7 +1139,7 @@ MODULE_DEVICE_TABLE(of, sunxi_combphy_of_match);
 
 static struct platform_driver sunxi_combphy_driver = {
 	.probe	= sunxi_combphy_probe,
-	.remove	= sunxi_combphy_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_combphy_remove),
 	.driver = {
 		.name = "inno-combphy",
 		.of_match_table = sunxi_combphy_of_match,

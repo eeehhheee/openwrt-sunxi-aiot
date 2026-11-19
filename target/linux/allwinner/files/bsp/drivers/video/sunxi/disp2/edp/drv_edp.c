@@ -13,6 +13,7 @@
 */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "drv_edp.h"
 #include "../disp/disp_sys_intf.h"
 #include <linux/regulator/consumer.h>
@@ -690,7 +691,7 @@ OUT:
 	return ret;
 }
 
-s32 edp_remove(struct platform_device *pdev)
+void edp_remove(struct platform_device *pdev)
 {
 	s32 ret = 0;
 	u32 i = 0;
@@ -705,7 +706,7 @@ s32 edp_remove(struct platform_device *pdev)
 		edp_clk_enable(i, false);
 	}
 
-	return ret;
+	return;
 }
 
 static const struct of_device_id sunxi_edp_match[] = {
@@ -720,7 +721,7 @@ static const struct of_device_id sunxi_edp_match[] = {
 
 static struct platform_driver edp_driver = {
 	.probe = edp_probe,
-	.remove = edp_remove,
+	SUNXI_PLATFORM_REMOVE(edp_remove),
 	.driver = {
 		.name = "edp",
 		.owner = THIS_MODULE,

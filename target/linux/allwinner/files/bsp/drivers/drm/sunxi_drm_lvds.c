@@ -12,6 +12,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/component.h>
 #include <linux/pinctrl/consumer.h>
 #include <linux/pinctrl/machine.h>
@@ -1032,15 +1033,15 @@ static int sunxi_drm_lvds_probe(struct platform_device *pdev)
 	return component_add(&pdev->dev, &sunxi_drm_lvds_component_ops);
 }
 
-static int sunxi_drm_lvds_remove(struct platform_device *pdev)
+static void sunxi_drm_lvds_remove(struct platform_device *pdev)
 {
 	component_del(&pdev->dev, &sunxi_drm_lvds_component_ops);
-	return 0;
+	return;
 }
 
 struct platform_driver sunxi_lvds_platform_driver = {
 	.probe = sunxi_drm_lvds_probe,
-	.remove = sunxi_drm_lvds_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_drm_lvds_remove),
 	.driver = {
 		.name = "drm-lvds",
 		.owner = THIS_MODULE,

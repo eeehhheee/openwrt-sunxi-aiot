@@ -17,6 +17,7 @@
  */
 
 #include <linux/io.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>
 #include <linux/of_address.h>
@@ -758,7 +759,7 @@ out_err:
 	return ret;
 }
 
-static int npd_remove(struct platform_device *pdev)
+static void npd_remove(struct platform_device *pdev)
 {
 	if (sunxi_npd.dev_npd) {
 		device_remove_groups(sunxi_npd.dev_npd, npd_groups);
@@ -768,7 +769,7 @@ static int npd_remove(struct platform_device *pdev)
 
 	kfree(sunxi_npd.ddr_addr);
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_npd_matches[] = {
@@ -783,7 +784,7 @@ static struct platform_driver npd_driver = {
 		.of_match_table = sunxi_npd_matches,
 	},
 	.probe = npd_probe,
-	.remove = npd_remove,
+	SUNXI_PLATFORM_REMOVE(npd_remove),
 };
 
 static const struct file_operations npd_fops = {

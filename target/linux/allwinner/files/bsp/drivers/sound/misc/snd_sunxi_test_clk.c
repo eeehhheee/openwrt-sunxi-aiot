@@ -14,6 +14,7 @@
 #define SUNXI_MODNAME		"sound-clk-test"
 #include "../platform/snd_sunxi_log.h"
 #include <linux/module.h>
+#include <sunxi-platform.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 #include <linux/regulator/consumer.h>
@@ -464,7 +465,7 @@ err_snd_sunxi_kzalloc:
 	return ret;
 }
 
-static int sunxi_test_dev_remove(struct platform_device *pdev)
+static void sunxi_test_dev_remove(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct sunxi_test_clk *sunxi_test = dev_get_drvdata(dev);
@@ -480,7 +481,7 @@ static int sunxi_test_dev_remove(struct platform_device *pdev)
 	snd_sunxi_mem_exit(pdev, mem);
 	kfree(sunxi_test);
 
-	return 0;
+	return;
 }
 
 static const struct sunxi_test_clk_quirks sunxi_test_clk_quirks_sun55iw3 = {
@@ -507,7 +508,7 @@ static struct platform_driver sunxi_test_clk_driver = {
 		.of_match_table	= sunxi_test_clk_of_match,
 	},
 	.probe = sunxi_test_dev_probe,
-	.remove = sunxi_test_dev_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_test_dev_remove),
 };
 
 int __init sunxi_test_dev_init(void)

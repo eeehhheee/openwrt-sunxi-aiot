@@ -14,6 +14,7 @@
  */
 
 #include <linux/bitops.h>
+#include <sunxi-platform.h>
 #include <linux/clk.h>
 #include <linux/device.h>
 #include <linux/err.h>
@@ -503,13 +504,13 @@ ioremap_err:
 	return ret;
 }
 
-static int sunxi_irq_mbox_remove(struct platform_device *pdev)
+static void sunxi_irq_mbox_remove(struct platform_device *pdev)
 {
 	struct sunxi_irq_mbox *mbox = platform_get_drvdata(pdev);
 
 	mbox_controller_unregister(&mbox->controller);
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_irq_mbox_of_match[] = {
@@ -524,7 +525,7 @@ static struct platform_driver sunxi_irq_mbox_driver = {
 		.of_match_table = sunxi_irq_mbox_of_match,
 	},
 	.probe  = sunxi_irq_mbox_probe,
-	.remove = sunxi_irq_mbox_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_irq_mbox_remove),
 };
 
 module_platform_driver(sunxi_irq_mbox_driver);

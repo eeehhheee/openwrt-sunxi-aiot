@@ -2,6 +2,7 @@
 /* Copyright(c) 2020 - 2023 Allwinner Technology Co.,Ltd. All rights reserved. */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/device.h>
 #include <linux/kernel.h>
@@ -1483,7 +1484,7 @@ alloc_info_failed:
 	return -ENOMEM;
 }
 
-static int redeposit_remove(struct platform_device *pdev)
+static void redeposit_remove(struct platform_device *pdev)
 {
 	struct redeposit_info *info = platform_get_drvdata(pdev);
 
@@ -1498,7 +1499,7 @@ static int redeposit_remove(struct platform_device *pdev)
 
 	kfree(info);
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id redeposit_of_match[] = {
@@ -1512,7 +1513,7 @@ static struct platform_driver redeposit_driver = {
 		   .of_match_table = of_match_ptr(redeposit_of_match),
 		   },
 	.probe = redeposit_probe,
-	.remove = redeposit_remove,
+	SUNXI_PLATFORM_REMOVE(redeposit_remove),
 };
 
 module_platform_driver(redeposit_driver);

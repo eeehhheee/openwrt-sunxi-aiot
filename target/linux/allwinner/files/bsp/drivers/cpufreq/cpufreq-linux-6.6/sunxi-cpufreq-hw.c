@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: GPL-2.0-or-later */
 /* Copyright(c) 2020 - 2023 Allwinner Technology Co.,Ltd. All rights reserved. */
 #include <sunxi-log.h>
+#include <sunxi-platform.h>
 #include <linux/clk.h>
 #include <linux/cpu.h>
 #include <linux/arch_topology.h>
@@ -1068,7 +1069,7 @@ static struct platform_driver dt_cpufreq_platdrv = {
 		.of_match_table = sunxi_cpufreq_hw_match,
 	},
 	.probe		= sunxi_cpufreq_hw_probe,
-	.remove_new	= sunxi_cpufreq_hw_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_cpufreq_hw_remove),
 };
 module_platform_driver(dt_cpufreq_platdrv);
 

@@ -33,6 +33,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <media/v4l2-device.h>
@@ -1062,7 +1063,7 @@ ekzalloc:
 }
 
 
-static int isp_remove(struct platform_device *pdev)
+static void isp_remove(struct platform_device *pdev)
 {
 	struct isp_dev *isp = platform_get_drvdata(pdev);
 	struct device *dev = &pdev->dev;
@@ -1077,7 +1078,7 @@ static int isp_remove(struct platform_device *pdev)
 		iounmap(isp->base);
 	kfree(isp);
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_isp_match[] = {
@@ -1087,7 +1088,7 @@ static const struct of_device_id sunxi_isp_match[] = {
 
 static struct platform_driver isp_platform_driver = {
 	.probe    = isp_probe,
-	.remove   = isp_remove,
+	SUNXI_PLATFORM_REMOVE(isp_remove),
 	.driver = {
 		.name   = ISP_MODULE_NAME,
 		.owner  = THIS_MODULE,

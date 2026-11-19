@@ -14,6 +14,7 @@
 #define SUNXI_MODNAME		"sound-dmic"
 #include "snd_sunxi_log.h"
 #include <linux/module.h>
+#include <sunxi-platform.h>
 #include <linux/platform_device.h>
 #include <linux/pinctrl/consumer.h>
 #include <linux/slab.h>
@@ -1003,7 +1004,7 @@ err_devm_kzalloc:
 	return ret;
 }
 
-static int sunxi_dmic_dev_remove(struct platform_device *pdev)
+static void sunxi_dmic_dev_remove(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct device_node *np = pdev->dev.of_node;
@@ -1038,7 +1039,7 @@ static int sunxi_dmic_dev_remove(struct platform_device *pdev)
 
 	SND_LOG_DEBUG("unregister dmic platform success\n");
 
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_dmic_of_match[] = {
@@ -1054,7 +1055,7 @@ static struct platform_driver sunxi_dmic_driver = {
 		.of_match_table	= sunxi_dmic_of_match,
 	},
 	.probe	= sunxi_dmic_dev_probe,
-	.remove	= sunxi_dmic_dev_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_dmic_dev_remove),
 };
 
 int __init sunxi_dmic_dev_init(void)

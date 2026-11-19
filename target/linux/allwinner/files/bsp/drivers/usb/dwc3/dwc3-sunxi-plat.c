@@ -17,6 +17,7 @@
  */
 
 #include <linux/module.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/version.h>
 #include <linux/slab.h>
@@ -1083,13 +1084,13 @@ static void __dwc3_sunxi_teardown(struct dwc3_sunxi_plat *dwc3)
 	pm_runtime_set_suspended(dwc3->dev);
 }
 
-static int dwc3_sunxi_plat_remove(struct platform_device *pdev)
+static void dwc3_sunxi_plat_remove(struct platform_device *pdev)
 {
 	struct dwc3_sunxi_plat	*dwc3 = platform_get_drvdata(pdev);
 
 	__dwc3_sunxi_teardown(dwc3);
 
-	return 0;
+	return;
 }
 
 static void dwc3_sunxi_plat_shutdown(struct platform_device *pdev)
@@ -1171,7 +1172,7 @@ MODULE_DEVICE_TABLE(of, of_dwc3_sunxi_match);
 
 static struct platform_driver dwc3_sunxi_plat_driver = {
 	.probe		= dwc3_sunxi_plat_probe,
-	.remove		= dwc3_sunxi_plat_remove,
+	SUNXI_PLATFORM_REMOVE(dwc3_sunxi_plat_remove),
 	.shutdown	= dwc3_sunxi_plat_shutdown,
 	.driver		= {
 		.name	= "sunxi-plat-dwc3",

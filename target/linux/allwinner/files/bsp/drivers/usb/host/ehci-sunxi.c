@@ -17,6 +17,7 @@
  */
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include <linux/time.h>
 #include <linux/timer.h>
 #include <linux/clk.h>
@@ -851,20 +852,20 @@ static int sunxi_ehci_hcd_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int sunxi_ehci_hcd_remove(struct platform_device *pdev)
+static void sunxi_ehci_hcd_remove(struct platform_device *pdev)
 {
 	struct sunxi_hci_hcd *sunxi_ehci = NULL;
 	int ret = 0;
 
 	if (pdev == NULL) {
 		DMSG_ERR("ERR: %s, Argment is invalid\n", __func__);
-		return -1;
+		return;
 	}
 
 	sunxi_ehci = pdev->dev.platform_data;
 	if (sunxi_ehci == NULL) {
 		DMSG_ERR("ERR: %s, sunxi_ehci is null\n", __func__);
-		return -1;
+		return;
 	}
 
 	if (ehci_enable[sunxi_ehci->usbc_no] == 0) {
@@ -884,9 +885,9 @@ static int sunxi_ehci_hcd_remove(struct platform_device *pdev)
 		if (ret == 0)
 			exit_sunxi_hci(sunxi_ehci);
 
-		return ret;
+		return;
 	} else
-		return 0;
+		return;
 
 }
 
@@ -1112,7 +1113,7 @@ MODULE_DEVICE_TABLE(of, sunxi_ehci_match);
 
 static struct platform_driver sunxi_ehci_hcd_driver = {
 	.probe  = sunxi_ehci_hcd_probe,
-	.remove	= sunxi_ehci_hcd_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_ehci_hcd_remove),
 	.shutdown = sunxi_ehci_hcd_shutdown,
 	.driver = {
 			.name	= ehci_name,

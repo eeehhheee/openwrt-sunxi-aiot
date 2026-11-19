@@ -13,6 +13,7 @@
  */
 #include "../../utility/vin_log.h"
 #include <linux/init.h>
+#include <sunxi-platform.h>
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <linux/delay.h>
@@ -491,7 +492,7 @@ ekzalloc:
 	return ret;
 }
 
-static int sensor_power_remove(struct platform_device *pdev)
+static void sensor_power_remove(struct platform_device *pdev)
 {
 	struct sensor_power_dev *sensor_power = platform_get_drvdata(pdev);
 
@@ -507,7 +508,7 @@ static int sensor_power_remove(struct platform_device *pdev)
 	if (sensor_power->gpio[PWDN] >= 0)
 		gpio_free(sensor_power->gpio[PWDN]);
 	kfree(sensor_power);
-	return 0;
+	return;
 }
 
 static const struct of_device_id sunxi_sensor_power_match[] = {
@@ -517,7 +518,7 @@ static const struct of_device_id sunxi_sensor_power_match[] = {
 
 static struct platform_driver sensor_power_driver = {
 	.probe = sensor_power_probe,
-	.remove = sensor_power_remove,
+	SUNXI_PLATFORM_REMOVE(sensor_power_remove),
 	.driver = {
 		.owner = THIS_MODULE,
 		.name = SENSOR_POWER_NAME,

@@ -30,6 +30,7 @@
 
 //#define DEBUG /* Enable dev_dbg */
 #include <linux/module.h>
+#include <sunxi-platform.h>
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/io.h>
@@ -534,7 +535,7 @@ err0:
 	return err;
 }
 
-static int sunxi_rtp_remove(struct platform_device *pdev)
+static void sunxi_rtp_remove(struct platform_device *pdev)
 {
 	struct sunxi_rtp *chip = platform_get_drvdata(pdev);
 
@@ -542,7 +543,7 @@ static int sunxi_rtp_remove(struct platform_device *pdev)
 	sunxi_rtp_inputdev_unregister(chip);
 	sunxi_rtp_resource_put(chip);
 
-	return 0;
+	return;
 }
 
 #ifdef CONFIG_PM
@@ -610,7 +611,7 @@ static struct platform_driver sunxi_rtp_driver = {
 		.pm = SUNXI_RTP_DEV_PM_OPS,
 	},
 	.probe	= sunxi_rtp_probe,
-	.remove	= sunxi_rtp_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_rtp_remove),
 };
 
 module_platform_driver(sunxi_rtp_driver);

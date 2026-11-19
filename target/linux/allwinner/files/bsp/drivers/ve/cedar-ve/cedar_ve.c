@@ -18,6 +18,7 @@
 #define SUNXI_MODNAME	"VE"
 #include "cedar_ve.h"
 #include <asm/dma.h>
+#include <sunxi-platform.h>
 #include <asm/siginfo.h>
 #include <asm/signal.h>
 #include <asm/cacheflush.h>
@@ -2060,7 +2061,7 @@ static void cedardev_exit(struct platform_device *pdev)
 	VE_LOGD("cedar-ve exit\n");
 }
 
-static int sunxi_cedar_remove(struct platform_device *pdev)
+static void sunxi_cedar_remove(struct platform_device *pdev)
 {
 	struct cedar_dev *cedar_devp = dev_get_drvdata(&pdev->dev);
 	const struct cedar_ve_quirks *quirks = NULL;
@@ -2070,7 +2071,7 @@ static int sunxi_cedar_remove(struct platform_device *pdev)
 
 	if (!cedar_devp) {
 		VE_LOGE("cedar_devp invalid\n");
-		return 0;
+		return;
 	}
 	quirks = cedar_devp->quirks;
 
@@ -2082,14 +2083,14 @@ static int sunxi_cedar_remove(struct platform_device *pdev)
 		if (pdev->id == 1) {
 			VE_LOGI("remove ve just use to del iommu master\n");
 			kfree(cedar_devp);
-			return 0;
+			return;
 		} else {
 			VE_LOGI("remove ve\n");
 		}
 	} else if (quirks->ve_mod == VE_MODULE_1) {
 		VE_LOGI("remove ve1\n");
 		kfree(cedar_devp);
-		return 0;
+		return;
 	} else if (quirks->ve_mod == VE_MODULE_2) {
 		VE_LOGI("remove ve2\n");
 	} else {
@@ -2101,7 +2102,7 @@ static int sunxi_cedar_remove(struct platform_device *pdev)
 #endif
 	cedardev_exit(pdev);
 	kfree(cedar_devp);
-	return 0;
+	return;
 }
 
 static int sunxi_cedar_probe(struct platform_device *pdev)
@@ -2198,7 +2199,7 @@ MODULE_DEVICE_TABLE(of, sunxi_cedar_match);
 
 static struct platform_driver sunxi_cedar_driver = {
 	.probe		= sunxi_cedar_probe,
-	.remove		= sunxi_cedar_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_cedar_remove),
 	.suspend	= sunxi_cedar_suspend,
 	.resume		= sunxi_cedar_resume,
 	.driver		= {

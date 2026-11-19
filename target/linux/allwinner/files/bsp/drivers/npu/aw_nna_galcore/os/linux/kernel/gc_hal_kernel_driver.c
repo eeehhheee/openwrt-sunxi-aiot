@@ -62,6 +62,7 @@
 #include "gc_hal_kernel_parameter.h"
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 
 /* Zone used for header/footer. */
 #define _GC_OBJ_ZONE gcvZONE_DRIVER
@@ -1328,9 +1329,9 @@ static int __devinit viv_dev_probe(struct platform_device *pdev)
 }
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0)
-static int viv_dev_remove(struct platform_device *pdev)
+static void viv_dev_remove(struct platform_device *pdev)
 #else
-static int __devexit viv_dev_remove(struct platform_device *pdev)
+static void __devexit viv_dev_remove(struct platform_device *pdev)
 #endif
 {
     gctUINT i;
@@ -1355,7 +1356,6 @@ static int __devexit viv_dev_remove(struct platform_device *pdev)
     }
 
     gcmkFOOTER_NO();
-    return 0;
 }
 
 static void viv_dev_shutdown(struct platform_device *pdev)
@@ -1477,7 +1477,7 @@ static const struct dev_pm_ops viv_dev_pm_ops = {
 static struct platform_driver viv_dev_driver = {
     .probe = viv_dev_probe,
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0)
-    .remove = viv_dev_remove,
+    SUNXI_PLATFORM_REMOVE(viv_dev_remove),
 #else
     .remove = __devexit_p(viv_dev_remove),
 #endif

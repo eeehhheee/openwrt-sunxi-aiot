@@ -2,6 +2,7 @@
 #define pr_fmt(x) KBUILD_MODNAME ": " x "\n"
 
 #include <linux/platform_device.h>
+#include <sunxi-platform.h>
 #include "axp2101_charger.h"
 
 /* #define DONOT_Correction */
@@ -1919,7 +1920,7 @@ err:
 	return ret;
 }
 
-static int axp2101_battery_remove(struct platform_device *pdev)
+static void axp2101_battery_remove(struct platform_device *pdev)
 {
 	struct axp2101_bat_power *bat_power = platform_get_drvdata(pdev);
 	axp210x_alway("==============AXP2101 unegister==============\n");
@@ -1929,7 +1930,7 @@ static int axp2101_battery_remove(struct platform_device *pdev)
 	axp2101_teardown_battery(bat_power);
 	axp210x_debug("axp210x teardown battery dev\n");
 
-	return 0;
+	return;
 }
 
 static inline void axp2101_irq_set(unsigned int irq, bool enable)
@@ -2040,7 +2041,7 @@ static struct platform_driver axp2101_bat_power_driver = {
 		.of_match_table = axp2101_bat_power_match,
 	},
 	.probe = axp2101_battery_probe,
-	.remove = axp2101_battery_remove,
+	SUNXI_PLATFORM_REMOVE(axp2101_battery_remove),
 	.shutdown = axp2101_bat_shutdown,
 	.suspend = axp2101_bat_suspend,
 	.resume = axp2101_bat_resume,

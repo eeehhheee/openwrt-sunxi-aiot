@@ -10,6 +10,7 @@
 
 //#define DEBUG
 #include <sunxi-common.h>
+#include <sunxi-platform.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/device.h>
@@ -918,14 +919,14 @@ err0:
 	return ret;
 }
 
-static int sunxi_msgbox_remove(struct platform_device *pdev)
+static void sunxi_msgbox_remove(struct platform_device *pdev)
 {
 	struct sunxi_msgbox *chip = platform_get_drvdata(pdev);
 
 	sunxi_msgbox_hw_deinit(chip);
 	sunxi_msgbox_resource_put(chip);
 
-	return 0;
+	return;
 }
 
 #if IS_ENABLED(CONFIG_PM)
@@ -993,7 +994,7 @@ static struct platform_driver sunxi_msgbox_driver = {
 		.pm = SUNXI_MSGBOX_DEV_PM_OPS,
 	},
 	.probe  = sunxi_msgbox_probe,
-	.remove = sunxi_msgbox_remove,
+	SUNXI_PLATFORM_REMOVE(sunxi_msgbox_remove),
 };
 
 #ifdef CONFIG_AW_RPROC_FAST_BOOT
