@@ -1,3 +1,9 @@
 # SPDX-License-Identifier: GPL-2.0-only
+#
+# Inherited verbatim from cpufreq-linux-6.6 because the Allwinner BSP has no
+# 6.18 copy of its cpufreq driver and bsp/drivers/cpufreq/Kconfig selects this
+# directory through $(VERSION).$(PATCHLEVEL).  CONFIG_AW_CPUFREQ_DT is not
+# enabled in target/linux/allwinner/config-6.18, so nothing here is compiled
+# yet; rebase the OPP/cpufreq APIs before turning it on for 6.18.
 
 source "bsp/drivers/cpufreq/cpufreq-linux-$(VERSION).$(PATCHLEVEL)/Kconfig"
