@@ -1070,14 +1070,14 @@ static int sensor_probe(struct spi_device *spi)
 
 	return 0;
 }
-static int sensor_remove(struct spi_device *spi)
+static void sensor_remove(struct spi_device *spi)
 {
 	struct v4l2_subdev *sd;
 
 	sd = spi_get_drvdata(spi);
 	v4l2_device_unregister_subdev(sd);
 	kfree(to_state(sd));
-	return 0;
+	return;
 }
 
 static const struct spi_device_id sensor_id[] = {

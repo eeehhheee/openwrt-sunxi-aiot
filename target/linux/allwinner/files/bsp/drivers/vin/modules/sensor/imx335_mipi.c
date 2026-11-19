@@ -1053,7 +1053,7 @@ static int sensor_probe(struct i2c_client *client,
 	return 0;
 }
 
-static int sensor_remove(struct i2c_client *client)
+static void sensor_remove(struct i2c_client *client)
 {
 	struct v4l2_subdev *sd;
 	int i;
@@ -1069,7 +1069,7 @@ static int sensor_remove(struct i2c_client *client)
 	}
 
 	kfree(to_state(sd));
-	return 0;
+	return;
 }
 
 static const struct i2c_device_id sensor_id[] = {

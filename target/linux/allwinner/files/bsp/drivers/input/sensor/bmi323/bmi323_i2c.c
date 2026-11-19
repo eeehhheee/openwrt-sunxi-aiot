@@ -233,13 +233,13 @@ exit_err_clean:
  *  * 0 - OK.
  *  * Negative value - Error.
  */
-static int bmi3_i2c_remove(struct i2c_client *client)
+static void bmi3_i2c_remove(struct i2c_client *client)
 {
 	int err = 0;
 
 	err = bmi3_remove(&client->dev);
 	bmi3_i2c_client = NULL;
-	return err;
+	return;
 }
 
 static const struct i2c_device_id bmi3_id[] = {

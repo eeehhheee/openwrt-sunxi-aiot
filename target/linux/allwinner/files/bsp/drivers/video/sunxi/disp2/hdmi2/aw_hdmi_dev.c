@@ -49,7 +49,7 @@ MODULE_DEVICE_TABLE(of, dw_hdmi_tx);
  * @short Platform driver structure
  */
 static struct platform_driver __refdata dw_hdmi_pdrv = {
-	.remove = aw_hdmi_drv_remove,
+	SUNXI_PLATFORM_REMOVE(aw_hdmi_drv_remove),
 	.probe  = aw_hdmi_drv_probe,
 	.driver = {
 		.name = "allwinner,sunxi-hdmi",

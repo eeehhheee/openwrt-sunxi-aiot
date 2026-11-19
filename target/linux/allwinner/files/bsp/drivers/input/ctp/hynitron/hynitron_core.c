@@ -2014,7 +2014,7 @@ err_end:
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0))
 static void hyn_remove(struct i2c_client *client)
 #else
-static int hyn_remove(struct i2c_client *client)
+static void hyn_remove(struct i2c_client *client)
 #endif
 {
 	HYN_FUNC_ENTER();

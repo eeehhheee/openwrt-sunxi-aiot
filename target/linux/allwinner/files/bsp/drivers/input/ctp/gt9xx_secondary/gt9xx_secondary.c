@@ -2222,7 +2222,7 @@ exit_free_client_data:
 	return ret;
 }
 
-static int gtp_drv_remove(struct i2c_client *client)
+static void gtp_drv_remove(struct i2c_client *client)
 {
 	struct goodix_ts_data *ts = i2c_get_clientdata(client);
 
@@ -2268,7 +2268,7 @@ static int gtp_drv_remove(struct i2c_client *client)
 	devm_kfree(&client->dev, ts->pdata);
 	devm_kfree(&client->dev, ts);
 
-	return 0;
+	return;
 }
 
 static void gtp_suspend(struct goodix_ts_data *ts)

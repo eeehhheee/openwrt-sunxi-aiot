@@ -635,7 +635,7 @@ int aw_hdmi_cec_resume(struct device *dev);
 
 void aw_hdmi_drv_hdcp_enable(struct aw_hdmi_core_s *core, u8 enable);
 
-int aw_hdmi_drv_remove(struct platform_device *pdev);
+void aw_hdmi_drv_remove(struct platform_device *pdev);
 
 int aw_hdmi_drv_probe(struct platform_device *pdev);
 

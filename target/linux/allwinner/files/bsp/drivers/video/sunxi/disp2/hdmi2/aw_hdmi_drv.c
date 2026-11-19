@@ -3361,7 +3361,7 @@ free_mem:
 	return -1;
 }
 
-int aw_hdmi_drv_remove(struct platform_device *pdev)
+void aw_hdmi_drv_remove(struct platform_device *pdev)
 {
 	struct aw_hdmi_driver *dev;
 	struct list_head *list;
@@ -3393,7 +3393,5 @@ int aw_hdmi_drv_remove(struct platform_device *pdev)
 			regulator_put(g_hdmi_drv->aw_power.power_regu[i]);
 		}
 	}
-
-	return 0;
 }
 EXPORT_SYMBOL_GPL(snd_hdmi_get_func);

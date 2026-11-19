@@ -953,13 +953,13 @@ static int sensor_probe(struct i2c_client *client, const struct i2c_device_id *i
 
 	return 0;
 }
-static int sensor_remove(struct i2c_client *client)
+static void sensor_remove(struct i2c_client *client)
 {
 	struct v4l2_subdev *sd;
 
 	sd = cci_dev_remove_helper(client, &cci_drv);
 	kfree(to_state(sd));
-	return 0;
+	return;
 }
 
 static const struct i2c_device_id sensor_id[] = {

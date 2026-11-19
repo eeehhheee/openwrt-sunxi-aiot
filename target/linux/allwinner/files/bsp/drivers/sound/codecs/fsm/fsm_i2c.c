@@ -529,14 +529,14 @@ static int fsm_i2c_probe(struct i2c_client *i2c,
 	return 0;
 }
 
-static int fsm_i2c_remove(struct i2c_client *i2c)
+static void fsm_i2c_remove(struct i2c_client *i2c)
 {
 	fsm_dev_t *fsm_dev = i2c_get_clientdata(i2c);
 
 	pr_debug("enter");
 	if (fsm_dev == NULL) {
 		pr_err("bad parameter");
-		return -EINVAL;
+		return;
 	}
 	if (fsm_dev->fsm_wq) {
 		cancel_delayed_work_sync(&fsm_dev->interrupt_work);
@@ -565,7 +565,7 @@ static int fsm_i2c_remove(struct i2c_client *i2c)
 	devm_kfree(&i2c->dev, fsm_dev);
 	dev_info(&i2c->dev, "i2c removed");
 
-	return 0;
+	return;
 }
 
 static const struct i2c_device_id fsm_i2c_id[] = {
@@ -594,9 +594,9 @@ int exfsm_i2c_probe(struct i2c_client *i2c,
 }
 EXPORT_SYMBOL(exfsm_i2c_probe);
 
-int exfsm_i2c_remove(struct i2c_client *i2c)
+void exfsm_i2c_remove(struct i2c_client *i2c)
 {
-	return fsm_i2c_remove(i2c);
+	fsm_i2c_remove(i2c);
 }
 EXPORT_SYMBOL(exfsm_i2c_remove);
 

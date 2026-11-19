@@ -2957,7 +2957,7 @@ err_als_input_allocate:
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0))
 static void stk3x1x_remove(struct i2c_client *client)
 #else
-static int stk3x1x_remove(struct i2c_client *client)
+static void stk3x1x_remove(struct i2c_client *client)
 #endif
 {
 	struct stk3x1x_data *ps_data = i2c_get_clientdata(client);
