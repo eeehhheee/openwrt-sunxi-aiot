@@ -10,6 +10,7 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
 */
+#include <linux/platform_device.h>
 #include "drv_edp2.h"
 #include "../disp/disp_sys_intf.h"
 #if IS_ENABLED(CONFIG_EXTCON)

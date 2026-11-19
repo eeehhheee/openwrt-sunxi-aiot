@@ -10,6 +10,7 @@
 
 #define pr_fmt(x) KBUILD_MODNAME ": " x "\n"
 
+#include <linux/platform_device.h>
 #include "sunxi_multi_charge.h"
 
 struct sunxi_multi_charge {

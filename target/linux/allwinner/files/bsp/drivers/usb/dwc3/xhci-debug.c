@@ -12,6 +12,7 @@
  * Author: Lu Baolu <baolu.lu@linux.intel.com>
  */
 
+#include <linux/platform_device.h>
 #include <linux/slab.h>
 #include <linux/uaccess.h>
 

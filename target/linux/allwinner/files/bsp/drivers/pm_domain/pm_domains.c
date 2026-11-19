@@ -6,6 +6,7 @@
  * Copyright (c) 2021 ALLWINNER, Co. Ltd.
  */
 
+#include <linux/platform_device.h>
 #include <sunxi-log.h>
 #include <linux/reset.h>
 #include <linux/module.h>

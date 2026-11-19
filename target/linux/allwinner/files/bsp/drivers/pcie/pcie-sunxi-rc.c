@@ -20,6 +20,7 @@
  */
 
 #define SUNXI_MODNAME "pcie-rc"
+#include <linux/platform_device.h>
 #include <sunxi-log.h>
 #include <linux/irq.h>
 #include <linux/irqdomain.h>

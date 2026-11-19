@@ -18,6 +18,7 @@
  *
  */
 
+#include <linux/platform_device.h>
 #include "drv_dec.h"
 #include "dec.h"
 #include "dec_fence.h"

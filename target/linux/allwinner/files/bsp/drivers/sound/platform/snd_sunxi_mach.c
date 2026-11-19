@@ -14,6 +14,7 @@
  */
 
 #define SUNXI_MODNAME		"sound-mach"
+#include <linux/platform_device.h>
 #include "snd_sunxi_log.h"
 #include <linux/module.h>
 #include <sound/soc.h>

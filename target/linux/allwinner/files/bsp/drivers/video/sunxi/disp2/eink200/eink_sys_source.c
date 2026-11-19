@@ -10,6 +10,7 @@
  * warranty of any kind, whether express or implied.
  */
 
+#include <linux/platform_device.h>
 #include "include/eink_driver.h"
 #include "asm/cacheflush.h"
 #include <linux/sunxi-gpio.h>

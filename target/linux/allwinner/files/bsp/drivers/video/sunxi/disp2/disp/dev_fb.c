@@ -9,6 +9,7 @@
  * warranty of any kind, whether express or implied.
  */
 
+#include <linux/platform_device.h>
 #include "dev_disp.h"
 #if defined(SUPPORT_EDP)
 #include "de/disp_edp.h"

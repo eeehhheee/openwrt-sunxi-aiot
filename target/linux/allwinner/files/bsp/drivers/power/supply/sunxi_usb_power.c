@@ -2,6 +2,7 @@
 /* Copyright(c) 2020 - 2023 Allwinner Technology Co.,Ltd. All rights reserved. */
 #define pr_fmt(x) KBUILD_MODNAME ": " x "\n"
 
+#include <linux/platform_device.h>
 #include "sunxi_usb_power.h"
 
 static enum power_supply_property sunxi_usb_power_props[] = {

@@ -18,6 +18,7 @@
  * Margarita Olaya Cabrera <magi@slimlogic.co.uk>
  */
 
+#include <linux/platform_device.h>
 #include "sunxi-power-regulator.h"
 #include "pmu-ext.h"
 

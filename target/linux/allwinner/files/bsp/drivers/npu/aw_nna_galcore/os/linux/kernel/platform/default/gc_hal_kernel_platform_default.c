@@ -80,6 +80,7 @@
  *   };
  */
 
+#include <linux/platform_device.h>
 #include "gc_hal_kernel_linux.h"
 #include "gc_hal_kernel_platform.h"
 #include "gc_hal_kernel_platform_default.h"

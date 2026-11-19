@@ -6,6 +6,7 @@
  */
 
 #define SUNXI_MODNAME "spi"
+#include <linux/platform_device.h>
 #include <sunxi-log.h>
 #include <linux/interrupt.h>
 #include <linux/dma-mapping.h>

@@ -11,6 +11,7 @@
  * warranty of any kind, whether express or implied.
  */
 
+#include <linux/platform_device.h>
 #include <linux/component.h>
 #include <linux/pinctrl/consumer.h>
 #include <linux/pinctrl/machine.h>

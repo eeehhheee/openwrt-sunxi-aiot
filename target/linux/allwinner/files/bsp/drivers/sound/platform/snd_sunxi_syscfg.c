@@ -12,6 +12,7 @@
  */
 
 #define SUNXI_MODNAME		"sound-syscfg"
+#include <linux/platform_device.h>
 #include <linux/module.h>
 #include <sound/soc.h>
 #include <linux/of.h>

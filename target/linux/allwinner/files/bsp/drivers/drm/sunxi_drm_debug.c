@@ -10,6 +10,7 @@
  *
  */
 
+#include <linux/platform_device.h>
 #include <linux/version.h>
 #if LINUX_VERSION_CODE <= KERNEL_VERSION(6, 1, 0)
 #include <drm/drm_gem_cma_helper.h>

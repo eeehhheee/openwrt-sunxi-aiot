@@ -15,6 +15,7 @@
  * GNU General Public License for more details.
  *
  */
+#include <linux/platform_device.h>
 #include "g2d_driver_i.h"
 #include "g2d_top.h"
 #include "g2d_debug.h"

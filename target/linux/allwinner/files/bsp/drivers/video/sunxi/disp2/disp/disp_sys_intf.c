@@ -10,6 +10,7 @@
  * warranty of any kind, whether express or implied.
  */
 
+#include <linux/platform_device.h>
 #include "dev_disp.h"
 #include "de/bsp_display.h"
 #include "disp_sys_intf.h"

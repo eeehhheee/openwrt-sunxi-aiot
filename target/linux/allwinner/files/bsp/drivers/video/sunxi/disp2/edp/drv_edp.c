@@ -12,6 +12,7 @@
  * published by the Free Software Foundation.
 */
 
+#include <linux/platform_device.h>
 #include "drv_edp.h"
 #include "../disp/disp_sys_intf.h"
 #include <linux/regulator/consumer.h>

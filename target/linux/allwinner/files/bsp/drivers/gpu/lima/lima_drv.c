@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0 OR MIT
 /* Copyright 2017-2019 Qiang Yu <yuq825@gmail.com> */
 
+#include <linux/platform_device.h>
 #include <linux/module.h>
 #include <linux/of_platform.h>
 #include <linux/uaccess.h>

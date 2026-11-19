@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: GPL-2.0-or-later */
 #define pr_fmt(x) KBUILD_MODNAME ": " x "\n"
 
+#include <linux/platform_device.h>
 #include "axp22x_charger.h"
 
 struct axp22x_ac_power {

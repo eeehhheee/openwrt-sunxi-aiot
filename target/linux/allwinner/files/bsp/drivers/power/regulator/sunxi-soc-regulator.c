@@ -13,6 +13,7 @@
  *
  */
 
+#include <linux/platform_device.h>
 #include "sunxi-power-regulator.h"
 #include "sunxi-soc-pmu.h"
 

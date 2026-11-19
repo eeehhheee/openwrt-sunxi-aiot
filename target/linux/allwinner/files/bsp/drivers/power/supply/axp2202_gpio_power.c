@@ -10,6 +10,7 @@
 
 #define pr_fmt(x) KBUILD_MODNAME ": " x "\n"
 
+#include <linux/platform_device.h>
 #include "axp2202_charger.h"
 
 struct axp2202_acin_power {

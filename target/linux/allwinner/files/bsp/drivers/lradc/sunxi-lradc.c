@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 //#define DEBUG
+#include <linux/platform_device.h>
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/input.h>

@@ -11,6 +11,7 @@
  * option) any later version.
  */
 
+#include <linux/platform_device.h>
 #include "axp22x_charger.h"
 
 struct axp22x_bat_power {

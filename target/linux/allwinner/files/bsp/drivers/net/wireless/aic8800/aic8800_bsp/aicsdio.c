@@ -5,6 +5,7 @@
  *
  * Copyright (C) AICSemi 2018-2020
  */
+#include <linux/platform_device.h>
 #include <linux/interrupt.h>
 #include <linux/completion.h>
 #include <linux/mmc/sdio.h>

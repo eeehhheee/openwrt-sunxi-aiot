@@ -14,6 +14,7 @@
  * GNU General Public License for more details.
  *
  */
+#include <linux/platform_device.h>
 #include "include.h"
 #include "./panels/panels.h"
 #include "disp_lcd.h"

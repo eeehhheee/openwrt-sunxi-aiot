@@ -2,6 +2,7 @@
 /* Copyright(c) 2020 - 2023 Allwinner Technology Co.,Ltd. All rights reserved. */
 #define pr_fmt(x) KBUILD_MODNAME ": " x "\n"
 
+#include <linux/platform_device.h>
 #include "eta6973_charger.h"
 
 #define DIVIDE_BY_60(n) (((n) / 60) * 60)

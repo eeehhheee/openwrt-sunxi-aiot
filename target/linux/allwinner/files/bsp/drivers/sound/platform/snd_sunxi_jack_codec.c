@@ -12,6 +12,7 @@
  */
 
 #define SUNXI_MODNAME		"sound-jack"
+#include <linux/platform_device.h>
 #include "snd_sunxi_log.h"
 #include <linux/module.h>
 #include <linux/input.h>

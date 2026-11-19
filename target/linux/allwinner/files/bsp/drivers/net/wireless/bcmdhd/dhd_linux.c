@@ -24,6 +24,7 @@
  * $Id$
  */
 
+#include <linux/platform_device.h>
 #include <linux/ctype.h>
 #include <typedefs.h>
 #include <linuxver.h>

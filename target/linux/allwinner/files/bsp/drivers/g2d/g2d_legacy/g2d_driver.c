@@ -10,6 +10,7 @@
  * warranty of any kind, whether express or implied.
  */
 
+#include <linux/platform_device.h>
 #include "g2d_driver_i.h"
 #include "linux/hwspinlock.h"
 #include "linux/pm_runtime.h"

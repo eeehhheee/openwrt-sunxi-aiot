@@ -6,6 +6,7 @@
  * Allwinner PMIC USB Type-C Port Controller Interface Driver
  */
 
+#include <linux/platform_device.h>
 #include "tcpci_axp517_core.h"
 
 static const char * const typec_cc_status_name[] = {

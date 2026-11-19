@@ -10,6 +10,7 @@
  * warranty of any kind, whether express or implied.
  */
 
+#include <linux/platform_device.h>
 #include "drv_hdmi_i.h"
 #include "hdmi_core.h"
 #include "../disp/disp_sys_intf.h"

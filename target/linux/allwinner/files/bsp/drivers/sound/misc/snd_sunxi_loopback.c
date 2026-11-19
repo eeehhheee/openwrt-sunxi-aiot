@@ -12,6 +12,7 @@
  */
 
 /* only applies to linux-5.4 */
+#include <linux/platform_device.h>
 #include <linux/module.h>
 #include <sound/soc.h>
 #include <sound/pcm.h>

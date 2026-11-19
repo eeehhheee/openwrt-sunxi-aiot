@@ -51,6 +51,7 @@
 *    version of this file.
 *
 *****************************************************************************/
+#include <linux/platform_device.h>
 #include <gc_vip_kernel_pm.h>
 #include <gc_vip_kernel_debug.h>
 #include <gc_vip_kernel_drv.h>

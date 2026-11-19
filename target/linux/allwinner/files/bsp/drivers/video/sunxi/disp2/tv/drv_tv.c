@@ -9,6 +9,7 @@
  *
  */
 
+#include <linux/platform_device.h>
 #include <sunxi-log.h>
 #include <linux/regulator/consumer.h>
 #include <linux/reset.h>

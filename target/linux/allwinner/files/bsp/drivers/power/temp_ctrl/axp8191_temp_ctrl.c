@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: GPL-2.0-or-later */
 #define pr_fmt(x) KBUILD_MODNAME ": " x "\n"
 
+#include <linux/platform_device.h>
 #include "sunxi-power-notifier.h"
 #include "axp2101.h"
 #include "axp8191_temp_ctrl.h"

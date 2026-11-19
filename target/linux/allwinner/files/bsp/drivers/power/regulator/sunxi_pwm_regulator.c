@@ -12,6 +12,7 @@
  * published by the Free Software Foundation.
  */
 
+#include <linux/platform_device.h>
 #include "sunxi-power-regulator.h"
 #include <linux/pwm.h>
 #include <linux/gpio/consumer.h>

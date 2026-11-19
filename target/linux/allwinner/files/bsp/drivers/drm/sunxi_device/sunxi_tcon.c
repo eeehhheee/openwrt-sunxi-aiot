@@ -10,6 +10,7 @@
  * option) any later version.
  */
 
+#include <linux/platform_device.h>
 #include <linux/dma-mapping.h>
 #include <linux/clk.h>
 #include <drm/drm_print.h>

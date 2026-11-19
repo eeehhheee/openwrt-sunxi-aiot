@@ -10,6 +10,7 @@
  * warranty of any kind, whether express or implied.
  */
 
+#include <linux/platform_device.h>
 #include "lcd_fb_intf.h"
 #include "dev_lcd_fb.h"
 

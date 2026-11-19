@@ -12,6 +12,7 @@
  * published by the Free Software Foundation.
  */
 
+#include <linux/platform_device.h>
 #include "sunxi-power-regulator.h"
 
 static int virtual_consumer_regulator_probe(struct platform_device *pdev)

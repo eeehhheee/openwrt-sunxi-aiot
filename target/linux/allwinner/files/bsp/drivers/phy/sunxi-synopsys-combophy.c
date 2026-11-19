@@ -6,6 +6,7 @@
  * Copyright (C) 2024 Allwinner Electronics Co., Ltd.
  */
 
+#include <linux/platform_device.h>
 #include <linux/bitfield.h>
 #include <linux/clk.h>
 #include <linux/delay.h>

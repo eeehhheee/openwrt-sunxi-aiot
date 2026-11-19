@@ -14,6 +14,7 @@
  * GNU General Public License for more details.
  */
 
+#include <linux/platform_device.h>
 #include "sunxi-power-regulator.h"
 #include "axp2101.h"
 

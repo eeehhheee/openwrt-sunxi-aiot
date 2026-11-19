@@ -9,6 +9,7 @@
  * License version 2.  This program is licensed "as is" without any
  * warranty of any kind, whether express or implied.
  */
+#include <linux/platform_device.h>
 #include "drv_vdpo.h"
 #include "../disp/disp_sys_intf.h"
 #include <linux/regulator/consumer.h>

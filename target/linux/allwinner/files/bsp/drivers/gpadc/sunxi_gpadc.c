@@ -14,6 +14,7 @@
 
 /* #define DEBUG */
 #define SUNXI_MODNAME "gpadc"
+#include <linux/platform_device.h>
 #include <sunxi-log.h>
 #include <linux/init.h>
 #include <linux/module.h>

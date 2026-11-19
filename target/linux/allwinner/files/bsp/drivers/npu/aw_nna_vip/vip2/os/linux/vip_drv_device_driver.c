@@ -51,6 +51,7 @@
 *    version of this file.
 *
 *****************************************************************************/
+#include <linux/platform_device.h>
 #include <vip_drv_pm.h>
 #include <vip_drv_debug.h>
 #include <vip_drv_device_driver.h>

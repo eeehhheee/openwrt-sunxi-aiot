@@ -15,6 +15,7 @@
  */
 #define pr_fmt(x) KBUILD_MODNAME ": " x
 
+#include <linux/platform_device.h>
 #include "sunxi-power-powerkey.h"
 #include "axp2101.h"
 

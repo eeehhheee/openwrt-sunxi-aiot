@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: GPL-2.0-or-later */
 #define pr_fmt(x) KBUILD_MODNAME ": " x "\n"
 
+#include <linux/platform_device.h>
 #include "axp2602_battery.h"
 
 #define DIVIDE_BY_50(n) (((n) / 50) * 50)

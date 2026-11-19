@@ -6,6 +6,7 @@
  * Allwinner PMIC USB Type-C Port Manager Driver
  */
 
+#include <linux/platform_device.h>
 #include "sunxi_cc_logic.h"
 
 static int sunxi_pmic_cc_logic_get_cc_status(struct sunxi_pmic_cc_logic *port)

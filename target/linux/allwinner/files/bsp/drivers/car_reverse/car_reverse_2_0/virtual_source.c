@@ -14,6 +14,7 @@
   */
 
 
+#include <linux/platform_device.h>
 #include "video_source.h"
 #include "buffer_pool.h"
 

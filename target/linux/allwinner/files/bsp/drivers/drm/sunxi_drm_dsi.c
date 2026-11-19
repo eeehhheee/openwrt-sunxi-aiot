@@ -10,6 +10,7 @@
  * License version 2.  This program is licensed "as is" without any
  * warranty of any kind, whether express or implied.
  */
+#include <linux/platform_device.h>
 #include <drm/drm_modes.h>
 #include <linux/component.h>
 #include <linux/pinctrl/consumer.h>

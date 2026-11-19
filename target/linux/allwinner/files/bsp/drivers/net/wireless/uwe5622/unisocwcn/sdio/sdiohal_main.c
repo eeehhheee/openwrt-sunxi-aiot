@@ -17,6 +17,7 @@
  * GNU General Public License for more details.
  */
 
+#include <linux/platform_device.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 #include <linux/kthread.h>
