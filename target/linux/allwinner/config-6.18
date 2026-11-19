@@ -15,3 +15,6 @@ CONFIG_AW_UART_NG=y
 # CONFIG_AW_UART is not set
 CONFIG_AW_UART_DYNAMIC_DEBUG=y
 CONFIG_AW_SERIAL_CONSOLE=y
+# The BSP ships its own sunxi-ng implementation under bsp/drivers/clk/sunxi-ng.
+# The mainline copy defines the same ccu_* globals and only collides at vmlinux link time.
+# CONFIG_SUNXI_CCU is not set
