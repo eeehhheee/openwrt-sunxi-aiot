@@ -24,6 +24,7 @@
 #include <linux/dmaengine.h>
 #include <linux/reset.h>
 #include <sunxi-dma.h>
+#include <linux/circ_buf.h>
 #include <linux/ktime.h>
 #include <sunxi-gpio.h>
 #ifdef CONFIG_AW_AMP_SYS_RSC_MANAGER

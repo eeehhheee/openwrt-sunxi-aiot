@@ -18,6 +18,7 @@
 #ifndef _SUNXI_UART_COMPAT_H_
 #define _SUNXI_UART_COMPAT_H_
 
+#include <linux/circ_buf.h>
 #include <linux/kfifo.h>
 #include <linux/serial_core.h>
 #include <linux/types.h>
