@@ -974,7 +974,7 @@ int input_set_int_enable_force(enum input_sensor_type *input_type, u32 enable)
 	int ret = -1;
 	u32 irq_number = 0;
 	void *data = NULL;
-	struct irq_desc *desc = NULL;
+	struct irq_data *irq_data = NULL;
 
 	switch (*input_type) {
 	case CTP_TYPE:
@@ -996,10 +996,19 @@ int input_set_int_enable_force(enum input_sensor_type *input_type, u32 enable)
 	if ((enable != 0) && (enable != 1))
 		return ret;
 
-	desc = irq_to_desc(irq_number);
+	irq_data = irq_get_irq_data(irq_number);
 	if (enable == 1) {
-		while (desc->depth >= 1)
+		/*
+		 * irq_to_desc() is not exported on kernels built with CONFIG_SPARSE_IRQ,
+		 * which arm64 selects unconditionally, so drive the interrupt out of the
+		 * disabled state through the exported irq_data view instead.
+		 */
+		if (irq_data) {
+			while (irqd_irq_disabled(irq_data))
+				enable_irq(irq_number);
+		} else {
 			enable_irq(irq_number);
+		}
 	} else {
 		disable_irq_nosync(irq_number);
 	}

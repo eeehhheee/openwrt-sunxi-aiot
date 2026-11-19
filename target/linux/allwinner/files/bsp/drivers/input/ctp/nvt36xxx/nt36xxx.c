@@ -163,8 +163,6 @@ return:
 *******************************************************/
 static void nvt_irq_enable(bool enable)
 {
-	struct irq_desc *desc;
-
 	if (enable) {
 		if (!ts->irq_enabled) {
 			enable_irq(ts->client->irq);
@@ -177,8 +175,12 @@ static void nvt_irq_enable(bool enable)
 		}
 	}
 
-	desc = irq_to_desc(ts->client->irq);
-	NVT_LOG("enable=%d, desc->depth=%d\n", enable, desc->depth);
+	{
+		struct irq_data *irq_data = irq_get_irq_data(ts->client->irq);
+
+		NVT_LOG("enable=%d, irq_disabled=%d\n", enable,
+			irq_data ? irqd_irq_disabled(irq_data) : -1);
+	}
 }
 
 /*******************************************************
