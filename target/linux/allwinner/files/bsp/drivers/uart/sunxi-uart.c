@@ -53,6 +53,7 @@
 #include <linux/of_address.h>
 #include <linux/version.h>
 #include "sunxi-uart.h"
+#include "sunxi-uart-compat.h"
 
 /* #define CONFIG_SW_UART_DUMP_DATA */
 /*
@@ -329,10 +330,10 @@ static void sw_uart_stop_tx(struct uart_port *port)
 static void sw_uart_start_tx(struct uart_port *port)
 {
 	struct sw_uart_port *sw_uport = UART_TO_SPORT(port);
-	struct circ_buf *xmit = &sw_uport->port.state->xmit;
 
 	if (sw_uport->rs485_en) {
-		if ((sw_uport->port.x_char) && (uart_circ_empty(xmit)))
+		if ((sw_uport->port.x_char) &&
+				sunxi_uart_tx_empty(&sw_uport->port))
 			return;
 		gpiod_set_value(sw_uport->rs485oe_gpio, !sw_uport->rs485_fl);
 	}
@@ -344,7 +345,7 @@ static void sw_uart_start_tx(struct uart_port *port)
 
 static void sw_uart_handle_tx(struct sw_uart_port *sw_uport)
 {
-	struct circ_buf *xmit = &sw_uport->port.state->xmit;
+	unsigned char ch;
 	int count;
 
 	if (sw_uport->port.x_char) {
@@ -357,14 +358,16 @@ static void sw_uart_handle_tx(struct sw_uart_port *sw_uport)
 #endif
 		return;
 	}
-	if (uart_circ_empty(xmit) || uart_tx_stopped(&sw_uport->port)) {
+	if (sunxi_uart_tx_empty(&sw_uport->port) ||
+			uart_tx_stopped(&sw_uport->port)) {
 		sw_uart_stop_tx(&sw_uport->port);
 		return;
 	}
 
-#if IS_ENABLED(CONFIG_AW_SERIAL_DMA)
+#if IS_ENABLED(CONFIG_AW_SERIAL_DMA) && SUNXI_UART_XMIT_DMA_ALIAS
 	if (sw_uport->dma->use_dma & TX_DMA) {
-		if (SERIAL_CIRC_CNT_TO_END(xmit) >= (sw_uport->port.fifosize / 2)) {
+		if (SERIAL_CIRC_CNT_TO_END(&sw_uport->port.state->xmit) >=
+				(sw_uport->port.fifosize / 2)) {
 			sw_uart_start_dma_tx(sw_uport);
 			return;
 		}
@@ -373,20 +376,20 @@ static void sw_uart_handle_tx(struct sw_uart_port *sw_uport)
 
 	count = sw_uport->port.fifosize / 2;
 	do {
-#if IS_ENABLED(CONFIG_SW_UART_DUMP_DATA)
-		sw_uport->dump_buff[sw_uport->dump_len++] = xmit->buf[xmit->tail];
-#endif
-		serial_out(&sw_uport->port, xmit->buf[xmit->tail], SUNXI_UART_THR);
-		SERIAL_DBG(sw_uport->port.dev, "write tx fifo 0x%x\n", xmit->buf[xmit->tail]);
-		xmit->tail = (xmit->tail + 1) & (UART_XMIT_SIZE - 1);
-		sw_uport->port.icount.tx++;
-		if (uart_circ_empty(xmit)) {
+		if (!sunxi_uart_tx_peek(&sw_uport->port, &ch))
 			break;
-		}
+#if IS_ENABLED(CONFIG_SW_UART_DUMP_DATA)
+		sw_uport->dump_buff[sw_uport->dump_len++] = ch;
+#endif
+		serial_out(&sw_uport->port, ch, SUNXI_UART_THR);
+		SERIAL_DBG(sw_uport->port.dev, "write tx fifo 0x%x\n", ch);
+		sunxi_uart_tx_advance(&sw_uport->port, 1);
+		if (sunxi_uart_tx_empty(&sw_uport->port))
+			break;
 	} while (--count > 0);
 
 	SERIAL_DUMP(sw_uport, "Tx");
-	if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS) {
+	if (sunxi_uart_tx_pending(&sw_uport->port) < WAKEUP_CHARS) {
 		spin_unlock(&sw_uport->port.lock);
 		uart_write_wakeup(&sw_uport->port);
 		spin_lock(&sw_uport->port.lock);
@@ -395,7 +398,7 @@ static void sw_uart_handle_tx(struct sw_uart_port *sw_uport)
 	if (sw_uport->rs485_en)
 		return;
 
-	if (uart_circ_empty(xmit))
+	if (sunxi_uart_tx_empty(&sw_uport->port))
 		sw_uart_stop_tx(&sw_uport->port);
 }
 
@@ -507,7 +510,9 @@ static void sw_uart_release_dma_tx(struct sw_uart_port *sw_uport)
 		sw_uart_stop_dma_tx(sw_uport);
 		dma_free_coherent(sw_uport->port.dev, sw_uport->dma->tb_size,
 			sw_uport->dma->tx_buffer, sw_uport->dma->tx_phy_addr);
+#if SUNXI_UART_XMIT_DMA_ALIAS
 		sw_uport->port.state->xmit.buf = NULL;
+#endif
 		dma_release_channel(uart_dma->dma_chan_tx);
 		uart_dma->dma_chan_tx = NULL;
 		uart_dma->tx_dma_inited = 0;
@@ -552,6 +557,7 @@ static int sw_uart_init_dma_tx(struct sw_uart_port *sw_uport)
 	return 0;
 }
 
+#if SUNXI_UART_XMIT_DMA_ALIAS
 static void dma_tx_callback(void *data)
 {
 	struct uart_port *port = data;
@@ -626,6 +632,20 @@ err_out:
 	sunxi_info(sw_uport->port.dev, "-sw_uart_start_dma_tx-error-\n");
 	return -1;
 }
+#else /* !SUNXI_UART_XMIT_DMA_ALIAS */
+static void __maybe_unused dma_tx_callback(void *data)
+{
+}
+
+static int __maybe_unused sw_uart_start_dma_tx(struct sw_uart_port *sw_uport)
+{
+	/*
+	 * Linux 6.10 moved the transmit buffer into the tty core as a kfifo, so a
+	 * DMA bounce buffer can no longer alias it.  Fall back to PIO.
+	 */
+	return -1;
+}
+#endif /* SUNXI_UART_XMIT_DMA_ALIAS */
 
 static void sw_uart_stop_dma_rx(struct sw_uart_port *sw_uport)
 {
@@ -1098,7 +1118,7 @@ static int sw_uart_startup(struct uart_port *port)
 	 * send.
 	 */
 
-#if IS_ENABLED(CONFIG_AW_SERIAL_DMA)
+#if IS_ENABLED(CONFIG_AW_SERIAL_DMA) && SUNXI_UART_XMIT_DMA_ALIAS
 	if (sw_uport->dma->use_dma & TX_DMA) {
 		if (sw_uport->port.state->xmit.buf !=
 						sw_uport->dma->tx_buffer){
@@ -1126,7 +1146,7 @@ static void sw_uart_shutdown(struct uart_port *port)
 	struct sw_uart_port *sw_uport = UART_TO_SPORT(port);
 
 	SERIAL_DBG(port->dev, "shut down ...\n");
-#if IS_ENABLED(CONFIG_AW_SERIAL_DMA)
+#if IS_ENABLED(CONFIG_AW_SERIAL_DMA) && SUNXI_UART_XMIT_DMA_ALIAS
 	if (sw_uport->dma->use_dma & TX_DMA)
 		sw_uport->port.state->xmit.buf = NULL;
 #endif

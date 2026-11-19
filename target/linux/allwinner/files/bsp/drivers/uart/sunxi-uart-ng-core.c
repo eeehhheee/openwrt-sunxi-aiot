@@ -56,6 +56,7 @@
 #include <linux/version.h>
 #include "sunxi-uart-ng.h"
 #include "sunxi-uart-trace.h"
+#include "sunxi-uart-compat.h"
 #include <uapi/linux/sched/types.h>
 /* #define CONFIG_SW_UART_DUMP_DATA */
 /*
@@ -267,8 +268,9 @@ static void sunxi_uart_stop_tx(struct uart_port *port)
 static void sunxi_uart_start_tx(struct uart_port *port)
 {
 	struct sunxi_uart_port *uart_port = UART_TO_SPORT(port);
-	struct circ_buf *xmit = &uart_port->port.state->xmit;
-	if (!(uart_port->port.x_char) && (uart_circ_empty(xmit)))
+
+	if (!(uart_port->port.x_char) &&
+			sunxi_uart_tx_empty(&uart_port->port))
 		return;
 
 	if ((uart_port->rs485conf.flags & SER_RS485_ENABLED) && \
@@ -281,7 +283,7 @@ static void sunxi_uart_start_tx(struct uart_port *port)
 
 static void sunxi_uart_handle_tx(struct sunxi_uart_port *uart_port)
 {
-	struct circ_buf *xmit = &uart_port->port.state->xmit;
+	unsigned char ch;
 	int count;
 
 	if (uart_port->port.x_char) {
@@ -295,36 +297,40 @@ static void sunxi_uart_handle_tx(struct sunxi_uart_port *uart_port)
 		return;
 	}
 
-	if (uart_circ_empty(xmit) || uart_tx_stopped(&uart_port->port)) {
+	if (sunxi_uart_tx_empty(&uart_port->port) ||
+			uart_tx_stopped(&uart_port->port)) {
 		sunxi_uart_stop_tx(&uart_port->port);
 		return;
 	}
 
+#if IS_ENABLED(CONFIG_AW_SERIAL_DMA) && SUNXI_UART_XMIT_DMA_ALIAS
 	if (uart_port->dma->use_dma & TX_DMA) {
-		if (SERIAL_CIRC_CNT_TO_END(xmit) >= (uart_port->port.fifosize / 2)) {
+		if (SERIAL_CIRC_CNT_TO_END(&uart_port->port.state->xmit) >=
+				(uart_port->port.fifosize / 2)) {
 			sunxi_uart_start_dma_tx(uart_port);
 			return;
 		}
 	}
+#endif
 
 	count = uart_port->port.fifosize / 2;
 	do {
-#if IS_ENABLED(CONFIG_SW_UART_DUMP_DATA)
-		uart_port->dump_buff[uart_port->dump_len++] = xmit->buf[xmit->tail];
-#endif
-		serial_out(&uart_port->port, xmit->buf[xmit->tail], SUNXI_UART_THR);
-		SERIAL_DBG(uart_port->port.dev, "write tx fifo 0x%x\n", xmit->buf[xmit->tail]);
-		if (uart_port->id != 0)
-			trace_uart_data_tx(uart_port, xmit->buf[xmit->tail], 0);
-		xmit->tail = (xmit->tail + 1) & (UART_XMIT_SIZE - 1);
-		uart_port->port.icount.tx++;
-		if (uart_circ_empty(xmit)) {
+		if (!sunxi_uart_tx_peek(&uart_port->port, &ch))
 			break;
-		}
+#if IS_ENABLED(CONFIG_SW_UART_DUMP_DATA)
+		uart_port->dump_buff[uart_port->dump_len++] = ch;
+#endif
+		serial_out(&uart_port->port, ch, SUNXI_UART_THR);
+		SERIAL_DBG(uart_port->port.dev, "write tx fifo 0x%x\n", ch);
+		if (uart_port->id != 0)
+			trace_uart_data_tx(uart_port, ch, 0);
+		sunxi_uart_tx_advance(&uart_port->port, 1);
+		if (sunxi_uart_tx_empty(&uart_port->port))
+			break;
 	} while (--count > 0);
 
 	SERIAL_DUMP(uart_port, "Tx");
-	if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS) {
+	if (sunxi_uart_tx_pending(&uart_port->port) < WAKEUP_CHARS) {
 		spin_unlock(&uart_port->port.lock);
 		uart_write_wakeup(&uart_port->port);
 		spin_lock(&uart_port->port.lock);
@@ -333,7 +339,7 @@ static void sunxi_uart_handle_tx(struct sunxi_uart_port *uart_port)
 	if (uart_port->rs485_pin_auto)
 		return;
 
-	if (uart_circ_empty(xmit))
+	if (sunxi_uart_tx_empty(&uart_port->port))
 		sunxi_uart_stop_tx(&uart_port->port);
 }
 
@@ -818,14 +824,17 @@ static int sunxi_uart_startup(struct uart_port *port)
 	 * send.
 	 */
 
+#if SUNXI_UART_XMIT_DMA_ALIAS
 	if (uart_port->dma->use_dma & TX_DMA) {
 		if (uart_port->port.state->xmit.buf !=
-						uart_port->dma->tx_buffer){
+						uart_port->dma->tx_buffer) {
 			free_page((unsigned long)uart_port->port.state->xmit.buf);
 			uart_port->port.state->xmit.buf =
 						uart_port->dma->tx_buffer;
 		}
-	} else {
+	} else
+#endif
+	{
 		uart_port->reg.ier = 0;
 		serial_out_lowbyte(port, uart_port->reg.ier, SUNXI_UART_IER);
 	}
@@ -838,8 +847,10 @@ static void sunxi_uart_shutdown(struct uart_port *port)
 	struct sunxi_uart_port *uart_port = UART_TO_SPORT(port);
 
 	SERIAL_DBG(port->dev, "shut down ...\n");
+#if SUNXI_UART_XMIT_DMA_ALIAS
 	if (uart_port->dma->use_dma & TX_DMA)
 		uart_port->port.state->xmit.buf = NULL;
+#endif
 
 	uart_port->reg.ier = 0;
 	uart_port->reg.lcr = 0;

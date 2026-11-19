@@ -44,6 +44,7 @@
 #include <linux/of_address.h>
 #include <linux/version.h>
 #include "sunxi-uart-ng.h"
+#include "sunxi-uart-compat.h"
 
 void sunxi_uart_stop_dma_rx(struct sunxi_uart_port *uart_port)
 {
@@ -134,7 +135,9 @@ void sunxi_uart_release_dma_tx(struct sunxi_uart_port *uart_port)
 		sunxi_uart_stop_dma_tx(uart_port);
 		dma_free_coherent(uart_port->port.dev, uart_port->dma->tb_size,
 				uart_port->dma->tx_buffer, uart_port->dma->tx_phy_addr);
+#if SUNXI_UART_XMIT_DMA_ALIAS
 		uart_port->port.state->xmit.buf = NULL;
+#endif
 		dma_release_channel(uart_dma->dma_chan_tx);
 		uart_dma->dma_chan_tx = NULL;
 		uart_dma->tx_dma_inited = 0;
@@ -185,6 +188,7 @@ int sunxi_uart_init_dma_tx(struct sunxi_uart_port *uart_port)
 	return 0;
 }
 
+#if SUNXI_UART_XMIT_DMA_ALIAS
 void dma_tx_callback(void *data)
 {
 	struct uart_port *port = data;
@@ -261,6 +265,17 @@ err_out:
 	sunxi_info(uart_port->port.dev, "-sunxi_uart_start_dma_tx-error-\n");
 	return -1;
 }
+#else /* !SUNXI_UART_XMIT_DMA_ALIAS */
+void __maybe_unused dma_tx_callback(void *data)
+{
+}
+
+int __maybe_unused sunxi_uart_start_dma_tx(struct sunxi_uart_port *uart_port)
+{
+	/* Linux 6.10 moved the transmit buffer into the tty core as a kfifo. */
+	return -1;
+}
+#endif /* SUNXI_UART_XMIT_DMA_ALIAS */
 
 void sunxi_uart_release_dma_rx(struct sunxi_uart_port *uart_port)
 {
