@@ -8,7 +8,15 @@
 #ifndef __FLUSH_CACHE_H
 #define __FLUSH_CACHE_H
 
+#include <linux/version.h>
+
+/*
+ * Linux 6.9 removed include/asm-generic/export.h; EXPORT_SYMBOL in assembly
+ * now comes in through linux/linkage.h, and this file does not use it anyway.
+ */
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 9, 0)
 #include <asm-generic/export.h>
+#endif
 
 #include <asm/asm-offsets.h>
 #include <asm/alternative.h>
