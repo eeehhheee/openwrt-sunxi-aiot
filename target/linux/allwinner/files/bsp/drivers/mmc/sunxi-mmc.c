@@ -3781,7 +3781,7 @@ static int sunxi_mmc_resource_request(struct sunxi_mmc_host *host,
 	if (gpio_is_valid(host->card_pwr_gpio)) {
 		ret =
 		    devm_gpio_request_one(&pdev->dev, host->card_pwr_gpio,
-					  GPIOF_DIR_OUT, "card-pwr-gpios");
+					  GPIOF_OUT_INIT_LOW, "card-pwr-gpios");
 		if (ret < 0)
 			SM_ERR(&pdev->dev,
 				"could not get  card-pwr-gpios gpio\n");

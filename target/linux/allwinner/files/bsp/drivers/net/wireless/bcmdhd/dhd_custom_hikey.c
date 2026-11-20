@@ -110,7 +110,7 @@ dhd_wifi_init_gpio(void)
 	 * For reg_on, gpio_request will fail if the gpio is configured to output-high
 	 * in the dts using gpio-hog, so do not return error for failure.
 	 */
-	if (gpio_request_one(wlan_reg_on, GPIOF_DIR_OUT, "WL_REG_ON")) {
+	if (gpio_request_one(wlan_reg_on, GPIOF_OUT_INIT_LOW, "WL_REG_ON")) {
 		DHD_ERROR(("%s: Failed to request gpio %d for WL_REG_ON, "
 			"might have configured in the dts\n",
 			__FUNCTION__, wlan_reg_on));
