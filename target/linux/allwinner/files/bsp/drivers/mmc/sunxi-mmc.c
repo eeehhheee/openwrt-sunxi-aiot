@@ -2993,7 +2993,7 @@ static int sunxi_mmc_request_parallel(void *flash, void *request, struct request
 		if (data && (mmc->card) && crypt_flags) {
 			SM_DBG(mmc_dev(mmc), "emce is enable\n");
 			host->sunxi_mmc_on_off_emce(host, 1,
-					!mmc_card_blockaddr(mmc->card), 1,
+					!mmc_card_is_blockaddr(mmc->card), 1,
 					data->blksz * data->blocks, 0, 1);
 			host->crypt_flag = crypt_flags;
 		}
